@@ -26,7 +26,7 @@ func GetShortURL(res http.ResponseWriter, req *http.Request) {
 	}
 
 	// Проверяем, что передан URL
-	parsedUrl, err := url.ParseRequestURI(originalURL)
+	parsedURL, err := url.ParseRequestURI(originalURL)
 
 	if err != nil {
 		http.Error(res, "invalid request", http.StatusBadRequest)
@@ -34,7 +34,7 @@ func GetShortURL(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	log.Println("get URL", parsedUrl)
+	log.Println("get URL", parsedURL)
 
 	// Генерируем короткий URL и сохраняем переданный URL
 	shortKey := generateShortKey()
