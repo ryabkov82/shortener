@@ -1,3 +1,3 @@
 module github.com/ryabkov82/shortener
 
-go 1.23.4
+go 1.22.12
