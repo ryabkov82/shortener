@@ -10,7 +10,11 @@ import (
 	"time"
 )
 
+// Переменная для хранения редиректов ShortURL -> OriginalURL
 var shortURLs = make(map[string]string)
+
+// Переменная для хранения значений OriginalURL -> ShortURL
+var originalURLs = make(map[string]string)
 
 func GetShortURL(res http.ResponseWriter, req *http.Request) {
 	body, err := io.ReadAll(req.Body)
@@ -36,9 +40,31 @@ func GetShortURL(res http.ResponseWriter, req *http.Request) {
 
 	log.Println("get URL", parsedURL)
 
-	// Генерируем короткий URL и сохраняем переданный URL
-	shortKey := generateShortKey()
-	shortURLs[shortKey] = originalURL
+	// Возможно, shortURL уже сгенерирован...
+	shortKey, found := originalURLs[originalURL]
+	if !found {
+		// Генерируем короткий URL
+		generated := false
+		for i := 1; i < 3; i++ {
+			shortKey = generateShortKey()
+			// Возможно, shortURL был сгененрирован ранее
+			_, found := shortURLs[shortKey]
+			if !found {
+				generated = true
+				break
+			}
+		}
+		if generated {
+			// Cохраняем переданный URL
+			shortURLs[shortKey] = originalURL
+			originalURLs[originalURL] = shortKey
+		} else {
+			// Не удалось сгененрировать новый shortURL
+			http.Error(res, "Failed to generate a new shortURL", http.StatusBadRequest)
+			log.Println("Failed to generate a new shortURL")
+			return
+		}
+	}
 
 	res.Header().Set("content-type", "text/plain")
 	// устанавливаем код 201
