@@ -66,6 +66,8 @@ func GetShortURL(res http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	log.Println("shortKey generate", shortKey)
+
 	res.Header().Set("content-type", "text/plain")
 	// устанавливаем код 201
 	res.WriteHeader(http.StatusCreated)
