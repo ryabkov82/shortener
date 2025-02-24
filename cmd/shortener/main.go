@@ -99,6 +99,7 @@ func GetRedirectURL(res http.ResponseWriter, req *http.Request) {
 		log.Println("Shortened key not found", id)
 		return
 	}
+	log.Println("Shortened key found", id, "redirect", originalURL)
 	// Устанавливаем заголовок ответа Location
 	res.Header().Set("Location", originalURL)
 	// устанавливаем код 307
