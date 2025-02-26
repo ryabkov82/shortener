@@ -24,12 +24,12 @@ func TestGetHandler(t *testing.T) {
 		wantStatusCode int
 	}{
 		{
-			name:           "test #1",
+			name:           "positive test #1",
 			originalURL:    "https://practicum.yandex.ru/",
 			wantStatusCode: 201,
 		},
 		{
-			name:           "test #2",
+			name:           "negative test #2",
 			originalURL:    "not url",
 			wantStatusCode: 400,
 		},
@@ -47,12 +47,12 @@ func TestGetHandler(t *testing.T) {
 			if tt.wantStatusCode == 201 {
 				shortURL, err := io.ReadAll(result.Body)
 				require.NoError(t, err)
-				err = result.Body.Close()
-				require.NoError(t, err)
 				// Проверяем, что получен URL
 				_, err = url.Parse(string(shortURL))
 				assert.NoError(t, err)
 			}
+			err := result.Body.Close()
+			require.NoError(t, err)
 		})
 	}
 }

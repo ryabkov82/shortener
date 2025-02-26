@@ -8,6 +8,7 @@ import (
 	"github.com/ryabkov82/shortener/internal/app/storage"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetHandler(t *testing.T) {
@@ -42,7 +43,8 @@ func TestGetHandler(t *testing.T) {
 			h := GetHandler(storage)
 			h(w, request)
 			result := w.Result()
-			result.Body.Close()
+			err := result.Body.Close()
+			require.NoError(t, err)
 			// Проверяем статус ответа
 			assert.Equal(t, tt.wantStatusCode, result.StatusCode)
 			if tt.wantStatusCode == 307 {
