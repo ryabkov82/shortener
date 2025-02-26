@@ -9,6 +9,7 @@ import (
 
 func GetHandler(storage *storage.Storage) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
+
 		id := req.PathValue("id")
 
 		// Получаем адрес перенаправления
