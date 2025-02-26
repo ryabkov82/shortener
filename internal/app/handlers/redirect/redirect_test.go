@@ -42,6 +42,7 @@ func TestGetHandler(t *testing.T) {
 			h := GetHandler(storage)
 			h(w, request)
 			result := w.Result()
+			result.Body.Close()
 			// Проверяем статус ответа
 			assert.Equal(t, tt.wantStatusCode, result.StatusCode)
 			if tt.wantStatusCode == 307 {
