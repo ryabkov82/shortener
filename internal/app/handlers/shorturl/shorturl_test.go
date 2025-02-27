@@ -1,22 +1,28 @@
 package shorturl
 
 import (
-	"io"
-	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"strings"
 	"testing"
 
 	"github.com/ryabkov82/shortener/internal/app/storage"
 
+	"github.com/go-chi/chi/v5"
+	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestGetHandler(t *testing.T) {
 
 	storage := storage.New()
+
+	r := chi.NewRouter()
+	r.Post("/", GetHandler(storage))
+
+	// запускаем тестовый сервер, будет выбран первый свободный порт
+	srv := httptest.NewServer(r)
+	// останавливаем сервер после завершения теста
+	defer srv.Close()
 
 	tests := []struct {
 		name           string
@@ -37,22 +43,21 @@ func TestGetHandler(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			request := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(tt.originalURL))
-			w := httptest.NewRecorder()
-			h := GetHandler(storage)
-			h(w, request)
-			result := w.Result()
+
+			resp, err := resty.New().R().
+				SetBody(tt.originalURL).
+				Post(srv.URL)
+
+			assert.NoError(t, err)
+
 			// Проверяем статус ответа
-			assert.Equal(t, tt.wantStatusCode, result.StatusCode)
+			assert.Equal(t, tt.wantStatusCode, resp.StatusCode())
 			if tt.wantStatusCode == 201 {
-				shortURL, err := io.ReadAll(result.Body)
-				require.NoError(t, err)
+				shortURL := resp.Body()
 				// Проверяем, что получен URL
 				_, err = url.Parse(string(shortURL))
 				assert.NoError(t, err)
 			}
-			err := result.Body.Close()
-			require.NoError(t, err)
 		})
 	}
 }

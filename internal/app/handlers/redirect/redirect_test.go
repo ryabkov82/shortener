@@ -1,14 +1,16 @@
 package redirect
 
 import (
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/ryabkov82/shortener/internal/app/storage"
 
+	"github.com/go-chi/chi/v5"
+	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestGetHandler(t *testing.T) {
@@ -16,6 +18,20 @@ func TestGetHandler(t *testing.T) {
 	storage := storage.New()
 
 	storage.SaveURL("https://practicum.yandex.ru/", "EYm7J2zF")
+
+	r := chi.NewRouter()
+	r.Get("/{id}", GetHandler(storage))
+
+	// запускаем тестовый сервер, будет выбран первый свободный порт
+	srv := httptest.NewServer(r)
+	// останавливаем сервер после завершения теста
+	defer srv.Close()
+
+	var redirectAttemptedError = errors.New("redirect")
+	redirectPolicy := resty.RedirectPolicyFunc(func(req *http.Request, via []*http.Request) error {
+		// return nil for continue redirect otherwise return error to stop/prevent redirect
+		return redirectAttemptedError
+	})
 
 	tests := []struct {
 		name           string
@@ -37,18 +53,26 @@ func TestGetHandler(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			request := httptest.NewRequest(http.MethodGet, "/"+tt.shortKey, nil)
-			request.SetPathValue("id", tt.shortKey)
-			w := httptest.NewRecorder()
-			h := GetHandler(storage)
-			h(w, request)
-			result := w.Result()
-			err := result.Body.Close()
-			require.NoError(t, err)
+
+			client := resty.New()
+			client.SetRedirectPolicy(redirectPolicy)
+			req := client.R()
+			req.Method = http.MethodGet
+			req.URL = srv.URL + "/" + tt.shortKey
+
+			resp, err := req.Send()
+
+			if errors.Is(err, redirectAttemptedError) {
+				// эту ошибку игнорируем
+				err = nil
+			}
+
+			assert.NoError(t, err)
+
 			// Проверяем статус ответа
-			assert.Equal(t, tt.wantStatusCode, result.StatusCode)
+			assert.Equal(t, tt.wantStatusCode, resp.StatusCode())
 			if tt.wantStatusCode == 307 {
-				assert.Equal(t, tt.originalURL, w.Header().Get("Location"))
+				assert.Equal(t, tt.originalURL, resp.Header().Get("Location"))
 			}
 		})
 	}

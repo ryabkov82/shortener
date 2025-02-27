@@ -5,12 +5,15 @@ import (
 	"net/http"
 
 	"github.com/ryabkov82/shortener/internal/app/storage"
+
+	"github.com/go-chi/chi/v5"
 )
 
 func GetHandler(storage *storage.Storage) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 
-		id := req.PathValue("id")
+		//id := req.PathValue("id")
+		id := chi.URLParam(req, "id")
 
 		// Получаем адрес перенаправления
 		originalURL, found := storage.GetRedirectURL(id)
