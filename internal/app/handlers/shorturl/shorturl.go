@@ -12,7 +12,7 @@ import (
 	"github.com/ryabkov82/shortener/internal/app/storage"
 )
 
-func GetHandler(storage *storage.Storage) http.HandlerFunc {
+func GetHandler(storage *storage.Storage, baseURL string) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 
 		body, err := io.ReadAll(req.Body)
@@ -69,7 +69,7 @@ func GetHandler(storage *storage.Storage) http.HandlerFunc {
 		// устанавливаем код 201
 		res.WriteHeader(http.StatusCreated)
 		// пишем тело ответа
-		resp := fmt.Sprintf("http://localhost:8080/%s", shortKey)
+		resp := fmt.Sprint(baseURL, shortKey)
 		res.Write([]byte(resp))
 
 	}

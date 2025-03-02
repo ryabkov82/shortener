@@ -17,7 +17,8 @@ func TestGetHandler(t *testing.T) {
 	storage := storage.New()
 
 	r := chi.NewRouter()
-	r.Post("/", GetHandler(storage))
+	baseURL := "http://localhost:8080/"
+	r.Post("/", GetHandler(storage, baseURL))
 
 	// запускаем тестовый сервер, будет выбран первый свободный порт
 	srv := httptest.NewServer(r)
