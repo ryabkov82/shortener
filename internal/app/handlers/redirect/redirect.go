@@ -14,7 +14,6 @@ type URLHandler interface {
 func GetHandler(urlHandler URLHandler) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 
-		//id := req.PathValue("id")
 		id := chi.URLParam(req, "id")
 
 		// Получаем адрес перенаправления
