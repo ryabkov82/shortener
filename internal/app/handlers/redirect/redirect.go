@@ -4,19 +4,21 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ryabkov82/shortener/internal/app/storage"
-
 	"github.com/go-chi/chi/v5"
 )
 
-func GetHandler(storage *storage.Storage) http.HandlerFunc {
+type URLHandler interface {
+	GetRedirectURL(string) (string, bool)
+}
+
+func GetHandler(urlHandler URLHandler) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 
 		//id := req.PathValue("id")
 		id := chi.URLParam(req, "id")
 
 		// Получаем адрес перенаправления
-		originalURL, found := storage.GetRedirectURL(id)
+		originalURL, found := urlHandler.GetRedirectURL(id)
 		if !found {
 			http.Error(res, "Shortened key not found", http.StatusNotFound)
 			log.Println("Shortened key not found", id)

@@ -8,11 +8,15 @@ import (
 	"net/http"
 	"net/url"
 	"time"
-
-	"github.com/ryabkov82/shortener/internal/app/storage"
 )
 
-func GetHandler(storage *storage.Storage, baseURL string) http.HandlerFunc {
+type URLHandler interface {
+	GetShortKey(string) (string, bool)
+	GetRedirectURL(string) (string, bool)
+	SaveURL(string, string)
+}
+
+func GetHandler(urlHandler URLHandler, baseURL string) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 
 		body, err := io.ReadAll(req.Body)
@@ -39,14 +43,14 @@ func GetHandler(storage *storage.Storage, baseURL string) http.HandlerFunc {
 		log.Println("get URL", parsedURL)
 
 		// Возможно, shortURL уже сгенерирован...
-		shortKey, found := storage.GetShortKey(originalURL)
+		shortKey, found := urlHandler.GetShortKey(originalURL)
 		if !found {
 			// Генерируем короткий URL
 			generated := false
 			for i := 1; i < 3; i++ {
 				shortKey = generateShortKey()
 				// Возможно, shortURL был сгененрирован ранее
-				_, found := storage.GetRedirectURL(shortKey)
+				_, found := urlHandler.GetRedirectURL(shortKey)
 				if !found {
 					generated = true
 					break
@@ -54,7 +58,7 @@ func GetHandler(storage *storage.Storage, baseURL string) http.HandlerFunc {
 			}
 			if generated {
 				// Cохраняем переданный URL
-				storage.SaveURL(originalURL, shortKey)
+				urlHandler.SaveURL(originalURL, shortKey)
 			} else {
 				// Не удалось сгененрировать новый shortURL
 				http.Error(res, "Failed to generate a new shortURL", http.StatusBadRequest)
