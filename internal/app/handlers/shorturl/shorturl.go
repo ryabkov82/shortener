@@ -69,7 +69,13 @@ func GetHandler(storage *storage.Storage, baseURL string) http.HandlerFunc {
 		// устанавливаем код 201
 		res.WriteHeader(http.StatusCreated)
 		// пишем тело ответа
-		resp := fmt.Sprint(baseURL, "/", shortKey)
+		baseURLParsed, _ := url.Parse(baseURL)
+		var u = url.URL{
+			Scheme: baseURLParsed.Scheme,
+			Host:   baseURLParsed.Host,
+			Path:   shortKey,
+		}
+		resp := fmt.Sprint(u.String())
 		res.Write([]byte(resp))
 
 	}
