@@ -63,6 +63,7 @@ func GetHandler(urlHandler URLHandler, baseURL string) http.HandlerFunc {
 				err := urlHandler.SaveURL(originalURL, shortKey)
 				if err != nil {
 					http.Error(res, "Failed to save URL", http.StatusInternalServerError)
+					log.Println("Failed to save URL")
 					return
 				}
 			} else {
