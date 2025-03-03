@@ -14,7 +14,7 @@ import (
 
 func TestGetHandler(t *testing.T) {
 
-	storage := storage.New()
+	storage := storage.NewInMemoryStorage()
 
 	r := chi.NewRouter()
 	baseURL := "http://localhost:8080/"
