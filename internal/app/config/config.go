@@ -37,7 +37,7 @@ func Load() *Config {
 
 	cfg := new(Config)
 	cfg.HTTPServerAddr = "localhost:8080"
-	cfg.BaseURL = "http://localhost:8080/"
+	cfg.BaseURL = "http://localhost:8080"
 
 	flag.Func("a", "Server address host:port", func(flagValue string) error {
 
@@ -84,6 +84,9 @@ func Load() *Config {
 
 		cfg.BaseURL = envBaseURL
 	}
+
+	// Убедимся, что BaseURL не заканчивается на "/"
+	cfg.BaseURL = strings.TrimSuffix(cfg.BaseURL, "/")
 
 	return cfg
 

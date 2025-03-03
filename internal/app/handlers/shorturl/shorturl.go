@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
-	"strings"
 	"time"
 
 	"github.com/ryabkov82/shortener/internal/app/models"
@@ -88,20 +87,9 @@ func GetHandler(urlHandler URLHandler, baseURL string) http.HandlerFunc {
 		// устанавливаем код 201
 		res.WriteHeader(http.StatusCreated)
 		// пишем тело ответа
-		fullURL := JoinURL(baseURL, mapping.ShortURL)
-
-		res.Write([]byte(fullURL))
+		res.Write([]byte(baseURL + "/" + mapping.ShortURL))
 
 	}
-}
-
-// JoinURL корректно соединяет базовый URL и короткий URL.
-func JoinURL(baseURL, shortURL string) string {
-	// Убедимся, что базовый URL не заканчивается на "/"
-	baseURL = strings.TrimSuffix(baseURL, "/")
-	// Убедимся, что короткий URL не начинается с "/"
-	shortURL = strings.TrimPrefix(shortURL, "/")
-	return baseURL + "/" + shortURL
 }
 
 func generateShortKey() string {
