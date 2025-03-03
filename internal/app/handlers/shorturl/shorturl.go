@@ -8,12 +8,14 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/ryabkov82/shortener/internal/app/models"
 )
 
 type URLHandler interface {
-	GetShortKey(string) (string, bool)
-	GetRedirectURL(string) (string, bool)
-	SaveURL(string, string) error
+	GetShortKey(string) (models.URLMapping, bool)
+	GetRedirectURL(string) (models.URLMapping, bool)
+	SaveURL(models.URLMapping) error
 }
 
 func GetHandler(urlHandler URLHandler, baseURL string) http.HandlerFunc {
@@ -45,10 +47,11 @@ func GetHandler(urlHandler URLHandler, baseURL string) http.HandlerFunc {
 		log.Println("get URL", parsedURL)
 
 		// Возможно, shortURL уже сгенерирован...
-		shortKey, found := urlHandler.GetShortKey(originalURL)
+		mapping, found := urlHandler.GetShortKey(originalURL)
 		if !found {
 			// Генерируем короткий URL
 			generated := false
+			shortKey := ""
 			for i := 1; i < 3; i++ {
 				shortKey = generateShortKey()
 				// Возможно, shortURL был сгененрирован ранее
@@ -60,7 +63,12 @@ func GetHandler(urlHandler URLHandler, baseURL string) http.HandlerFunc {
 			}
 			if generated {
 				// Cохраняем переданный URL
-				err := urlHandler.SaveURL(originalURL, shortKey)
+				mapping = models.URLMapping{
+					ShortURL:    shortKey,
+					OriginalURL: originalURL,
+				}
+
+				err := urlHandler.SaveURL(mapping)
 				if err != nil {
 					http.Error(res, "Failed to save URL", http.StatusInternalServerError)
 					log.Println("Failed to save URL")
@@ -74,7 +82,7 @@ func GetHandler(urlHandler URLHandler, baseURL string) http.HandlerFunc {
 			}
 		}
 
-		log.Println("shortKey generate", shortKey)
+		log.Println("shortKey generate", mapping.ShortURL)
 
 		res.Header().Set("content-type", "text/plain")
 		// устанавливаем код 201
@@ -84,7 +92,7 @@ func GetHandler(urlHandler URLHandler, baseURL string) http.HandlerFunc {
 		var u = url.URL{
 			Scheme: baseURLParsed.Scheme,
 			Host:   baseURLParsed.Host,
-			Path:   shortKey,
+			Path:   mapping.ShortURL,
 		}
 		resp := fmt.Sprint(u.String())
 		res.Write([]byte(resp))

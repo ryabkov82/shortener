@@ -1,6 +1,10 @@
 package storage
 
-import "sync"
+import (
+	"sync"
+
+	"github.com/ryabkov82/shortener/internal/app/models"
+)
 
 type InMemoryStorage struct {
 	// Переменная для хранения редиректов ShortURL -> OriginalURL
@@ -12,39 +16,55 @@ type InMemoryStorage struct {
 
 func NewInMemoryStorage() *InMemoryStorage {
 
-	var shortURLs = make(map[string]string)
-	var originalURLs = make(map[string]string)
-
 	return &InMemoryStorage{
-		shortURLs:    shortURLs,
-		originalURLs: originalURLs,
+		shortURLs:    make(map[string]string),
+		originalURLs: make(map[string]string),
 	}
 }
 
-func (s *InMemoryStorage) GetShortKey(originalURL string) (string, bool) {
+func (s *InMemoryStorage) GetShortKey(originalURL string) (models.URLMapping, bool) {
 
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	shortKey, found := s.originalURLs[originalURL]
-	return shortKey, found
 
+	if !found {
+		shortKey = ""
+	}
+
+	mapping := models.URLMapping{
+		ShortURL:    shortKey,
+		OriginalURL: originalURL,
+	}
+
+	return mapping, found
 }
 
-func (s *InMemoryStorage) GetRedirectURL(shortKey string) (string, bool) {
+func (s *InMemoryStorage) GetRedirectURL(shortKey string) (models.URLMapping, bool) {
 
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	originalURL, found := s.shortURLs[shortKey]
-	return originalURL, found
+
+	if !found {
+		originalURL = ""
+	}
+
+	mapping := models.URLMapping{
+		ShortURL:    shortKey,
+		OriginalURL: originalURL,
+	}
+
+	return mapping, found
 
 }
 
-func (s *InMemoryStorage) SaveURL(originalURL string, shortKey string) error {
+func (s *InMemoryStorage) SaveURL(mapping models.URLMapping) error {
 
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.shortURLs[shortKey] = originalURL
-	s.originalURLs[originalURL] = shortKey
+	s.shortURLs[mapping.ShortURL] = mapping.OriginalURL
+	s.originalURLs[mapping.OriginalURL] = mapping.ShortURL
 
 	return nil
 }
