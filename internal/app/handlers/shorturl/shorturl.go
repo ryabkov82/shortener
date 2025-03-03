@@ -13,7 +13,7 @@ import (
 type URLHandler interface {
 	GetShortKey(string) (string, bool)
 	GetRedirectURL(string) (string, bool)
-	SaveURL(string, string)
+	SaveURL(string, string) error
 }
 
 func GetHandler(urlHandler URLHandler, baseURL string) http.HandlerFunc {
@@ -21,6 +21,7 @@ func GetHandler(urlHandler URLHandler, baseURL string) http.HandlerFunc {
 
 		body, err := io.ReadAll(req.Body)
 		if err != nil {
+			http.Error(res, "Failed to read request body", http.StatusBadRequest)
 			log.Println(err)
 			return
 		}
@@ -28,6 +29,7 @@ func GetHandler(urlHandler URLHandler, baseURL string) http.HandlerFunc {
 
 		if originalURL == "" {
 			http.Error(res, "URL parameter is missing", http.StatusBadRequest)
+			log.Println("URL parameter is missing")
 			return
 		}
 
@@ -58,7 +60,11 @@ func GetHandler(urlHandler URLHandler, baseURL string) http.HandlerFunc {
 			}
 			if generated {
 				// Cохраняем переданный URL
-				urlHandler.SaveURL(originalURL, shortKey)
+				err := urlHandler.SaveURL(originalURL, shortKey)
+				if err != nil {
+					http.Error(res, "Failed to save URL", http.StatusInternalServerError)
+					return
+				}
 			} else {
 				// Не удалось сгененрировать новый shortURL
 				http.Error(res, "Failed to generate a new shortURL", http.StatusBadRequest)

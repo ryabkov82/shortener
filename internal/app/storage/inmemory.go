@@ -39,11 +39,12 @@ func (s *InMemoryStorage) GetRedirectURL(shortKey string) (string, bool) {
 
 }
 
-func (s *InMemoryStorage) SaveURL(originalURL string, shortKey string) {
+func (s *InMemoryStorage) SaveURL(originalURL string, shortKey string) error {
 
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.shortURLs[shortKey] = originalURL
 	s.originalURLs[originalURL] = shortKey
 
+	return nil
 }
