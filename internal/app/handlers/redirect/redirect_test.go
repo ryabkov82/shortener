@@ -15,7 +15,7 @@ import (
 
 func TestGetHandler(t *testing.T) {
 
-	storage := storage.New()
+	storage := storage.NewInMemoryStorage()
 
 	storage.SaveURL("https://practicum.yandex.ru/", "EYm7J2zF")
 
