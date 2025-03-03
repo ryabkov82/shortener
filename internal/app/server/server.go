@@ -13,11 +13,9 @@ import (
 )
 
 // StartServer запускает HTTP-сервер.
-func StartServer() {
+func StartServer(cfg *config.Config) {
 
 	storage := storage.NewInMemoryStorage()
-
-	cfg := config.Load()
 
 	router := chi.NewRouter()
 	router.Post("/", shorturl.GetHandler(storage, cfg.BaseURL))
