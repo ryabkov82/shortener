@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/ryabkov82/shortener/internal/app/models"
 	"github.com/ryabkov82/shortener/internal/app/storage"
 
 	"github.com/go-chi/chi/v5"
@@ -17,7 +18,11 @@ func TestGetHandler(t *testing.T) {
 
 	storage := storage.NewInMemoryStorage()
 
-	storage.SaveURL("https://practicum.yandex.ru/", "EYm7J2zF")
+	mapping := models.URLMapping{
+		ShortURL:    "EYm7J2zF",
+		OriginalURL: "https://practicum.yandex.ru/",
+	}
+	storage.SaveURL(mapping)
 
 	r := chi.NewRouter()
 	r.Get("/{id}", GetHandler(storage))
