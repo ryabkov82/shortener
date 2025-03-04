@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"errors"
 	"sync"
 
 	"github.com/ryabkov82/shortener/internal/app/models"
@@ -61,8 +62,18 @@ func (s *InMemoryStorage) GetRedirectURL(shortKey string) (models.URLMapping, bo
 
 func (s *InMemoryStorage) SaveURL(mapping models.URLMapping) error {
 
+	// Устанавливаем блокировку
 	s.mu.Lock()
 	defer s.mu.Unlock()
+
+	// После установки блокировки проверяем нет ли записи с таким ShortURL
+	// Возможно, shortURL был сгененрирован ранее
+	_, found := s.shortURLs[mapping.ShortURL]
+
+	if found {
+		return errors.New("ShortURL already exists")
+	}
+
 	s.shortURLs[mapping.ShortURL] = mapping.OriginalURL
 	s.originalURLs[mapping.OriginalURL] = mapping.ShortURL
 

@@ -49,36 +49,52 @@ func GetHandler(urlHandler URLHandler, baseURL string) http.HandlerFunc {
 		mapping, found := urlHandler.GetShortKey(originalURL)
 		if !found {
 			// Генерируем короткий URL
-			generated := false
-			shortKey := ""
-			for i := 1; i < 3; i++ {
-				shortKey = generateShortKey()
-				// Возможно, shortURL был сгененрирован ранее
-				_, found := urlHandler.GetRedirectURL(shortKey)
-				if !found {
-					generated = true
-					break
+			/*
+				generated := false
+				shortKey := ""
+				for i := 1; i < 3; i++ {
+					shortKey = generateShortKey()
+					// Возможно, shortURL был сгененрирован ранее
+					_, found := urlHandler.GetRedirectURL(shortKey)
+					if !found {
+						generated = true
+						break
+					}
 				}
-			}
-			if generated {
-				// Cохраняем переданный URL
-				mapping = models.URLMapping{
-					ShortURL:    shortKey,
-					OriginalURL: originalURL,
-				}
+				if generated {
+					// Cохраняем переданный URL
+					mapping = models.URLMapping{
+						ShortURL:    shortKey,
+						OriginalURL: originalURL,
+					}
 
-				err := urlHandler.SaveURL(mapping)
-				if err != nil {
-					http.Error(res, "Failed to save URL", http.StatusInternalServerError)
-					log.Println("Failed to save URL")
+					err := urlHandler.SaveURL(mapping)
+					if err != nil {
+						http.Error(res, "Failed to save URL", http.StatusInternalServerError)
+						log.Println("Failed to save URL", err)
+						return
+					}
+				} else {
+					// Не удалось сгененрировать новый shortURL
+					http.Error(res, "Failed to generate a new shortURL", http.StatusBadRequest)
+					log.Println("Failed to generate a new shortURL")
 					return
 				}
-			} else {
-				// Не удалось сгененрировать новый shortURL
-				http.Error(res, "Failed to generate a new shortURL", http.StatusBadRequest)
-				log.Println("Failed to generate a new shortURL")
+			*/
+			shortKey := generateShortKey()
+			// Cохраняем переданный URL
+			mapping = models.URLMapping{
+				ShortURL:    shortKey,
+				OriginalURL: originalURL,
+			}
+
+			err := urlHandler.SaveURL(mapping)
+			if err != nil {
+				http.Error(res, "Failed to save URL", http.StatusInternalServerError)
+				log.Println("Failed to save URL", err)
 				return
 			}
+
 		}
 
 		log.Println("shortKey generate", mapping.ShortURL)
