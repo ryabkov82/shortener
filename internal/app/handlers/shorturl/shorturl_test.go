@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/ryabkov82/shortener/internal/app/service"
 	"github.com/ryabkov82/shortener/internal/app/storage"
 
 	"github.com/go-chi/chi/v5"
@@ -16,9 +17,11 @@ func TestGetHandler(t *testing.T) {
 
 	storage := storage.NewInMemoryStorage()
 
+	service := service.NewService(storage)
+
 	r := chi.NewRouter()
 	baseURL := "http://localhost:8080/"
-	r.Post("/", GetHandler(storage, baseURL))
+	r.Post("/", GetHandler(service, baseURL))
 
 	// запускаем тестовый сервер, будет выбран первый свободный порт
 	srv := httptest.NewServer(r)

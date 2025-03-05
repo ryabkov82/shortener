@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/ryabkov82/shortener/internal/app/models"
+	"github.com/ryabkov82/shortener/internal/app/service"
 	"github.com/ryabkov82/shortener/internal/app/storage"
 
 	"github.com/go-chi/chi/v5"
@@ -18,6 +19,8 @@ func TestGetHandler(t *testing.T) {
 
 	storage := storage.NewInMemoryStorage()
 
+	service := service.NewService(storage)
+
 	mapping := models.URLMapping{
 		ShortURL:    "EYm7J2zF",
 		OriginalURL: "https://practicum.yandex.ru/",
@@ -25,7 +28,7 @@ func TestGetHandler(t *testing.T) {
 	storage.SaveURL(mapping)
 
 	r := chi.NewRouter()
-	r.Get("/{id}", GetHandler(storage))
+	r.Get("/{id}", GetHandler(service))
 
 	// запускаем тестовый сервер, будет выбран первый свободный порт
 	srv := httptest.NewServer(r)
