@@ -1,6 +1,6 @@
 module github.com/ryabkov82/shortener
 
-go 1.22.12
+go 1.23.0
 
 require github.com/stretchr/testify v1.10.0
 

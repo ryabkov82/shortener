@@ -8,7 +8,7 @@ import (
 	"github.com/ryabkov82/shortener/internal/app/handlers/redirect"
 	"github.com/ryabkov82/shortener/internal/app/handlers/shorturl"
 	"github.com/ryabkov82/shortener/internal/app/service"
-	"github.com/ryabkov82/shortener/internal/app/storage"
+	storage "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
 
 	"github.com/go-chi/chi/v5"
 )

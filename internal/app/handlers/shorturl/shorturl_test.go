@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/ryabkov82/shortener/internal/app/service"
-	"github.com/ryabkov82/shortener/internal/app/storage"
+	storage "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-resty/resty/v2"
