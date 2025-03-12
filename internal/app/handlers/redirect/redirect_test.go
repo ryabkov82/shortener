@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"go.uber.org/zap"
+	"github.com/ryabkov82/shortener/internal/app/logger"
 
 	"github.com/ryabkov82/shortener/internal/app/models"
 	"github.com/ryabkov82/shortener/internal/app/service"
@@ -23,7 +23,9 @@ func TestGetHandler(t *testing.T) {
 
 	service := service.NewService(storage)
 
-	log := zap.NewNop()
+	if err := logger.Initialize("debug"); err != nil {
+		panic(err)
+	}
 
 	mapping := models.URLMapping{
 		ShortURL:    "EYm7J2zF",
@@ -32,7 +34,7 @@ func TestGetHandler(t *testing.T) {
 	storage.SaveURL(mapping)
 
 	r := chi.NewRouter()
-	r.Get("/{id}", GetHandler(service, log))
+	r.Get("/{id}", GetHandler(service, logger.Log))
 
 	// запускаем тестовый сервер, будет выбран первый свободный порт
 	srv := httptest.NewServer(r)
