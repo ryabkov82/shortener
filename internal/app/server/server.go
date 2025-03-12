@@ -23,7 +23,7 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 	service := service.NewService(storage)
 
 	router := chi.NewRouter()
-	router.Use(logger.Logging(log))
+	router.Use(logger.RequestLogging(log))
 
 	router.Post("/", shorturl.GetHandler(service, cfg.BaseURL, log))
 	router.Get("/{id}", redirect.GetHandler(service, log))
