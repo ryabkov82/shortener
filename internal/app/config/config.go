@@ -13,6 +13,7 @@ import (
 type Config struct {
 	HTTPServerAddr string
 	BaseURL        string
+	LogLevel       string
 }
 
 func validateHTTPServerAddr(addr string) error {
@@ -62,6 +63,8 @@ func Load() *Config {
 		cfg.BaseURL = flagValue
 		return nil
 	})
+
+	flag.StringVar(&cfg.LogLevel, "l", "info", "log level")
 
 	flag.Parse()
 
