@@ -7,6 +7,7 @@ import (
 
 	"github.com/ryabkov82/shortener/internal/app/config"
 	"github.com/ryabkov82/shortener/internal/app/handlers/redirect"
+	"github.com/ryabkov82/shortener/internal/app/handlers/shortenapi"
 	"github.com/ryabkov82/shortener/internal/app/handlers/shorturl"
 	logger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
 	"github.com/ryabkov82/shortener/internal/app/service"
@@ -27,6 +28,8 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 
 	router.Post("/", shorturl.GetHandler(service, cfg.BaseURL, log))
 	router.Get("/{id}", redirect.GetHandler(service, log))
+
+	router.Post("/api/shorten", shortenapi.GetHandler(service, cfg.BaseURL, log))
 
 	log.Info("Server started", zap.String("address", cfg.HTTPServerAddr))
 

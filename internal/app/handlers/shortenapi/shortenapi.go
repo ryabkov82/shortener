@@ -1,7 +1,7 @@
-package shorturl
+package shortenapi
 
 import (
-	"io"
+	"encoding/json"
 	"net/http"
 	"net/url"
 
@@ -12,16 +12,26 @@ type URLHandler interface {
 	GetShortKey(string) (string, error)
 }
 
+type Request struct {
+	URL string `json:"url"`
+}
+
+type Response struct {
+	Result string `json:"result"`
+}
+
 func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 
-		body, err := io.ReadAll(req.Body)
-		if err != nil {
+		var request Request
+
+		if err := json.NewDecoder(req.Body).Decode(&request); err != nil {
 			http.Error(res, "Failed to read request body", http.StatusBadRequest)
 			log.Error("Failed to read request body", zap.Error(err))
 			return
 		}
-		originalURL := string(body)
+
+		originalURL := string(request.URL)
 
 		if originalURL == "" {
 			http.Error(res, "URL parameter is missing", http.StatusBadRequest)
@@ -30,7 +40,7 @@ func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.Han
 		}
 
 		// Проверяем, что передан URL
-		_, err = url.ParseRequestURI(originalURL)
+		_, err := url.ParseRequestURI(originalURL)
 
 		if err != nil {
 			http.Error(res, "invalid request", http.StatusBadRequest)
@@ -51,11 +61,18 @@ func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.Han
 
 		log.Debug("shortKey generate", zap.String("shortKey", shortURL))
 
-		res.Header().Set("content-type", "text/plain")
+		res.Header().Set("content-type", "application/json")
 		// устанавливаем код 201
 		res.WriteHeader(http.StatusCreated)
 		// пишем тело ответа
-		res.Write([]byte(baseURL + "/" + shortURL))
+		response := Response{Result: baseURL + "/" + shortURL}
+		resp, err := json.Marshal(response)
+		if err != nil {
+			http.Error(res, err.Error(), http.StatusInternalServerError)
+			log.Error("Failed to get short URL", zap.Error(err))
+			return
+		}
+		res.Write(resp)
 
 	}
 }
