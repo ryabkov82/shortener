@@ -1,14 +1,20 @@
 package shortenapi
 
 import (
+	"bytes"
+	"compress/gzip"
 	"encoding/json"
 	"net/http/httptest"
 	"net/url"
 	"testing"
 
 	"github.com/ryabkov82/shortener/internal/app/logger"
+
 	"github.com/ryabkov82/shortener/internal/app/service"
 	storage "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
+
+	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
+	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-resty/resty/v2"
@@ -26,8 +32,11 @@ func TestGetHandler(t *testing.T) {
 	}
 
 	r := chi.NewRouter()
+	r.Use(mwlogger.RequestLogging(logger.Log))
+	r.Use(mwgzip.Gzip)
+
 	baseURL := "http://localhost:8080/"
-	r.Post("/", GetHandler(service, baseURL, logger.Log))
+	r.Post("/api/shorten", GetHandler(service, baseURL, logger.Log))
 
 	// запускаем тестовый сервер, будет выбран первый свободный порт
 	srv := httptest.NewServer(r)
@@ -55,12 +64,20 @@ func TestGetHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 
 			req, err := json.Marshal(tt.request)
-			if err != nil {
-				panic(err)
-			}
+			assert.NoError(t, err)
+
+			buf := bytes.NewBuffer(nil)
+			zb := gzip.NewWriter(buf)
+			_, err = zb.Write([]byte(req))
+			assert.NoError(t, err)
+			err = zb.Close()
+			assert.NoError(t, err)
+
 			resp, err := resty.New().R().
-				SetBody(req).
-				Post(srv.URL)
+				SetBody(buf).
+				SetHeader("Content-Encoding", "gzip").
+				SetHeader("Accept-Encoding", "gzip").
+				Post(srv.URL + "/api/shorten")
 
 			assert.NoError(t, err)
 

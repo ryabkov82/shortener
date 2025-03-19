@@ -10,6 +10,7 @@ import (
 	"github.com/ryabkov82/shortener/internal/app/handlers/shortenapi"
 	"github.com/ryabkov82/shortener/internal/app/handlers/shorturl"
 	logger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
+	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
 	"github.com/ryabkov82/shortener/internal/app/service"
 	storage "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
 
@@ -25,6 +26,7 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 
 	router := chi.NewRouter()
 	router.Use(logger.RequestLogging(log))
+	router.Use(mwgzip.Gzip)
 
 	router.Post("/", shorturl.GetHandler(service, cfg.BaseURL, log))
 	router.Get("/{id}", redirect.GetHandler(service, log))
