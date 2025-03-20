@@ -23,7 +23,7 @@ type InMemoryStorage struct {
 
 // структура хранения записей в файле
 type record struct {
-	Uuid        uint64 `json:"uuid"`
+	UUID        uint64 `json:"uuid"`
 	ShortURL    string `json:"short_url"`    // Короткий URL
 	OriginalURL string `json:"original_url"` // Оригинальный URL
 }
@@ -146,7 +146,7 @@ func (s *InMemoryStorage) SaveURL(mapping models.URLMapping) error {
 	s.countRecords++
 
 	// сохраняем данные в файл
-	record := record{Uuid: s.countRecords, ShortURL: mapping.ShortURL, OriginalURL: mapping.OriginalURL}
+	record := record{UUID: s.countRecords, ShortURL: mapping.ShortURL, OriginalURL: mapping.OriginalURL}
 	err := s.encoder.Encode(record)
 
 	return err
