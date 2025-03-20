@@ -19,9 +19,14 @@ import (
 
 func TestGetHandler(t *testing.T) {
 
-	storage := storage.NewInMemoryStorage()
+	fileStorage := "test.dat"
+	st, err := storage.NewInMemoryStorage(fileStorage)
+	if err != nil {
+		panic(err)
+	}
+	st.Load(fileStorage)
 
-	service := service.NewService(storage)
+	service := service.NewService(st)
 
 	if err := logger.Initialize("debug"); err != nil {
 		panic(err)
@@ -31,7 +36,7 @@ func TestGetHandler(t *testing.T) {
 		ShortURL:    "EYm7J2zF",
 		OriginalURL: "https://practicum.yandex.ru/",
 	}
-	storage.SaveURL(mapping)
+	st.SaveURL(mapping)
 
 	r := chi.NewRouter()
 	r.Get("/{id}", GetHandler(service, logger.Log))

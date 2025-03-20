@@ -16,9 +16,14 @@ import (
 
 func TestGetHandler(t *testing.T) {
 
-	storage := storage.NewInMemoryStorage()
+	fileStorage := "test.dat"
+	st, err := storage.NewInMemoryStorage(fileStorage)
+	if err != nil {
+		panic(err)
+	}
+	st.Load(fileStorage)
 
-	service := service.NewService(storage)
+	service := service.NewService(st)
 
 	if err := logger.Initialize("debug"); err != nil {
 		panic(err)

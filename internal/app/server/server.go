@@ -9,7 +9,7 @@ import (
 	"github.com/ryabkov82/shortener/internal/app/handlers/redirect"
 	"github.com/ryabkov82/shortener/internal/app/handlers/shortenapi"
 	"github.com/ryabkov82/shortener/internal/app/handlers/shorturl"
-	logger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
+	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
 	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
 	"github.com/ryabkov82/shortener/internal/app/service"
 	storage "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
@@ -20,12 +20,21 @@ import (
 // StartServer запускает HTTP-сервер.
 func StartServer(log *zap.Logger, cfg *config.Config) {
 
-	storage := storage.NewInMemoryStorage()
+	st, err := storage.NewInMemoryStorage(cfg.FileStorage)
 
-	service := service.NewService(storage)
+	if err != nil {
+		panic(err)
+	}
+
+	// загружаем сохраненные данные из файла..
+	if err := st.Load(cfg.FileStorage); err != nil {
+		panic(err)
+	}
+
+	service := service.NewService(st)
 
 	router := chi.NewRouter()
-	router.Use(logger.RequestLogging(log))
+	router.Use(mwlogger.RequestLogging(log))
 	router.Use(mwgzip.Gzip)
 
 	router.Post("/", shorturl.GetHandler(service, cfg.BaseURL, log))
