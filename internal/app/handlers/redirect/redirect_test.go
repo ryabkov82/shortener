@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/ryabkov82/shortener/internal/app/logger"
+
 	"github.com/ryabkov82/shortener/internal/app/models"
 	"github.com/ryabkov82/shortener/internal/app/service"
 	storage "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
@@ -17,18 +19,27 @@ import (
 
 func TestGetHandler(t *testing.T) {
 
-	storage := storage.NewInMemoryStorage()
+	fileStorage := "test.dat"
+	st, err := storage.NewInMemoryStorage(fileStorage)
+	if err != nil {
+		panic(err)
+	}
+	st.Load(fileStorage)
 
-	service := service.NewService(storage)
+	service := service.NewService(st)
+
+	if err := logger.Initialize("debug"); err != nil {
+		panic(err)
+	}
 
 	mapping := models.URLMapping{
 		ShortURL:    "EYm7J2zF",
 		OriginalURL: "https://practicum.yandex.ru/",
 	}
-	storage.SaveURL(mapping)
+	st.SaveURL(mapping)
 
 	r := chi.NewRouter()
-	r.Get("/{id}", GetHandler(service))
+	r.Get("/{id}", GetHandler(service, logger.Log))
 
 	// запускаем тестовый сервер, будет выбран первый свободный порт
 	srv := httptest.NewServer(r)
