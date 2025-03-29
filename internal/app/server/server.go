@@ -22,7 +22,7 @@ import (
 // StartServer запускает HTTP-сервер.
 func StartServer(log *zap.Logger, cfg *config.Config) {
 
-	pg, err := postgres.NewPostgresStorage(cfg.DbConnect)
+	pg, err := postgres.NewPostgresStorage(cfg.DBConnect)
 
 	if err != nil {
 		panic(err)
