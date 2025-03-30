@@ -1,6 +1,7 @@
 package ping
 
 import (
+	"errors"
 	"net/http/httptest"
 	"testing"
 
@@ -26,8 +27,6 @@ func TestGetHandler(t *testing.T) {
 	// создаём объект-заглушку
 	m := mocks.NewMockURLHandler(ctrl)
 
-	m.EXPECT().Ping().Return(nil)
-
 	if err := logger.Initialize("debug"); err != nil {
 		panic(err)
 	}
@@ -43,12 +42,36 @@ func TestGetHandler(t *testing.T) {
 	// останавливаем сервер после завершения теста
 	defer srv.Close()
 
-	resp, err := resty.New().R().
-		Get(srv.URL + "/ping")
+	tests := []struct {
+		name           string
+		error          error
+		wantStatusCode int
+	}{
+		{
+			name:           "positive test #1",
+			error:          nil,
+			wantStatusCode: 200,
+		},
+		{
+			name:           "negative test #2",
+			error:          errors.New("failed connect to database"),
+			wantStatusCode: 500,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
 
-	assert.NoError(t, err)
+			m.EXPECT().Ping().Return(tt.error)
 
-	// Проверяем статус ответа
-	assert.Equal(t, 200, resp.StatusCode())
+			resp, err := resty.New().R().
+				Get(srv.URL + "/ping")
+
+			assert.NoError(t, err)
+
+			// Проверяем статус ответа
+			assert.Equal(t, tt.wantStatusCode, resp.StatusCode())
+
+		})
+	}
 
 }
