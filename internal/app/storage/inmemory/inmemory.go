@@ -1,4 +1,4 @@
-package storage
+package inmemory
 
 import (
 	"bufio"
@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	"github.com/ryabkov82/shortener/internal/app/models"
+	"github.com/ryabkov82/shortener/internal/app/storage"
 )
 
 type InMemoryStorage struct {
@@ -89,14 +90,16 @@ func (s *InMemoryStorage) Load(fileStoragePath string) error {
 	return err
 }
 
-func (s *InMemoryStorage) GetShortKey(originalURL string) (models.URLMapping, bool) {
+func (s *InMemoryStorage) GetShortKey(originalURL string) (models.URLMapping, error) {
 
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	shortKey, found := s.originalURLs[originalURL]
 
+	var err error
 	if !found {
 		shortKey = ""
+		err = storage.ErrURLNotFound
 	}
 
 	mapping := models.URLMapping{
@@ -104,17 +107,19 @@ func (s *InMemoryStorage) GetShortKey(originalURL string) (models.URLMapping, bo
 		OriginalURL: originalURL,
 	}
 
-	return mapping, found
+	return mapping, err
 }
 
-func (s *InMemoryStorage) GetRedirectURL(shortKey string) (models.URLMapping, bool) {
+func (s *InMemoryStorage) GetRedirectURL(shortKey string) (models.URLMapping, error) {
 
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	originalURL, found := s.shortURLs[shortKey]
 
+	var err error
 	if !found {
 		originalURL = ""
+		err = storage.ErrURLNotFound
 	}
 
 	mapping := models.URLMapping{
@@ -122,7 +127,7 @@ func (s *InMemoryStorage) GetRedirectURL(shortKey string) (models.URLMapping, bo
 		OriginalURL: originalURL,
 	}
 
-	return mapping, found
+	return mapping, err
 
 }
 
@@ -150,4 +155,8 @@ func (s *InMemoryStorage) SaveURL(mapping models.URLMapping) error {
 	err := s.encoder.Encode(record)
 
 	return err
+}
+
+func (s *InMemoryStorage) Ping() error {
+	return nil
 }

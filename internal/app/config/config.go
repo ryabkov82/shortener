@@ -70,7 +70,7 @@ func Load() *Config {
 
 	flag.StringVar(&cfg.FileStorage, "f", "storage.dat", "File storage path")
 
-	flag.StringVar(&cfg.DBConnect, "d", "host=localhost port=5432 user=shortener password=shortener dbname=shortener sslmode=disable", "Database connect string")
+	flag.StringVar(&cfg.DBConnect, "d", "", "Database connect string")
 
 	flag.Parse()
 

@@ -16,8 +16,8 @@ func GetHandler(urlHandler URLHandler, log *zap.Logger) http.HandlerFunc {
 		// Получаем адрес перенаправления
 		err := urlHandler.Ping()
 		if err != nil {
-			http.Error(res, "Failed connect to database", http.StatusInternalServerError)
-			log.Error("Failed connect to database", zap.Error(err))
+			http.Error(res, "Failed to connect to database", http.StatusInternalServerError)
+			log.Error("Failed to connect to database", zap.Error(err))
 			return
 		}
 		log.Debug("Connect to database is successful")
