@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/ryabkov82/shortener/internal/app/handlers/ping/mocks"
+	"github.com/ryabkov82/shortener/internal/app/service/mocks"
 
 	"github.com/ryabkov82/shortener/internal/app/logger"
 
@@ -25,7 +25,7 @@ func TestGetHandler(t *testing.T) {
 	defer ctrl.Finish()
 
 	// создаём объект-заглушку
-	m := mocks.NewMockURLHandler(ctrl)
+	m := mocks.NewMockRepository(ctrl)
 
 	if err := logger.Initialize("debug"); err != nil {
 		panic(err)

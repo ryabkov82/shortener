@@ -13,7 +13,6 @@ type URLHandler interface {
 func GetHandler(urlHandler URLHandler, log *zap.Logger) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 
-		// Получаем адрес перенаправления
 		err := urlHandler.Ping()
 		if err != nil {
 			http.Error(res, "Failed to connect to database", http.StatusInternalServerError)
