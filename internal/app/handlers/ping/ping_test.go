@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/ryabkov82/shortener/internal/app/service"
 	"github.com/ryabkov82/shortener/internal/app/service/mocks"
 
 	"github.com/ryabkov82/shortener/internal/app/logger"
@@ -27,6 +28,9 @@ func TestGetHandler(t *testing.T) {
 	// создаём объект-заглушку
 	m := mocks.NewMockRepository(ctrl)
 
+	// инициализируем service объектом-заглушкой
+	service := service.NewService(m)
+
 	if err := logger.Initialize("debug"); err != nil {
 		panic(err)
 	}
@@ -35,7 +39,7 @@ func TestGetHandler(t *testing.T) {
 	r.Use(mwlogger.RequestLogging(logger.Log))
 	r.Use(mwgzip.Gzip)
 
-	r.Get("/ping", GetHandler(m, logger.Log))
+	r.Get("/ping", GetHandler(service, logger.Log))
 
 	// запускаем тестовый сервер, будет выбран первый свободный порт
 	srv := httptest.NewServer(r)
