@@ -14,6 +14,8 @@ type Repository interface {
 	GetRedirectURL(context.Context, string) (models.URLMapping, error)
 	SaveURL(context.Context, models.URLMapping) error
 	Ping(context.Context) error
+	SaveNewURLs(context.Context, []models.URLMapping) error
+	GetExistingURLs(context.Context, []string) (map[string]string, error)
 }
 
 type Service struct {
@@ -87,6 +89,55 @@ func (s *Service) GetRedirectURL(ctx context.Context, shortKey string) (string, 
 
 func (s *Service) Ping(ctx context.Context) error {
 	return s.repo.Ping(ctx)
+}
+
+func (s *Service) Batch(ctx context.Context, batchRequest []models.BatchRequest, baseURL string) ([]models.BatchResponse, error) {
+
+	// Собираем все оригинальные URL для проверки
+	originalURLs := make([]string, len(batchRequest))
+	for i, item := range batchRequest {
+		originalURLs[i] = item.OriginalURL
+	}
+
+	// Получаем существующие URL одним запросом
+	existingURLs, err := s.repo.GetExistingURLs(ctx, originalURLs)
+	if err != nil {
+		return nil, err
+	}
+
+	var newURLs []models.URLMapping
+	batchResponse := make([]models.BatchResponse, 0, len(batchRequest))
+
+	for _, item := range batchRequest {
+		// Проверяем, есть ли URL уже в базе
+		if shortURL, ok := existingURLs[item.OriginalURL]; ok {
+			batchResponse = append(batchResponse, models.BatchResponse{
+				CorrelationID: item.CorrelationID,
+				ShortURL:      baseURL + "/" + shortURL,
+			})
+			continue
+		}
+
+		// Генерируем новый короткий URL
+		shortURL := generateShortKey()
+		newURLs = append(newURLs, models.URLMapping{
+			OriginalURL: item.OriginalURL,
+			ShortURL:    shortURL,
+		})
+
+		batchResponse = append(batchResponse, models.BatchResponse{
+			CorrelationID: item.CorrelationID,
+			ShortURL:      baseURL + "/" + shortURL,
+		})
+	}
+
+	// Сохраняем новые URL пачкой
+	if err := s.repo.SaveNewURLs(ctx, newURLs); err != nil {
+		return nil, err
+	}
+
+	return batchResponse, nil
+
 }
 
 func generateShortKey() string {

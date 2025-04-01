@@ -35,6 +35,21 @@ func (m *MockRepository) EXPECT() *MockRepositoryMockRecorder {
 	return m.recorder
 }
 
+// GetExistingURLs mocks base method.
+func (m *MockRepository) GetExistingURLs(arg0 context.Context, arg1 []string) (map[string]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetExistingURLs", arg0, arg1)
+	ret0, _ := ret[0].(map[string]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetExistingURLs indicates an expected call of GetExistingURLs.
+func (mr *MockRepositoryMockRecorder) GetExistingURLs(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExistingURLs", reflect.TypeOf((*MockRepository)(nil).GetExistingURLs), arg0, arg1)
+}
+
 // GetRedirectURL mocks base method.
 func (m *MockRepository) GetRedirectURL(arg0 context.Context, arg1 string) (models.URLMapping, error) {
 	m.ctrl.T.Helper()
@@ -77,6 +92,20 @@ func (m *MockRepository) Ping(arg0 context.Context) error {
 func (mr *MockRepositoryMockRecorder) Ping(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Ping", reflect.TypeOf((*MockRepository)(nil).Ping), arg0)
+}
+
+// SaveNewURLs mocks base method.
+func (m *MockRepository) SaveNewURLs(arg0 context.Context, arg1 []models.URLMapping) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveNewURLs", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SaveNewURLs indicates an expected call of SaveNewURLs.
+func (mr *MockRepositoryMockRecorder) SaveNewURLs(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveNewURLs", reflect.TypeOf((*MockRepository)(nil).SaveNewURLs), arg0, arg1)
 }
 
 // SaveURL mocks base method.

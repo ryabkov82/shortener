@@ -133,3 +133,67 @@ func (s *PostgresStorage) SaveURL(ctx context.Context, mapping models.URLMapping
 	return err
 
 }
+
+func (s *PostgresStorage) GetExistingURLs(ctx context.Context, originalURLs []string) (map[string]string, error) {
+
+	existing := make(map[string]string)
+
+	if len(originalURLs) == 0 {
+		return existing, nil
+	}
+
+	// Создаем запрос с параметрами для всех URL
+	query := "SELECT original_url, short_code FROM short_urls WHERE original_url = ANY($1)"
+
+	// Просто передаем слайс - pgx/stdlib автоматически конвертирует
+	rows, err := s.db.QueryContext(ctx, query, originalURLs)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var originalURL string
+		var shortURL string
+		if err := rows.Scan(&originalURL, &shortURL); err != nil {
+			return nil, err
+		}
+		existing[originalURL] = shortURL
+	}
+
+	return existing, nil
+}
+
+func (s *PostgresStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapping) error {
+	if len(urls) == 0 {
+		return nil
+	}
+
+	// Начинаем транзакцию
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		}
+	}()
+
+	// Подготавливаем statement для пакетной вставки
+	stmt, err := tx.Prepare("INSERT INTO short_urls (original_url, short_code) VALUES($1, $2)")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	// Выполняем вставку для каждого URL
+	for _, url := range urls {
+		_, err = stmt.ExecContext(ctx, url.OriginalURL, url.ShortURL)
+		if err != nil {
+			return err
+		}
+	}
+
+	return tx.Commit()
+}

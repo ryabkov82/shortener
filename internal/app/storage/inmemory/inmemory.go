@@ -161,3 +161,42 @@ func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping models.URLMapping
 func (s *InMemoryStorage) Ping(ctx context.Context) error {
 	return nil
 }
+
+func (s *InMemoryStorage) GetExistingURLs(ctx context.Context, originalURLs []string) (map[string]string, error) {
+
+	existing := make(map[string]string)
+
+	if len(originalURLs) == 0 {
+		return existing, nil
+	}
+
+	for _, originalURL := range originalURLs {
+		mapping, err := s.GetShortKey(ctx, originalURL)
+		if err != nil {
+			if errors.Is(err, storage.ErrURLNotFound) {
+				continue
+			} else {
+				return nil, err
+			}
+		}
+		existing[mapping.OriginalURL] = mapping.ShortURL
+	}
+
+	return existing, nil
+
+}
+
+func (s *InMemoryStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapping) error {
+	if len(urls) == 0 {
+		return nil
+	}
+
+	for _, url := range urls {
+		err := s.SaveURL(ctx, url)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/ryabkov82/shortener/internal/app/config"
+	"github.com/ryabkov82/shortener/internal/app/handlers/batch"
 	"github.com/ryabkov82/shortener/internal/app/handlers/ping"
 	"github.com/ryabkov82/shortener/internal/app/handlers/redirect"
 	"github.com/ryabkov82/shortener/internal/app/handlers/shortenapi"
@@ -53,7 +54,7 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 	router.Post("/api/shorten", shortenapi.GetHandler(srv, cfg.BaseURL, log))
 
 	router.Get("/ping", ping.GetHandler(srv, log))
-	router.Post("/api/shorten/batch", shortenapi.GetHandler(srv, cfg.BaseURL, log))
+	router.Post("/api/shorten/batch", batch.GetHandler(srv, cfg.BaseURL, log))
 
 	log.Info("Server started", zap.String("address", cfg.HTTPServerAddr))
 
