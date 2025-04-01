@@ -1,6 +1,7 @@
 package shorturl
 
 import (
+	"context"
 	"io"
 	"net/http"
 	"net/url"
@@ -9,7 +10,7 @@ import (
 )
 
 type URLHandler interface {
-	GetShortKey(string) (string, error)
+	GetShortKey(context.Context, string) (string, error)
 }
 
 func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.HandlerFunc {
@@ -41,7 +42,7 @@ func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.Han
 		log.Debug("get URL", zap.String("originalURL", originalURL))
 
 		// Возможно, shortURL уже сгенерирован...
-		shortURL, err := urlHandler.GetShortKey(originalURL)
+		shortURL, err := urlHandler.GetShortKey(req.Context(), originalURL)
 
 		if err != nil {
 			http.Error(res, "Failed to get short URL", http.StatusInternalServerError)

@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -35,59 +36,59 @@ func (m *MockRepository) EXPECT() *MockRepositoryMockRecorder {
 }
 
 // GetRedirectURL mocks base method.
-func (m *MockRepository) GetRedirectURL(arg0 string) (models.URLMapping, error) {
+func (m *MockRepository) GetRedirectURL(arg0 context.Context, arg1 string) (models.URLMapping, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetRedirectURL", arg0)
+	ret := m.ctrl.Call(m, "GetRedirectURL", arg0, arg1)
 	ret0, _ := ret[0].(models.URLMapping)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetRedirectURL indicates an expected call of GetRedirectURL.
-func (mr *MockRepositoryMockRecorder) GetRedirectURL(arg0 interface{}) *gomock.Call {
+func (mr *MockRepositoryMockRecorder) GetRedirectURL(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRedirectURL", reflect.TypeOf((*MockRepository)(nil).GetRedirectURL), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRedirectURL", reflect.TypeOf((*MockRepository)(nil).GetRedirectURL), arg0, arg1)
 }
 
 // GetShortKey mocks base method.
-func (m *MockRepository) GetShortKey(arg0 string) (models.URLMapping, error) {
+func (m *MockRepository) GetShortKey(arg0 context.Context, arg1 string) (models.URLMapping, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetShortKey", arg0)
+	ret := m.ctrl.Call(m, "GetShortKey", arg0, arg1)
 	ret0, _ := ret[0].(models.URLMapping)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetShortKey indicates an expected call of GetShortKey.
-func (mr *MockRepositoryMockRecorder) GetShortKey(arg0 interface{}) *gomock.Call {
+func (mr *MockRepositoryMockRecorder) GetShortKey(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetShortKey", reflect.TypeOf((*MockRepository)(nil).GetShortKey), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetShortKey", reflect.TypeOf((*MockRepository)(nil).GetShortKey), arg0, arg1)
 }
 
 // Ping mocks base method.
-func (m *MockRepository) Ping() error {
+func (m *MockRepository) Ping(arg0 context.Context) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Ping")
+	ret := m.ctrl.Call(m, "Ping", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Ping indicates an expected call of Ping.
-func (mr *MockRepositoryMockRecorder) Ping() *gomock.Call {
+func (mr *MockRepositoryMockRecorder) Ping(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Ping", reflect.TypeOf((*MockRepository)(nil).Ping))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Ping", reflect.TypeOf((*MockRepository)(nil).Ping), arg0)
 }
 
 // SaveURL mocks base method.
-func (m *MockRepository) SaveURL(arg0 models.URLMapping) error {
+func (m *MockRepository) SaveURL(arg0 context.Context, arg1 models.URLMapping) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaveURL", arg0)
+	ret := m.ctrl.Call(m, "SaveURL", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // SaveURL indicates an expected call of SaveURL.
-func (mr *MockRepositoryMockRecorder) SaveURL(arg0 interface{}) *gomock.Call {
+func (mr *MockRepositoryMockRecorder) SaveURL(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveURL", reflect.TypeOf((*MockRepository)(nil).SaveURL), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveURL", reflect.TypeOf((*MockRepository)(nil).SaveURL), arg0, arg1)
 }

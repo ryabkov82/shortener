@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"math/rand"
 	"time"
 
@@ -9,10 +10,10 @@ import (
 )
 
 type Repository interface {
-	GetShortKey(string) (models.URLMapping, error)
-	GetRedirectURL(string) (models.URLMapping, error)
-	SaveURL(models.URLMapping) error
-	Ping() error
+	GetShortKey(context.Context, string) (models.URLMapping, error)
+	GetRedirectURL(context.Context, string) (models.URLMapping, error)
+	SaveURL(context.Context, models.URLMapping) error
+	Ping(context.Context) error
 }
 
 type Service struct {
@@ -23,10 +24,10 @@ func NewService(storage Repository) *Service {
 	return &Service{repo: storage}
 }
 
-func (s *Service) GetShortKey(originalURL string) (string, error) {
+func (s *Service) GetShortKey(ctx context.Context, originalURL string) (string, error) {
 
 	// Возможно, shortURL уже сгенерирован...
-	mapping, err := s.repo.GetShortKey(originalURL)
+	mapping, err := s.repo.GetShortKey(ctx, originalURL)
 	if err != nil && err == storage.ErrURLNotFound {
 		// Генерируем короткий URL
 		/*
@@ -68,7 +69,7 @@ func (s *Service) GetShortKey(originalURL string) (string, error) {
 			OriginalURL: originalURL,
 		}
 
-		err = s.repo.SaveURL(mapping)
+		err = s.repo.SaveURL(ctx, mapping)
 		if err != nil {
 			return "", err
 		}
@@ -77,15 +78,15 @@ func (s *Service) GetShortKey(originalURL string) (string, error) {
 	return mapping.ShortURL, err
 }
 
-func (s *Service) GetRedirectURL(shortKey string) (string, error) {
+func (s *Service) GetRedirectURL(ctx context.Context, shortKey string) (string, error) {
 
 	// Получаем адрес перенаправления
-	mapping, err := s.repo.GetRedirectURL(shortKey)
+	mapping, err := s.repo.GetRedirectURL(ctx, shortKey)
 	return mapping.OriginalURL, err
 }
 
-func (s *Service) Ping() error {
-	return s.repo.Ping()
+func (s *Service) Ping(ctx context.Context) error {
+	return s.repo.Ping(ctx)
 }
 
 func generateShortKey() string {

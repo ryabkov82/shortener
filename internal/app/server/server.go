@@ -53,6 +53,7 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 	router.Post("/api/shorten", shortenapi.GetHandler(srv, cfg.BaseURL, log))
 
 	router.Get("/ping", ping.GetHandler(srv, log))
+	router.Post("/api/shorten/batch", shortenapi.GetHandler(srv, cfg.BaseURL, log))
 
 	log.Info("Server started", zap.String("address", cfg.HTTPServerAddr))
 

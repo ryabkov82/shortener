@@ -83,26 +83,22 @@ func initDB(db *sql.DB) error {
 	return nil
 }
 
-func (s *PostgresStorage) Ping() error {
+func (s *PostgresStorage) Ping(ctx context.Context) error {
 
-	if s.db == nil {
-		// База данных не инициализирована
-		return errors.New("database is not initialized")
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	// устанавливаем таймаут 5 секунд
+	ctxTm, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
-	err := s.db.PingContext(ctx)
+	err := s.db.PingContext(ctxTm)
 	return err
 }
 
-func (s *PostgresStorage) GetShortKey(originalURL string) (models.URLMapping, error) {
+func (s *PostgresStorage) GetShortKey(ctx context.Context, originalURL string) (models.URLMapping, error) {
 
 	mapping := models.URLMapping{
 		OriginalURL: originalURL,
 	}
 
-	err := s.getShortURLStmt.QueryRow(originalURL).Scan(&mapping.ShortURL)
+	err := s.getShortURLStmt.QueryRowContext(ctx, originalURL).Scan(&mapping.ShortURL)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return mapping, storage.ErrURLNotFound
@@ -113,13 +109,13 @@ func (s *PostgresStorage) GetShortKey(originalURL string) (models.URLMapping, er
 	return mapping, nil
 }
 
-func (s *PostgresStorage) GetRedirectURL(shortKey string) (models.URLMapping, error) {
+func (s *PostgresStorage) GetRedirectURL(ctx context.Context, shortKey string) (models.URLMapping, error) {
 
 	mapping := models.URLMapping{
 		ShortURL: shortKey,
 	}
 
-	err := s.getURLStmt.QueryRow(shortKey).Scan(&mapping.OriginalURL)
+	err := s.getURLStmt.QueryRowContext(ctx, shortKey).Scan(&mapping.OriginalURL)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return mapping, storage.ErrURLNotFound
@@ -131,9 +127,9 @@ func (s *PostgresStorage) GetRedirectURL(shortKey string) (models.URLMapping, er
 
 }
 
-func (s *PostgresStorage) SaveURL(mapping models.URLMapping) error {
+func (s *PostgresStorage) SaveURL(ctx context.Context, mapping models.URLMapping) error {
 
-	_, err := s.insertURLStmt.Exec(mapping.OriginalURL, mapping.ShortURL)
+	_, err := s.insertURLStmt.ExecContext(ctx, mapping.OriginalURL, mapping.ShortURL)
 	return err
 
 }

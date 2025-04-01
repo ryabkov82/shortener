@@ -65,10 +65,9 @@ func TestGetHandler(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			m.EXPECT().Ping().Return(tt.error)
+			m.EXPECT().Ping(gomock.Any()).Return(tt.error)
 
-			resp, err := resty.New().R().
-				Get(srv.URL + "/ping")
+			resp, err := resty.New().R().Get(srv.URL + "/ping")
 
 			assert.NoError(t, err)
 

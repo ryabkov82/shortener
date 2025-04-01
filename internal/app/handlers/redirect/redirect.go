@@ -1,6 +1,7 @@
 package redirect
 
 import (
+	"context"
 	"net/http"
 
 	"go.uber.org/zap"
@@ -10,7 +11,7 @@ import (
 )
 
 type URLHandler interface {
-	GetRedirectURL(string) (string, error)
+	GetRedirectURL(context.Context, string) (string, error)
 }
 
 func GetHandler(urlHandler URLHandler, log *zap.Logger) http.HandlerFunc {
@@ -19,7 +20,7 @@ func GetHandler(urlHandler URLHandler, log *zap.Logger) http.HandlerFunc {
 		id := chi.URLParam(req, "id")
 
 		// Получаем адрес перенаправления
-		originalURL, err := urlHandler.GetRedirectURL(id)
+		originalURL, err := urlHandler.GetRedirectURL(req.Context(), id)
 		if err != nil {
 			if err == storage.ErrURLNotFound {
 				http.Error(res, "Shortened key not found", http.StatusNotFound)

@@ -1,6 +1,7 @@
 package redirect
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -36,7 +37,7 @@ func TestGetHandler(t *testing.T) {
 		ShortURL:    "EYm7J2zF",
 		OriginalURL: "https://practicum.yandex.ru/",
 	}
-	st.SaveURL(mapping)
+	st.SaveURL(context.TODO(), mapping)
 
 	r := chi.NewRouter()
 	r.Get("/{id}", GetHandler(service, logger.Log))

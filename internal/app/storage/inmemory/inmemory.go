@@ -2,6 +2,7 @@ package inmemory
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"errors"
 	"os"
@@ -90,7 +91,7 @@ func (s *InMemoryStorage) Load(fileStoragePath string) error {
 	return err
 }
 
-func (s *InMemoryStorage) GetShortKey(originalURL string) (models.URLMapping, error) {
+func (s *InMemoryStorage) GetShortKey(ctx context.Context, originalURL string) (models.URLMapping, error) {
 
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -110,7 +111,7 @@ func (s *InMemoryStorage) GetShortKey(originalURL string) (models.URLMapping, er
 	return mapping, err
 }
 
-func (s *InMemoryStorage) GetRedirectURL(shortKey string) (models.URLMapping, error) {
+func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (models.URLMapping, error) {
 
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -131,7 +132,7 @@ func (s *InMemoryStorage) GetRedirectURL(shortKey string) (models.URLMapping, er
 
 }
 
-func (s *InMemoryStorage) SaveURL(mapping models.URLMapping) error {
+func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping models.URLMapping) error {
 
 	// Устанавливаем блокировку
 	s.mu.Lock()
@@ -157,6 +158,6 @@ func (s *InMemoryStorage) SaveURL(mapping models.URLMapping) error {
 	return err
 }
 
-func (s *InMemoryStorage) Ping() error {
+func (s *InMemoryStorage) Ping(ctx context.Context) error {
 	return nil
 }
