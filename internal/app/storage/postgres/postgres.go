@@ -103,7 +103,7 @@ func (s *PostgresStorage) GetShortKey(ctx context.Context, originalURL string) (
 		if errors.Is(err, sql.ErrNoRows) {
 			return mapping, storage.ErrURLNotFound
 		}
-		return mapping, fmt.Errorf("ошибка при поиске URL: %v", err)
+		return mapping, err
 	}
 
 	return mapping, nil
@@ -159,6 +159,10 @@ func (s *PostgresStorage) GetExistingURLs(ctx context.Context, originalURLs []st
 			return nil, err
 		}
 		existing[originalURL] = shortURL
+	}
+	err = rows.Err()
+	if err != nil {
+		return nil, err
 	}
 
 	return existing, nil
