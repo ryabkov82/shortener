@@ -14,12 +14,6 @@ type URLHandler interface {
 	Batch(context.Context, []models.BatchRequest, string) ([]models.BatchResponse, error)
 }
 
-// RequestData представляет структуру одного элемента в массиве запроса
-type RequestData struct {
-	CorrelationID string `json:"correlation_id"`
-	OriginalURL   string `json:"original_url"`
-}
-
 func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 
