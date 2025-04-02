@@ -1,15 +1,17 @@
 package redirect
 
 import (
+	"context"
 	"net/http"
 
 	"go.uber.org/zap"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/ryabkov82/shortener/internal/app/storage"
 )
 
 type URLHandler interface {
-	GetRedirectURL(string) (string, bool)
+	GetRedirectURL(context.Context, string) (string, error)
 }
 
 func GetHandler(urlHandler URLHandler, log *zap.Logger) http.HandlerFunc {
@@ -18,10 +20,15 @@ func GetHandler(urlHandler URLHandler, log *zap.Logger) http.HandlerFunc {
 		id := chi.URLParam(req, "id")
 
 		// Получаем адрес перенаправления
-		originalURL, found := urlHandler.GetRedirectURL(id)
-		if !found {
-			http.Error(res, "Shortened key not found", http.StatusNotFound)
-			log.Info("Shortened key not found", zap.String("shortKey", id))
+		originalURL, err := urlHandler.GetRedirectURL(req.Context(), id)
+		if err != nil {
+			if err == storage.ErrURLNotFound {
+				http.Error(res, "Shortened key not found", http.StatusNotFound)
+				log.Info("Shortened key not found", zap.String("shortKey", id))
+				return
+			}
+			http.Error(res, "failed get redirect URL", http.StatusInternalServerError)
+			log.Error("failed get redirect URL", zap.Error(err))
 			return
 		}
 		log.Info("Shortened key found", zap.String("shortKey", id), zap.String("redirect", originalURL))

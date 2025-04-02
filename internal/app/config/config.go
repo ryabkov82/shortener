@@ -15,6 +15,7 @@ type Config struct {
 	BaseURL        string
 	LogLevel       string
 	FileStorage    string
+	DBConnect      string
 }
 
 func validateHTTPServerAddr(addr string) error {
@@ -69,6 +70,8 @@ func Load() *Config {
 
 	flag.StringVar(&cfg.FileStorage, "f", "storage.dat", "File storage path")
 
+	flag.StringVar(&cfg.DBConnect, "d", "", "Database connect string")
+
 	flag.Parse()
 
 	if envHTTPServerAddr := os.Getenv("SERVER_ADDRESS"); envHTTPServerAddr != "" {
@@ -93,6 +96,10 @@ func Load() *Config {
 
 	if envFileStorage := os.Getenv("FILE_STORAGE_PATH"); envFileStorage != "" {
 		cfg.FileStorage = envFileStorage
+	}
+
+	if envDBConnect := os.Getenv("DATABASE_DSN"); envDBConnect != "" {
+		cfg.DBConnect = envDBConnect
 	}
 
 	// Убедимся, что BaseURL не заканчивается на "/"
