@@ -3,9 +3,11 @@ package shortenapi
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 
+	"github.com/ryabkov82/shortener/internal/app/storage"
 	"go.uber.org/zap"
 )
 
@@ -55,16 +57,25 @@ func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.Han
 		shortURL, err := urlHandler.GetShortKey(req.Context(), originalURL)
 
 		if err != nil {
-			http.Error(res, "Failed to get short URL", http.StatusInternalServerError)
-			log.Error("Failed to get short URL", zap.Error(err))
-			return
+			if !errors.Is(err, storage.ErrURLExists) {
+				http.Error(res, "Failed to get short URL", http.StatusInternalServerError)
+				log.Error("Failed to get short URL", zap.Error(err))
+				return
+			}
 		}
 
 		log.Debug("shortKey generate", zap.String("shortKey", shortURL))
 
 		res.Header().Set("content-type", "application/json")
-		// устанавливаем код 201
-		res.WriteHeader(http.StatusCreated)
+		if err == nil {
+			log.Debug("shortKey generate", zap.String("shortKey", shortURL))
+			// устанавливаем код 201
+			res.WriteHeader(http.StatusCreated)
+		} else {
+			log.Debug("url exists, shortKey", zap.String("shortKey", shortURL))
+			// устанавливаем код 409 Conflict
+			res.WriteHeader(http.StatusConflict)
+		}
 		// пишем тело ответа
 		response := Response{Result: baseURL + "/" + shortURL}
 		resp, err := json.Marshal(response)

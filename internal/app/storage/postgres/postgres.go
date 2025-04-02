@@ -49,7 +49,13 @@ func NewPostgresStorage(StoragePath string) (*PostgresStorage, error) {
 		return nil, err
 	}
 
-	insertURLStmt, err := db.Prepare(`INSERT INTO short_urls (original_url, short_code) VALUES ($1, $2)`)
+	insertURLStmt, err := db.Prepare(`
+	INSERT INTO short_urls (original_url, short_code)
+	VALUES ($1, $2)
+	ON CONFLICT (original_url) DO UPDATE SET
+		short_code = short_urls.short_code -- Фейковое обновление
+	RETURNING short_code, xmax;
+	`)
 
 	if err != nil {
 		return nil, err
@@ -118,18 +124,30 @@ func (s *PostgresStorage) GetRedirectURL(ctx context.Context, shortKey string) (
 	err := s.getURLStmt.QueryRowContext(ctx, shortKey).Scan(&mapping.OriginalURL)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return mapping, storage.ErrURLNotFound
+			return mapping, fmt.Errorf("%w", storage.ErrURLNotFound)
 		}
-		return mapping, fmt.Errorf("ошибка при поиске URL: %v", err)
+		return mapping, fmt.Errorf("ошибка при поиске URL: %w", err)
 	}
 
 	return mapping, nil
 
 }
 
-func (s *PostgresStorage) SaveURL(ctx context.Context, mapping models.URLMapping) error {
+func (s *PostgresStorage) SaveURL(ctx context.Context, mapping *models.URLMapping) error {
 
-	_, err := s.insertURLStmt.ExecContext(ctx, mapping.OriginalURL, mapping.ShortURL)
+	var xmax int64 // Системный столбец, показывающий был ли конфликт
+
+	err := s.insertURLStmt.QueryRowContext(ctx, mapping.OriginalURL, mapping.ShortURL).Scan(&mapping.ShortURL, &xmax)
+
+	if err != nil {
+		// сюда попадем в том числе, если был конфликт по полю short_code
+		return err
+	}
+	// Если xmax > 0, значит запись с original_url уже существовала (был конфликт)
+	if xmax > 0 {
+		err = storage.ErrURLExists
+	}
+
 	return err
 
 }

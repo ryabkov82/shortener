@@ -6,13 +6,12 @@ import (
 	"time"
 
 	"github.com/ryabkov82/shortener/internal/app/models"
-	"github.com/ryabkov82/shortener/internal/app/storage"
 )
 
 type Repository interface {
 	GetShortKey(context.Context, string) (models.URLMapping, error)
 	GetRedirectURL(context.Context, string) (models.URLMapping, error)
-	SaveURL(context.Context, models.URLMapping) error
+	SaveURL(context.Context, *models.URLMapping) error
 	Ping(context.Context) error
 	SaveNewURLs(context.Context, []models.URLMapping) error
 	GetExistingURLs(context.Context, []string) (map[string]string, error)
@@ -28,55 +27,15 @@ func NewService(storage Repository) *Service {
 
 func (s *Service) GetShortKey(ctx context.Context, originalURL string) (string, error) {
 
-	// Возможно, shortURL уже сгенерирован...
-	mapping, err := s.repo.GetShortKey(ctx, originalURL)
-	if err != nil && err == storage.ErrURLNotFound {
-		// Генерируем короткий URL
-		/*
-			generated := false
-			shortKey := ""
-			for i := 1; i < 3; i++ {
-				shortKey = generateShortKey()
-				// Возможно, shortURL был сгененрирован ранее
-				_, found := urlHandler.GetRedirectURL(shortKey)
-				if !found {
-					generated = true
-					break
-				}
-			}
-			if generated {
-				// Cохраняем переданный URL
-				mapping = models.URLMapping{
-					ShortURL:    shortKey,
-					OriginalURL: originalURL,
-				}
-
-				err := urlHandler.SaveURL(mapping)
-				if err != nil {
-					http.Error(res, "Failed to save URL", http.StatusInternalServerError)
-					log.Println("Failed to save URL", err)
-					return
-				}
-			} else {
-				// Не удалось сгененрировать новый shortURL
-				http.Error(res, "Failed to generate a new shortURL", http.StatusBadRequest)
-				log.Println("Failed to generate a new shortURL")
-				return
-			}
-		*/
-		shortKey := generateShortKey()
-		// Cохраняем переданный URL
-		mapping = models.URLMapping{
-			ShortURL:    shortKey,
-			OriginalURL: originalURL,
-		}
-
-		err = s.repo.SaveURL(ctx, mapping)
-		if err != nil {
-			return "", err
-		}
-
+	shortKey := generateShortKey()
+	// Cохраняем переданный URL
+	mapping := models.URLMapping{
+		ShortURL:    shortKey,
+		OriginalURL: originalURL,
 	}
+
+	err := s.repo.SaveURL(ctx, &mapping)
+
 	return mapping.ShortURL, err
 }
 

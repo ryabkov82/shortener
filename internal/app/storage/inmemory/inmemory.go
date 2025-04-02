@@ -132,7 +132,7 @@ func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (
 
 }
 
-func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping models.URLMapping) error {
+func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping *models.URLMapping) error {
 
 	// Устанавливаем блокировку
 	s.mu.Lock()
@@ -143,7 +143,15 @@ func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping models.URLMapping
 	_, found := s.shortURLs[mapping.ShortURL]
 
 	if found {
-		return errors.New("ShortURL already exists")
+		return storage.ErrShortURLExists
+	}
+
+	// Проверяем существует ли уже короткий url для данного OriginalURL
+	shortURL, found := s.originalURLs[mapping.OriginalURL]
+
+	if found {
+		mapping.ShortURL = shortURL
+		return storage.ErrURLExists
 	}
 
 	s.shortURLs[mapping.ShortURL] = mapping.OriginalURL
@@ -192,7 +200,7 @@ func (s *InMemoryStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapp
 	}
 
 	for _, url := range urls {
-		err := s.SaveURL(ctx, url)
+		err := s.SaveURL(ctx, &url)
 		if err != nil {
 			return err
 		}
