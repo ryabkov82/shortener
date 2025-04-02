@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"testing"
 
 	"github.com/ryabkov82/shortener/internal/app/logger"
@@ -24,6 +25,10 @@ import (
 func TestGetHandler(t *testing.T) {
 
 	fileStorage := "test.dat"
+	err := os.Remove(fileStorage)
+	if err != nil && os.IsNotExist(err) {
+		panic(err)
+	}
 	st, err := storage.NewInMemoryStorage(fileStorage)
 	if err != nil {
 		panic(err)
@@ -57,6 +62,11 @@ func TestGetHandler(t *testing.T) {
 			name:           "positive test #1",
 			request:        Request{URL: "https://practicum.yandex.ru/"},
 			wantStatusCode: 201,
+		},
+		{
+			name:           "positive test #2",
+			request:        Request{URL: "https://practicum.yandex.ru/"},
+			wantStatusCode: 409,
 		},
 		{
 			name:           "negative test #2",

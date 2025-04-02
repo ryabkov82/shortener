@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/ryabkov82/shortener/internal/app/logger"
@@ -21,6 +22,11 @@ import (
 func TestGetHandler(t *testing.T) {
 
 	fileStorage := "test.dat"
+	err := os.Remove(fileStorage)
+	if err != nil && os.IsNotExist(err) {
+		panic(err)
+	}
+
 	st, err := storage.NewInMemoryStorage(fileStorage)
 	if err != nil {
 		panic(err)
