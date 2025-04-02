@@ -31,6 +31,7 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 			panic(err)
 		}
 		srv = service.NewService(pg)
+		log.Info("Storage postgres")
 	} else {
 		st, err := inmemory.NewInMemoryStorage(cfg.FileStorage)
 
@@ -42,6 +43,7 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 			panic(err)
 		}
 		srv = service.NewService(st)
+		log.Info("Storage inmemory", zap.String("FileStorage", cfg.FileStorage))
 	}
 
 	router := chi.NewRouter()
