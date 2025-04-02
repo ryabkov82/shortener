@@ -53,7 +53,7 @@ func NewPostgresStorage(StoragePath string) (*PostgresStorage, error) {
 	INSERT INTO short_urls (original_url, short_code)
 	VALUES ($1, $2)
 	ON CONFLICT (original_url) DO UPDATE SET
-		short_code = short_urls.short_code -- Фейковое обновление
+		original_url = EXCLUDED.original_url -- Фейковое обновление
 	RETURNING short_code, xmax;
 	`)
 
