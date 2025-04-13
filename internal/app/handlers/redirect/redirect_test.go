@@ -73,7 +73,7 @@ func TestGetHandler(t *testing.T) {
 	r := chi.NewRouter()
 	r.Use(mwlogger.RequestLogging(logger.Log))
 	r.Use(mwgzip.Gzip)
-	r.Use(auth.JWTAutoIssueMiddleware(testSecretKey))
+	r.Use(auth.JWTAutoIssue(testSecretKey))
 
 	r.Get("/{id}", GetHandler(service, logger.Log))
 

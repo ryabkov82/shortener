@@ -68,7 +68,7 @@ func TestGetHandler(t *testing.T) {
 	r := chi.NewRouter()
 	r.Use(mwlogger.RequestLogging(logger.Log))
 	r.Use(mwgzip.Gzip)
-	r.Use(auth.JWTAutoIssueMiddleware(testSecretKey))
+	r.Use(auth.StrictJWTAutoIssue(testSecretKey))
 
 	baseURL := "http://localhost:8080/"
 	r.Get("/api/user/urls", GetHandler(service, baseURL, logger.Log))
