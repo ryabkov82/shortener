@@ -17,9 +17,8 @@ func JWTAutoIssue(jwtKey []byte) func(next http.Handler) http.Handler {
 
 			cookie, err := r.Cookie("token")
 			if err != nil || cookie == nil {
-				userID := issueNewToken(w, jwtKey)
-				//ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, jwtauth.UserDefault) // для поддержки обратной совместимости
-				ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, userID)
+				//userID := issueNewToken(w, jwtKey)
+				ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, jwtauth.UserDefault) // для поддержки обратной совместимости
 				r = r.WithContext(ctx)
 				next.ServeHTTP(w, r)
 				return
@@ -36,9 +35,8 @@ func JWTAutoIssue(jwtKey []byte) func(next http.Handler) http.Handler {
 			})
 
 			if err != nil || !token.Valid {
-				userID := issueNewToken(w, jwtKey)
-				//ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, jwtauth.UserDefault) // для поддержки обратной совместимости
-				ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, userID)
+				//userID := issueNewToken(w, jwtKey)
+				ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, jwtauth.UserDefault) // для поддержки обратной совместимости
 				r = r.WithContext(ctx)
 				next.ServeHTTP(w, r)
 				return
@@ -65,7 +63,7 @@ func StrictJWTAutoIssue(jwtKey []byte) func(next http.Handler) http.Handler {
 			cookie, err := r.Cookie("token")
 			if err != nil || cookie == nil {
 				_ = issueNewToken(w, jwtKey)
-				http.Error(w, "New token issued", http.StatusUnauthorized)
+				http.Error(w, "Status unauthorized", http.StatusUnauthorized)
 				return
 			}
 
@@ -81,7 +79,7 @@ func StrictJWTAutoIssue(jwtKey []byte) func(next http.Handler) http.Handler {
 
 			if err != nil || !token.Valid {
 				_ = issueNewToken(w, jwtKey)
-				http.Error(w, "New token issued", http.StatusUnauthorized)
+				http.Error(w, "Status unauthorized", http.StatusUnauthorized)
 				return
 			}
 
