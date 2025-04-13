@@ -1,13 +1,15 @@
-package storage
+package inmemory
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"errors"
 	"os"
 	"sync"
 
 	"github.com/ryabkov82/shortener/internal/app/models"
+	"github.com/ryabkov82/shortener/internal/app/storage"
 )
 
 type InMemoryStorage struct {
@@ -89,14 +91,16 @@ func (s *InMemoryStorage) Load(fileStoragePath string) error {
 	return err
 }
 
-func (s *InMemoryStorage) GetShortKey(originalURL string) (models.URLMapping, bool) {
+func (s *InMemoryStorage) GetShortKey(ctx context.Context, originalURL string) (models.URLMapping, error) {
 
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	shortKey, found := s.originalURLs[originalURL]
 
+	var err error
 	if !found {
 		shortKey = ""
+		err = storage.ErrURLNotFound
 	}
 
 	mapping := models.URLMapping{
@@ -104,17 +108,19 @@ func (s *InMemoryStorage) GetShortKey(originalURL string) (models.URLMapping, bo
 		OriginalURL: originalURL,
 	}
 
-	return mapping, found
+	return mapping, err
 }
 
-func (s *InMemoryStorage) GetRedirectURL(shortKey string) (models.URLMapping, bool) {
+func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (models.URLMapping, error) {
 
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	originalURL, found := s.shortURLs[shortKey]
 
+	var err error
 	if !found {
 		originalURL = ""
+		err = storage.ErrURLNotFound
 	}
 
 	mapping := models.URLMapping{
@@ -122,11 +128,11 @@ func (s *InMemoryStorage) GetRedirectURL(shortKey string) (models.URLMapping, bo
 		OriginalURL: originalURL,
 	}
 
-	return mapping, found
+	return mapping, err
 
 }
 
-func (s *InMemoryStorage) SaveURL(mapping models.URLMapping) error {
+func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping *models.URLMapping) error {
 
 	// Устанавливаем блокировку
 	s.mu.Lock()
@@ -137,7 +143,15 @@ func (s *InMemoryStorage) SaveURL(mapping models.URLMapping) error {
 	_, found := s.shortURLs[mapping.ShortURL]
 
 	if found {
-		return errors.New("ShortURL already exists")
+		return storage.ErrShortURLExists
+	}
+
+	// Проверяем существует ли уже короткий url для данного OriginalURL
+	shortURL, found := s.originalURLs[mapping.OriginalURL]
+
+	if found {
+		mapping.ShortURL = shortURL
+		return storage.ErrURLExists
 	}
 
 	s.shortURLs[mapping.ShortURL] = mapping.OriginalURL
@@ -150,4 +164,47 @@ func (s *InMemoryStorage) SaveURL(mapping models.URLMapping) error {
 	err := s.encoder.Encode(record)
 
 	return err
+}
+
+func (s *InMemoryStorage) Ping(ctx context.Context) error {
+	return nil
+}
+
+func (s *InMemoryStorage) GetExistingURLs(ctx context.Context, originalURLs []string) (map[string]string, error) {
+
+	existing := make(map[string]string)
+
+	if len(originalURLs) == 0 {
+		return existing, nil
+	}
+
+	for _, originalURL := range originalURLs {
+		mapping, err := s.GetShortKey(ctx, originalURL)
+		if err != nil {
+			if errors.Is(err, storage.ErrURLNotFound) {
+				continue
+			} else {
+				return nil, err
+			}
+		}
+		existing[mapping.OriginalURL] = mapping.ShortURL
+	}
+
+	return existing, nil
+
+}
+
+func (s *InMemoryStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapping) error {
+	if len(urls) == 0 {
+		return nil
+	}
+
+	for _, url := range urls {
+		err := s.SaveURL(ctx, &url)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

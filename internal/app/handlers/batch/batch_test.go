@@ -1,41 +1,42 @@
-package shortenapi
+package batch
 
 import (
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
 	"net/http/httptest"
-	"net/url"
-	"os"
 	"testing"
 
-	"github.com/ryabkov82/shortener/internal/app/logger"
-
 	"github.com/ryabkov82/shortener/internal/app/service"
-	storage "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
+	"github.com/ryabkov82/shortener/internal/app/service/mocks"
+
+	"github.com/ryabkov82/shortener/internal/app/logger"
 
 	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
 	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
 
+	"github.com/ryabkov82/shortener/internal/app/models"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-resty/resty/v2"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGetHandler(t *testing.T) {
 
-	fileStorage := "test.dat"
-	err := os.Remove(fileStorage)
-	if err != nil && os.IsNotExist(err) {
-		panic(err)
-	}
-	st, err := storage.NewInMemoryStorage(fileStorage)
-	if err != nil {
-		panic(err)
-	}
-	st.Load(fileStorage)
+	// создаём контроллер
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	service := service.NewService(st)
+	// создаём объект-заглушку
+	m := mocks.NewMockRepository(ctrl)
+
+	m.EXPECT().GetExistingURLs(gomock.Any(), gomock.Any()).Return(nil, nil)
+	m.EXPECT().SaveNewURLs(gomock.Any(), gomock.Any()).Return(nil)
+
+	// инициализируем service объектом-заглушкой
+	service := service.NewService(m)
 
 	if err := logger.Initialize("debug"); err != nil {
 		panic(err)
@@ -46,44 +47,43 @@ func TestGetHandler(t *testing.T) {
 	r.Use(mwgzip.Gzip)
 
 	baseURL := "http://localhost:8080/"
-	r.Post("/api/shorten", GetHandler(service, baseURL, logger.Log))
+	r.Post("/api/shorten/batch", GetHandler(service, baseURL, logger.Log))
 
 	// запускаем тестовый сервер, будет выбран первый свободный порт
 	srv := httptest.NewServer(r)
 	// останавливаем сервер после завершения теста
 	defer srv.Close()
-
 	tests := []struct {
 		name           string
-		request        Request
+		request        string
 		wantStatusCode int
 	}{
 		{
-			name:           "positive test #1",
-			request:        Request{URL: "https://practicum.yandex.ru/"},
+			name: "positive test #1",
+			request: `[
+									{
+										"correlation_id": "123",
+										"original_url": "https://example.com/page1"
+									},
+									{
+										"correlation_id": "456",
+										"original_url": "https://example.com/page2"
+									}
+								]`,
 			wantStatusCode: 201,
 		},
 		{
-			name:           "positive test #2",
-			request:        Request{URL: "https://practicum.yandex.ru/"},
-			wantStatusCode: 409,
-		},
-		{
 			name:           "negative test #2",
-			request:        Request{URL: "not url"},
+			request:        "{}",
 			wantStatusCode: 400,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			req, err := json.Marshal(tt.request)
-			assert.NoError(t, err)
-
 			buf := bytes.NewBuffer(nil)
 			zb := gzip.NewWriter(buf)
-			_, err = zb.Write([]byte(req))
+			_, err := zb.Write([]byte(tt.request))
 			assert.NoError(t, err)
 			err = zb.Close()
 			assert.NoError(t, err)
@@ -92,21 +92,19 @@ func TestGetHandler(t *testing.T) {
 				SetBody(buf).
 				SetHeader("Content-Encoding", "gzip").
 				SetHeader("Accept-Encoding", "gzip").
-				Post(srv.URL + "/api/shorten")
+				Post(srv.URL + "/api/shorten/batch")
 
 			assert.NoError(t, err)
 
 			// Проверяем статус ответа
 			assert.Equal(t, tt.wantStatusCode, resp.StatusCode())
 			if tt.wantStatusCode == 201 {
-				var response Response
+				// проверим, что получили данные в нужном формате
+				var response []models.BatchResponse
 				err = json.Unmarshal(resp.Body(), &response)
 				assert.NoError(t, err)
-				shortURL := response.Result
-				// Проверяем, что получен URL
-				_, err = url.Parse(shortURL)
-				assert.NoError(t, err)
 			}
+
 		})
 	}
 }
