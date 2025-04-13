@@ -53,7 +53,7 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 	router.Use(mwgzip.Gzip)
 
 	// Группа с автоматической аутентификацией
-	router.Group(func(r chi.Router) {
+	router.Group(func(router chi.Router) {
 		router.Use(auth.JWTAutoIssue([]byte(cfg.JwtKey)))
 
 		router.Post("/", shorturl.GetHandler(srv, cfg.BaseURL, log))
@@ -66,7 +66,7 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 	})
 
 	// Группа со строгой аутентификацией
-	router.Group(func(r chi.Router) {
+	router.Group(func(router chi.Router) {
 		router.Use(auth.StrictJWTAutoIssue([]byte(cfg.JwtKey)))
 		router.Get("/api/user/urls", userurls.GetHandler(srv, cfg.BaseURL, log))
 	})
