@@ -9,6 +9,7 @@ import (
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 
+	"github.com/ryabkov82/shortener/internal/app/jwtauth"
 	"github.com/ryabkov82/shortener/internal/app/models"
 	"github.com/ryabkov82/shortener/internal/app/storage"
 )
@@ -28,31 +29,31 @@ func NewPostgresStorage(StoragePath string) (*PostgresStorage, error) {
 		return nil, err
 	}
 
-	err = initDB(db)
-
-	if err != nil {
-		return nil, err
+	//err = initDB(db)
+	// Применяем миграции из текущего пакета
+	if err := applyMigrations(db); err != nil {
+		return nil, fmt.Errorf("migrations failed: %w", err)
 	}
 
 	db.SetMaxOpenConns(25)
 	db.SetMaxIdleConns(25)
 	db.SetConnMaxLifetime(5 * time.Minute)
 
-	getShortURLStmt, err := db.Prepare(`SELECT short_code FROM short_urls WHERE original_url = $1`)
+	getShortURLStmt, err := db.Prepare(`SELECT short_code FROM short_urls WHERE original_url = $1 and user_id = $2`)
 	if err != nil {
 		return nil, err
 	}
 
-	getURLStmt, err := db.Prepare(`SELECT original_url	FROM short_urls WHERE short_code = $1`)
+	getURLStmt, err := db.Prepare(`SELECT original_url	FROM short_urls WHERE short_code = $1 and user_id = $2`)
 
 	if err != nil {
 		return nil, err
 	}
 
 	insertURLStmt, err := db.Prepare(`
-	INSERT INTO short_urls (original_url, short_code)
-	VALUES ($1, $2)
-	ON CONFLICT (original_url) DO UPDATE SET
+	INSERT INTO short_urls (original_url, short_code, user_id)
+	VALUES ($1, $2, $3)
+	ON CONFLICT (user_id, original_url) DO UPDATE SET
 		original_url = EXCLUDED.original_url -- Фейковое обновление
 	RETURNING short_code, xmax;
 	`)
@@ -63,30 +64,6 @@ func NewPostgresStorage(StoragePath string) (*PostgresStorage, error) {
 
 	return &PostgresStorage{db, getShortURLStmt, getURLStmt, insertURLStmt}, nil
 
-}
-
-func initDB(db *sql.DB) error {
-
-	// Создание таблицы, если она не существует
-	createTableQuery := `
-	CREATE TABLE IF NOT EXISTS short_urls (
-		id SERIAL PRIMARY KEY,
-		original_url TEXT NOT NULL,
-		short_code VARCHAR(20) NOT NULL UNIQUE
-	);
-	
-	CREATE INDEX IF NOT EXISTS idx_short_urls_short_code ON short_urls(short_code);
-    CREATE UNIQUE INDEX IF NOT EXISTS idx_short_urls_original_url_unique ON short_urls(original_url);
-	`
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	_, err := db.ExecContext(ctx, createTableQuery)
-	if err != nil {
-		return fmt.Errorf("failed to create table: %v", err)
-	}
-
-	return nil
 }
 
 func (s *PostgresStorage) Ping(ctx context.Context) error {
@@ -104,7 +81,9 @@ func (s *PostgresStorage) GetShortKey(ctx context.Context, originalURL string) (
 		OriginalURL: originalURL,
 	}
 
-	err := s.getShortURLStmt.QueryRowContext(ctx, originalURL).Scan(&mapping.ShortURL)
+	userID := ctx.Value(jwtauth.UserIDContextKey)
+
+	err := s.getShortURLStmt.QueryRowContext(ctx, originalURL, userID).Scan(&mapping.ShortURL)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return mapping, storage.ErrURLNotFound
@@ -121,7 +100,9 @@ func (s *PostgresStorage) GetRedirectURL(ctx context.Context, shortKey string) (
 		ShortURL: shortKey,
 	}
 
-	err := s.getURLStmt.QueryRowContext(ctx, shortKey).Scan(&mapping.OriginalURL)
+	userID := ctx.Value(jwtauth.UserIDContextKey)
+
+	err := s.getURLStmt.QueryRowContext(ctx, shortKey, userID).Scan(&mapping.OriginalURL)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return mapping, fmt.Errorf("%w", storage.ErrURLNotFound)
@@ -137,7 +118,9 @@ func (s *PostgresStorage) SaveURL(ctx context.Context, mapping *models.URLMappin
 
 	var xmax int64 // Системный столбец, показывающий был ли конфликт
 
-	err := s.insertURLStmt.QueryRowContext(ctx, mapping.OriginalURL, mapping.ShortURL).Scan(&mapping.ShortURL, &xmax)
+	userID := ctx.Value(jwtauth.UserIDContextKey)
+
+	err := s.insertURLStmt.QueryRowContext(ctx, mapping.OriginalURL, mapping.ShortURL, userID).Scan(&mapping.ShortURL, &xmax)
 
 	if err != nil {
 		// сюда попадем в том числе, если был конфликт по полю short_code
@@ -161,10 +144,12 @@ func (s *PostgresStorage) GetExistingURLs(ctx context.Context, originalURLs []st
 	}
 
 	// Создаем запрос с параметрами для всех URL
-	query := "SELECT original_url, short_code FROM short_urls WHERE original_url = ANY($1)"
+	query := "SELECT original_url, short_code FROM short_urls WHERE original_url = ANY($1) and user_id = $2"
+
+	userID := ctx.Value(jwtauth.UserIDContextKey)
 
 	// Просто передаем слайс - pgx/stdlib автоматически конвертирует
-	rows, err := s.db.QueryContext(ctx, query, originalURLs)
+	rows, err := s.db.QueryContext(ctx, query, originalURLs, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -191,6 +176,8 @@ func (s *PostgresStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapp
 		return nil
 	}
 
+	userID := ctx.Value(jwtauth.UserIDContextKey)
+
 	// Начинаем транзакцию
 	tx, err := s.db.Begin()
 	if err != nil {
@@ -203,7 +190,7 @@ func (s *PostgresStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapp
 	}()
 
 	// Подготавливаем statement для пакетной вставки
-	stmt, err := tx.Prepare("INSERT INTO short_urls (original_url, short_code) VALUES($1, $2)")
+	stmt, err := tx.Prepare("INSERT INTO short_urls (original_url, short_code, user_id) VALUES($1, $2, $3)")
 	if err != nil {
 		return err
 	}
@@ -211,11 +198,45 @@ func (s *PostgresStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapp
 
 	// Выполняем вставку для каждого URL
 	for _, url := range urls {
-		_, err = stmt.ExecContext(ctx, url.OriginalURL, url.ShortURL)
+		_, err = stmt.ExecContext(ctx, url.OriginalURL, url.ShortURL, userID)
 		if err != nil {
 			return err
 		}
 	}
 
 	return tx.Commit()
+}
+
+func (s *PostgresStorage) GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error) {
+
+	userID := ctx.Value(jwtauth.UserIDContextKey)
+
+	// Создаем запрос поиска всех сокращенных пользователем url
+	query := "SELECT original_url, short_code FROM short_urls WHERE user_id = $1"
+
+	rows, err := s.db.QueryContext(ctx, query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var userURLs []models.URLMapping
+
+	for rows.Next() {
+		var originalURL string
+		var shortURL string
+		if err := rows.Scan(&originalURL, &shortURL); err != nil {
+			return nil, err
+		}
+		userURLs = append(userURLs, models.URLMapping{
+			OriginalURL: originalURL,
+			ShortURL:    baseURL + "/" + shortURL,
+		})
+	}
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+
+	return userURLs, nil
 }

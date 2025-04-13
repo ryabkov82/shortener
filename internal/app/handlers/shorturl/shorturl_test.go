@@ -1,12 +1,17 @@
 package shorturl
 
 import (
+	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"os"
 	"testing"
 
+	"github.com/ryabkov82/shortener/internal/app/jwtauth"
 	"github.com/ryabkov82/shortener/internal/app/logger"
+	"github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
+	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
+	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
 	"github.com/ryabkov82/shortener/internal/app/service"
 	storage "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
 
@@ -15,11 +20,33 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var (
+	testSecretKey = []byte("test-secret-key")
+)
+
+func createSignedCookie() *http.Cookie {
+
+	tokenString, _, err := jwtauth.GenerateNewToken(testSecretKey)
+	if err != nil {
+		panic(err)
+	}
+
+	return &http.Cookie{
+		Name:     "token",
+		Value:    tokenString,
+		HttpOnly: true,
+		Path:     "/",
+		//Secure:   true, // HTTPS-only
+		SameSite: http.SameSiteStrictMode,
+	}
+
+}
+
 func TestGetHandler(t *testing.T) {
 
 	fileStorage := "test.dat"
 	err := os.Remove(fileStorage)
-	if err != nil && os.IsNotExist(err) {
+	if err != nil && !os.IsNotExist(err) {
 		panic(err)
 	}
 
@@ -36,6 +63,10 @@ func TestGetHandler(t *testing.T) {
 	}
 
 	r := chi.NewRouter()
+	r.Use(mwlogger.RequestLogging(logger.Log))
+	r.Use(mwgzip.Gzip)
+	r.Use(auth.JWTAutoIssueMiddleware(testSecretKey))
+
 	baseURL := "http://localhost:8080/"
 	r.Post("/", GetHandler(service, baseURL, logger.Log))
 
@@ -44,24 +75,30 @@ func TestGetHandler(t *testing.T) {
 	// останавливаем сервер после завершения теста
 	defer srv.Close()
 
+	cookie := createSignedCookie()
+
 	tests := []struct {
 		name           string
 		originalURL    string
+		cookie         *http.Cookie
 		wantStatusCode int
 	}{
 		{
 			name:           "positive test #1",
 			originalURL:    "https://practicum.yandex.ru/",
+			cookie:         cookie,
 			wantStatusCode: 201,
 		},
 		{
 			name:           "positive test #1",
 			originalURL:    "https://practicum.yandex.ru/",
+			cookie:         cookie,
 			wantStatusCode: 409,
 		},
 		{
 			name:           "negative test #2",
 			originalURL:    "not url",
+			cookie:         cookie,
 			wantStatusCode: 400,
 		},
 	}
@@ -70,6 +107,7 @@ func TestGetHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 
 			resp, err := resty.New().R().
+				SetCookie(tt.cookie).
 				SetBody(tt.originalURL).
 				Post(srv.URL)
 

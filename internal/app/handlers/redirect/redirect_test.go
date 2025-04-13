@@ -8,9 +8,13 @@ import (
 	"os"
 	"testing"
 
+	"github.com/ryabkov82/shortener/internal/app/jwtauth"
 	"github.com/ryabkov82/shortener/internal/app/logger"
 
 	"github.com/ryabkov82/shortener/internal/app/models"
+	"github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
+	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
+	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
 	"github.com/ryabkov82/shortener/internal/app/service"
 	storage "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
 
@@ -18,6 +22,28 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
 )
+
+var (
+	testSecretKey = []byte("test-secret-key")
+)
+
+func createSignedCookie() (*http.Cookie, string) {
+
+	tokenString, userID, err := jwtauth.GenerateNewToken(testSecretKey)
+	if err != nil {
+		panic(err)
+	}
+
+	return &http.Cookie{
+		Name:     "token",
+		Value:    tokenString,
+		HttpOnly: true,
+		Path:     "/",
+		//Secure:   true, // HTTPS-only
+		SameSite: http.SameSiteStrictMode,
+	}, userID
+
+}
 
 func TestGetHandler(t *testing.T) {
 
@@ -43,9 +69,12 @@ func TestGetHandler(t *testing.T) {
 		ShortURL:    "EYm7J2zF",
 		OriginalURL: "https://practicum.yandex.ru/",
 	}
-	st.SaveURL(context.TODO(), &mapping)
 
 	r := chi.NewRouter()
+	r.Use(mwlogger.RequestLogging(logger.Log))
+	r.Use(mwgzip.Gzip)
+	r.Use(auth.JWTAutoIssueMiddleware(testSecretKey))
+
 	r.Get("/{id}", GetHandler(service, logger.Log))
 
 	// запускаем тестовый сервер, будет выбран первый свободный порт
@@ -59,21 +88,28 @@ func TestGetHandler(t *testing.T) {
 		return redirectAttemptedError
 	})
 
+	cookie, userID := createSignedCookie()
+	ctx := context.WithValue(context.Background(), jwtauth.UserIDContextKey, userID)
+	st.SaveURL(ctx, &mapping)
+
 	tests := []struct {
 		name           string
 		originalURL    string
 		shortKey       string
+		cookie         *http.Cookie
 		wantStatusCode int
 	}{
 		{
 			name:           "positive test #1",
 			originalURL:    "https://practicum.yandex.ru/",
 			shortKey:       "EYm7J2zF",
+			cookie:         cookie,
 			wantStatusCode: 307,
 		},
 		{
 			name:           "negative test #2",
 			shortKey:       "RrixjW0q",
+			cookie:         cookie,
 			wantStatusCode: 404,
 		},
 	}
@@ -82,7 +118,7 @@ func TestGetHandler(t *testing.T) {
 
 			client := resty.New()
 			client.SetRedirectPolicy(redirectPolicy)
-			req := client.R()
+			req := client.R().SetCookie(tt.cookie)
 			req.Method = http.MethodGet
 			req.URL = srv.URL + "/" + tt.shortKey
 

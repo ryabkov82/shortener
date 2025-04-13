@@ -16,6 +16,7 @@ type Config struct {
 	LogLevel       string
 	FileStorage    string
 	DBConnect      string
+	JwtKey         string
 }
 
 func validateHTTPServerAddr(addr string) error {
@@ -41,6 +42,7 @@ func Load() *Config {
 	cfg := new(Config)
 	cfg.HTTPServerAddr = "localhost:8080"
 	cfg.BaseURL = "http://localhost:8080"
+	cfg.JwtKey = "your_strong_secret_here"
 
 	flag.Func("a", "Server address host:port", func(flagValue string) error {
 
@@ -100,6 +102,14 @@ func Load() *Config {
 
 	if envDBConnect := os.Getenv("DATABASE_DSN"); envDBConnect != "" {
 		cfg.DBConnect = envDBConnect
+	}
+
+	if envJWTSECRET := os.Getenv("JWT_SECRET"); envJWTSECRET != "" {
+		if len(envJWTSECRET) < 32 {
+			log.Fatal("JWT_SECRET must be at least 32 characters long")
+		}
+
+		cfg.JwtKey = envJWTSECRET
 	}
 
 	// Убедимся, что BaseURL не заканчивается на "/"

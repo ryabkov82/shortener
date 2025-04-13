@@ -15,6 +15,7 @@ type Repository interface {
 	Ping(context.Context) error
 	SaveNewURLs(context.Context, []models.URLMapping) error
 	GetExistingURLs(context.Context, []string) (map[string]string, error)
+	GetUserUrls(context.Context, string) ([]models.URLMapping, error)
 }
 
 type Service struct {
@@ -96,6 +97,17 @@ func (s *Service) Batch(ctx context.Context, batchRequest []models.BatchRequest,
 	}
 
 	return batchResponse, nil
+
+}
+
+func (s *Service) GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error) {
+
+	// Получаем существующие URL одним запросом
+	URLs, err := s.repo.GetUserUrls(ctx, baseURL)
+	if err != nil {
+		return nil, err
+	}
+	return URLs, nil
 
 }
 
