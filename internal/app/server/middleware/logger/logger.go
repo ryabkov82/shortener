@@ -6,6 +6,8 @@ import (
 
 	"github.com/go-chi/chi/v5/middleware"
 	"go.uber.org/zap"
+
+	"github.com/ryabkov82/shortener/internal/app/jwtauth"
 )
 
 func RequestLogging(log *zap.Logger) func(next http.Handler) http.Handler {
@@ -27,6 +29,7 @@ func RequestLogging(log *zap.Logger) func(next http.Handler) http.Handler {
 					zap.String("method", r.Method),
 					zap.String("path", r.URL.Path),
 					zap.Int("status", ww.Status()),
+					zap.String("userID", r.Context().Value(jwtauth.UserIDContextKey).(string)),
 					zap.Int("bytes", ww.BytesWritten()),
 					zap.String("duration", time.Since(t1).String()),
 				)
