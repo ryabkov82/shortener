@@ -16,8 +16,6 @@ type ContextKey string
 // Константа для ключа
 const UserIDContextKey ContextKey = "userID"
 
-const UserDefault string = "00000000-0000-0000-0000-000000000000"
-
 // Генерирует новый JWT с уникальным ID пользователя
 func GenerateNewToken(jwtKey []byte) (string, string, error) {
 	userID := uuid.New().String() // Генерируем уникальный ID
