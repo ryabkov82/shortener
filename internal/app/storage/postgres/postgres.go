@@ -100,9 +100,9 @@ func (s *PostgresStorage) GetRedirectURL(ctx context.Context, shortKey string) (
 		ShortURL: shortKey,
 	}
 
-	userID := ctx.Value(jwtauth.UserIDContextKey)
+	//userID := ctx.Value(jwtauth.UserIDContextKey)
 
-	err := s.getURLStmt.QueryRowContext(ctx, shortKey, userID).Scan(&mapping.OriginalURL)
+	err := s.getURLStmt.QueryRowContext(ctx, shortKey).Scan(&mapping.OriginalURL)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return mapping, fmt.Errorf("%w", storage.ErrURLNotFound)
