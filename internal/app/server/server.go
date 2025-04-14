@@ -11,6 +11,8 @@ import (
 	"github.com/ryabkov82/shortener/internal/app/handlers/redirect"
 	"github.com/ryabkov82/shortener/internal/app/handlers/shortenapi"
 	"github.com/ryabkov82/shortener/internal/app/handlers/shorturl"
+	"github.com/ryabkov82/shortener/internal/app/handlers/userurls"
+	"github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
 	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
 	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
 	"github.com/ryabkov82/shortener/internal/app/service"
@@ -50,6 +52,29 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 	router.Use(mwlogger.RequestLogging(log))
 	router.Use(mwgzip.Gzip)
 
+	/*
+		// Группа с автоматической аутентификацией
+		router.Group(func(router chi.Router) {
+			router.Use(auth.JWTAutoIssue([]byte(cfg.JwtKey)))
+
+			router.Post("/", shorturl.GetHandler(srv, cfg.BaseURL, log))
+			router.Get("/{id}", redirect.GetHandler(srv, log))
+
+			router.Post("/api/shorten", shortenapi.GetHandler(srv, cfg.BaseURL, log))
+
+			router.Get("/ping", ping.GetHandler(srv, log))
+			router.Post("/api/shorten/batch", batch.GetHandler(srv, cfg.BaseURL, log))
+		})
+
+		// Группа со строгой аутентификацией
+		router.Group(func(router chi.Router) {
+			router.Use(auth.StrictJWTAutoIssue([]byte(cfg.JwtKey)))
+			router.Get("/api/user/urls", userurls.GetHandler(srv, cfg.BaseURL, log))
+		})
+	*/
+
+	router.Use(auth.JWTAutoIssue([]byte(cfg.JwtKey)))
+
 	router.Post("/", shorturl.GetHandler(srv, cfg.BaseURL, log))
 	router.Get("/{id}", redirect.GetHandler(srv, log))
 
@@ -57,6 +82,7 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 
 	router.Get("/ping", ping.GetHandler(srv, log))
 	router.Post("/api/shorten/batch", batch.GetHandler(srv, cfg.BaseURL, log))
+	router.Get("/api/user/urls", userurls.GetHandler(srv, cfg.BaseURL, log))
 
 	log.Info("Server started", zap.String("address", cfg.HTTPServerAddr))
 

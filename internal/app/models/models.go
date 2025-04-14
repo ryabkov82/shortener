@@ -2,8 +2,15 @@ package models
 
 // URLMapping представляет собой структуру для хранения соответствия короткого и оригинального URL.
 type URLMapping struct {
-	ShortURL    string // Короткий URL
-	OriginalURL string // Оригинальный URL
+	ShortURL    string `json:"short_url"`
+	OriginalURL string `json:"original_url"`
+}
+
+type UserURLMapping struct {
+	UUID        uint64 `json:"uuid"`
+	ShortURL    string `json:"short_url"`    // Короткий URL
+	OriginalURL string `json:"original_url"` // Оригинальный URL
+	UserID      string `json:"user_id"`
 }
 
 type BatchRequest struct {
