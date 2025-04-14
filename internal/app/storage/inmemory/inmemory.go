@@ -127,10 +127,12 @@ func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
-	userID := ctx.Value(jwtauth.UserIDContextKey)
-	if userID == nil {
-		return models.URLMapping{}, errors.New("userID is not set")
-	}
+	/*
+		userID := ctx.Value(jwtauth.UserIDContextKey)
+		if userID == nil {
+			return models.URLMapping{}, errors.New("userID is not set")
+		}
+	*/
 
 	url, found := s.shortCodeMap[shortKey]
 
@@ -138,9 +140,11 @@ func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (
 		return models.URLMapping{}, storage.ErrURLNotFound
 	}
 
-	if url.UserID != userID {
-		return models.URLMapping{}, storage.ErrURLNotFound
-	}
+	/*
+		if url.UserID != userID {
+			return models.URLMapping{}, storage.ErrURLNotFound
+		}
+	*/
 
 	mapping := models.URLMapping{
 		ShortURL:    url.ShortURL,

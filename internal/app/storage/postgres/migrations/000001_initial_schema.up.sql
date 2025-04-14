@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS short_urls (
     short_code VARCHAR(20) NOT NULL UNIQUE
 );
 
-CREATE INDEX IF NOT EXISTS idx_short_urls_short_code ON short_urls(short_code);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_short_urls_original_url_unique ON short_urls(original_url);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_short_urls_short_code_unique ON short_urls(short_code);
+--CREATE UNIQUE INDEX IF NOT EXISTS idx_short_urls_original_url_unique ON short_urls(original_url);
 
 COMMIT;

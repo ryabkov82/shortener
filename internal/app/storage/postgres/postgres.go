@@ -44,7 +44,7 @@ func NewPostgresStorage(StoragePath string) (*PostgresStorage, error) {
 		return nil, err
 	}
 
-	getURLStmt, err := db.Prepare(`SELECT original_url	FROM short_urls WHERE short_code = $1 and user_id = $2`)
+	getURLStmt, err := db.Prepare(`SELECT original_url	FROM short_urls WHERE short_code = $1`)
 
 	if err != nil {
 		return nil, err
