@@ -29,7 +29,7 @@ type Service struct {
 func NewService(storage Repository) *Service {
 
 	delworker := deleteurls.NewDeleteWorker(1, 10, 500*time.Millisecond, storage)
-	delworker.Start(context.Background())
+	delworker.Start()
 
 	return &Service{
 		repo:         storage,
@@ -135,6 +135,10 @@ func (s *Service) DeleteUserUrls(ctx context.Context, shortURLs []string) error 
 
 	return err
 
+}
+
+func (s *Service) GracefulStop(timeout time.Duration) {
+	s.deleteworker.GracefulStop(timeout)
 }
 
 func generateShortKey() string {

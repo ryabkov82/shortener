@@ -1,7 +1,6 @@
 package deleteurls
 
 import (
-	"context"
 	"errors"
 	"log"
 	"sync"
@@ -18,8 +17,12 @@ type DeleteTask struct {
 }
 
 type DeleteWorker struct {
-	taskChan    chan DeleteTask
-	batchChan   chan map[string][]string
+	taskChan    chan DeleteTask          // канал задач на удаление сокращенных url
+	batchChan   chan map[string][]string // агрерированные в батчи задачи на удаление сокращенных url в разрезе пользователей
+	stopChan    chan struct{}            // канал завершения
+	wg          sync.WaitGroup           // для ожидания завершения воркеров
+	shutdown    bool                     // флаг завершения работы
+	mu          sync.RWMutex             // защита флага shutdown
 	workerCount int
 	batchSize   int
 	batchWindow time.Duration
@@ -30,6 +33,7 @@ func NewDeleteWorker(workerCount, batchSize int, batchWindow time.Duration, stor
 	return &DeleteWorker{
 		taskChan:    make(chan DeleteTask, 10000),
 		batchChan:   make(chan map[string][]string, 100),
+		stopChan:    make(chan struct{}),
 		workerCount: workerCount,
 		batchSize:   batchSize,
 		batchWindow: batchWindow,
@@ -37,17 +41,28 @@ func NewDeleteWorker(workerCount, batchSize int, batchWindow time.Duration, stor
 	}
 }
 
-func (w *DeleteWorker) Start(ctx context.Context) {
+func (w *DeleteWorker) Start() {
+
+	w.wg.Add(w.workerCount + 1) // +1 для сборщика батчей
+
 	// Запускаем сборщик батчей
-	go w.batchCollector(ctx)
+	go w.batchCollector()
 
 	// Запускаем воркеров для обработки батчей
 	for i := 0; i < w.workerCount; i++ {
-		go w.batchProcessor(ctx)
+		go w.batchProcessor()
 	}
 }
 
 func (w *DeleteWorker) Submit(task DeleteTask) error {
+
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	if w.shutdown {
+		return errors.New("сервис завершает работу, новые задачи не принимаются")
+	}
+
 	select {
 	case w.taskChan <- task:
 		return nil
@@ -56,14 +71,17 @@ func (w *DeleteWorker) Submit(task DeleteTask) error {
 	}
 }
 
-func (w *DeleteWorker) batchCollector(ctx context.Context) {
+func (w *DeleteWorker) batchCollector() {
+
+	defer w.wg.Done()
+
 	batch := make(map[string][]string)
 	ticker := time.NewTicker(w.batchWindow)
 	defer ticker.Stop()
 
 	for {
 		select {
-		case <-ctx.Done():
+		case <-w.stopChan:
 			// При завершении отправляем оставшиеся задачи
 			if len(batch) > 0 {
 				w.batchChan <- batch
@@ -71,7 +89,17 @@ func (w *DeleteWorker) batchCollector(ctx context.Context) {
 			close(w.batchChan)
 			return
 
-		case task := <-w.taskChan:
+		case task, ok := <-w.taskChan:
+
+			if !ok {
+				// Канал закрыт, отправляем оставшиеся данные
+				if len(batch) > 0 {
+					w.batchChan <- batch
+				}
+				close(w.batchChan)
+				return
+			}
+
 			// Добавляем URL в батч для данного пользователя
 			if urls, exists := batch[task.UserID]; exists {
 				batch[task.UserID] = append(urls, task.ShortURLs...)
@@ -96,29 +124,45 @@ func (w *DeleteWorker) batchCollector(ctx context.Context) {
 	}
 }
 
-func (w *DeleteWorker) batchProcessor(ctx context.Context) {
-	for {
-		select {
-		case <-ctx.Done():
-			return
+func (w *DeleteWorker) batchProcessor() {
 
-		case batch, ok := <-w.batchChan:
-			if !ok {
-				return
-			}
+	defer w.wg.Done()
 
-			var wg sync.WaitGroup
-			for userID, urls := range batch {
-				wg.Add(1)
-				go func(uid string, u []string) {
-					defer wg.Done()
-					if err := w.processUserBatch(uid, u); err != nil {
-						log.Printf("Failed to process batch for user %s: %v", uid, err)
+	for batch := range w.batchChan {
+		// Используем WaitGroup для ожидания завершения всех горутин
+		var batchWg sync.WaitGroup
+		batchWg.Add(len(batch))
+
+		// Создаем канал для ограничения количества одновременно работающих горутин
+		concurrencyLimit := make(chan struct{}, w.workerCount*2)
+
+		for userID, urls := range batch {
+			// Захватываем слот в канале (ограничиваем параллелизм)
+			concurrencyLimit <- struct{}{}
+
+			go func(userID string, urls []string) {
+				defer batchWg.Done()
+				defer func() { <-concurrencyLimit }() // Освобождаем слот
+
+				// Разбиваем на под-батчи для очень больших списков URL
+				const subBatchSize = 50
+				for i := 0; i < len(urls); i += subBatchSize {
+					end := i + subBatchSize
+					if end > len(urls) {
+						end = len(urls)
 					}
-				}(userID, urls)
-			}
-			wg.Wait()
+					subBatch := urls[i:end]
+
+					if err := w.processUserBatch(userID, subBatch); err != nil {
+						log.Printf("Ошибка при пометке URL как удалённых для пользователя %s: %v", userID, err)
+						// Можно добавить retry логику здесь при необходимости
+					}
+				}
+			}(userID, urls)
 		}
+
+		// Ожидаем завершения обработки всего батча
+		batchWg.Wait()
 	}
 }
 
@@ -129,4 +173,28 @@ func (w *DeleteWorker) processUserBatch(userID string, urls []string) error {
 	}
 
 	return nil
+}
+
+// GracefulStop реализует graceful shutdown с таймаутом
+func (w *DeleteWorker) GracefulStop(timeout time.Duration) {
+	w.mu.Lock()
+	w.shutdown = true
+	w.mu.Unlock()
+
+	close(w.stopChan)
+
+	done := make(chan struct{})
+	go func() {
+		w.wg.Wait()
+		close(done)
+	}()
+
+	select {
+	case <-done:
+		log.Println("Все воркеры завершили работу")
+	case <-time.After(timeout):
+		log.Println("Таймаут ожидания завершения воркеров")
+	}
+
+	close(w.taskChan)
 }

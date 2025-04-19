@@ -1,7 +1,12 @@
 package server
 
 import (
+	"context"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"go.uber.org/zap"
 
@@ -89,8 +94,38 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 
 	log.Info("Server started", zap.String("address", cfg.HTTPServerAddr))
 
-	if err := http.ListenAndServe(cfg.HTTPServerAddr, router); err != nil {
-		log.Error("failed to serve server", zap.Error(err))
+	// Запуск HTTP-сервера в отдельной горутине
+
+	server := &http.Server{
+		Addr:    cfg.HTTPServerAddr,
+		Handler: router, // Ваш роутер
 	}
+
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Error("failed to serve server", zap.Error(err))
+		}
+	}()
+
+	// Обработка сигналов завершения
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	log.Info("Shutting down server...")
+
+	// Создаем контекст с таймаутом для graceful shutdown
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Остановка HTTP-сервера
+	if err := server.Shutdown(ctx); err != nil {
+		log.Info("HTTP server shutdown error", zap.Error(err))
+	}
+
+	// корректное завершение работы воркеров сервиса
+	srv.GracefulStop(5 * time.Second)
+
+	log.Info("Server shutdown complete")
 
 }
