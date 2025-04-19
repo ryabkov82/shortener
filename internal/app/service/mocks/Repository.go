@@ -35,6 +35,20 @@ func (m *MockRepository) EXPECT() *MockRepositoryMockRecorder {
 	return m.recorder
 }
 
+// BatchMarkAsDeleted mocks base method.
+func (m *MockRepository) BatchMarkAsDeleted(arg0 string, arg1 []string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BatchMarkAsDeleted", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// BatchMarkAsDeleted indicates an expected call of BatchMarkAsDeleted.
+func (mr *MockRepositoryMockRecorder) BatchMarkAsDeleted(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchMarkAsDeleted", reflect.TypeOf((*MockRepository)(nil).BatchMarkAsDeleted), arg0, arg1)
+}
+
 // GetExistingURLs mocks base method.
 func (m *MockRepository) GetExistingURLs(arg0 context.Context, arg1 []string) (map[string]string, error) {
 	m.ctrl.T.Helper()
@@ -78,6 +92,21 @@ func (m *MockRepository) GetShortKey(arg0 context.Context, arg1 string) (models.
 func (mr *MockRepositoryMockRecorder) GetShortKey(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetShortKey", reflect.TypeOf((*MockRepository)(nil).GetShortKey), arg0, arg1)
+}
+
+// GetUserUrls mocks base method.
+func (m *MockRepository) GetUserUrls(arg0 context.Context, arg1 string) ([]models.URLMapping, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserUrls", arg0, arg1)
+	ret0, _ := ret[0].([]models.URLMapping)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserUrls indicates an expected call of GetUserUrls.
+func (mr *MockRepositoryMockRecorder) GetUserUrls(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserUrls", reflect.TypeOf((*MockRepository)(nil).GetUserUrls), arg0, arg1)
 }
 
 // Ping mocks base method.

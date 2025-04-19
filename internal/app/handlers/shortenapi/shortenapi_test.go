@@ -4,16 +4,19 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
+	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"os"
 	"testing"
 
+	"github.com/ryabkov82/shortener/internal/app/jwtauth"
 	"github.com/ryabkov82/shortener/internal/app/logger"
 
 	"github.com/ryabkov82/shortener/internal/app/service"
 	storage "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
 
+	"github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
 	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
 	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
 
@@ -21,6 +24,28 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
 )
+
+var (
+	testSecretKey = []byte("test-secret-key")
+)
+
+func createSignedCookie() *http.Cookie {
+
+	tokenString, _, err := jwtauth.GenerateNewToken(testSecretKey)
+	if err != nil {
+		panic(err)
+	}
+
+	return &http.Cookie{
+		Name:     "token",
+		Value:    tokenString,
+		HttpOnly: true,
+		Path:     "/",
+		//Secure:   true, // HTTPS-only
+		SameSite: http.SameSiteStrictMode,
+	}
+
+}
 
 func TestGetHandler(t *testing.T) {
 
@@ -44,6 +69,9 @@ func TestGetHandler(t *testing.T) {
 	r := chi.NewRouter()
 	r.Use(mwlogger.RequestLogging(logger.Log))
 	r.Use(mwgzip.Gzip)
+	r.Use(auth.JWTAutoIssue(testSecretKey))
+
+	cookie := createSignedCookie()
 
 	baseURL := "http://localhost:8080/"
 	r.Post("/api/shorten", GetHandler(service, baseURL, logger.Log))
@@ -56,21 +84,25 @@ func TestGetHandler(t *testing.T) {
 	tests := []struct {
 		name           string
 		request        Request
+		cookie         *http.Cookie
 		wantStatusCode int
 	}{
 		{
 			name:           "positive test #1",
 			request:        Request{URL: "https://practicum.yandex.ru/"},
+			cookie:         cookie,
 			wantStatusCode: 201,
 		},
 		{
 			name:           "positive test #2",
 			request:        Request{URL: "https://practicum.yandex.ru/"},
+			cookie:         cookie,
 			wantStatusCode: 409,
 		},
 		{
 			name:           "negative test #2",
 			request:        Request{URL: "not url"},
+			cookie:         cookie,
 			wantStatusCode: 400,
 		},
 	}
@@ -89,6 +121,7 @@ func TestGetHandler(t *testing.T) {
 			assert.NoError(t, err)
 
 			resp, err := resty.New().R().
+				SetCookie(tt.cookie).
 				SetBody(buf).
 				SetHeader("Content-Encoding", "gzip").
 				SetHeader("Accept-Encoding", "gzip").

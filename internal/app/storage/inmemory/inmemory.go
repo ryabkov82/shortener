@@ -8,26 +8,18 @@ import (
 	"os"
 	"sync"
 
+	"github.com/ryabkov82/shortener/internal/app/jwtauth"
 	"github.com/ryabkov82/shortener/internal/app/models"
 	"github.com/ryabkov82/shortener/internal/app/storage"
 )
 
 type InMemoryStorage struct {
-	// Переменная для хранения редиректов ShortURL -> OriginalURL
-	shortURLs map[string]string
-	// Переменная для хранения значений OriginalURL -> ShortURL
-	originalURLs map[string]string
+	userURLIndex map[string]map[string]string     // userID -> originalURL -> shortCode
+	shortCodeMap map[string]models.UserURLMapping // shortCode -> UserURLMapping
 	countRecords uint64
 	file         *os.File
 	encoder      *json.Encoder
 	mu           sync.RWMutex
-}
-
-// структура хранения записей в файле
-type record struct {
-	UUID        uint64 `json:"uuid"`
-	ShortURL    string `json:"short_url"`    // Короткий URL
-	OriginalURL string `json:"original_url"` // Оригинальный URL
 }
 
 func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) {
@@ -38,8 +30,8 @@ func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) {
 	}
 
 	return &InMemoryStorage{
-		shortURLs:    make(map[string]string),
-		originalURLs: make(map[string]string),
+		userURLIndex: make(map[string]map[string]string),
+		shortCodeMap: make(map[string]models.UserURLMapping),
 		countRecords: 0,
 		file:         file,
 		encoder:      json.NewEncoder(file),
@@ -62,22 +54,32 @@ func (s *InMemoryStorage) Load(fileStoragePath string) error {
 
 	// Читаем файл построчно
 	for scanner.Scan() {
-		line := scanner.Text()
+		line := scanner.Bytes()
 
 		// Пропускаем пустые строки
 		if len(line) == 0 {
 			continue
 		}
 
-		// Декодируем JSON-строку в структуру
-		var record record
-		err := json.Unmarshal([]byte(line), &record)
-		if err != nil {
-			continue // Пропускаем некорректные строки и продолжаем чтение
+		var url models.UserURLMapping
+
+		if err := json.Unmarshal(line, &url); err != nil {
+			continue // Пропускаем некорректные записи, но продолжаем загрузку
 		}
 
-		s.shortURLs[record.ShortURL] = record.OriginalURL
-		s.originalURLs[record.OriginalURL] = record.ShortURL
+		// Валидация обязательных полей
+		if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" {
+			continue
+		}
+
+		// Обновляем userURLIndex
+		if _, ok := s.userURLIndex[url.UserID]; !ok {
+			s.userURLIndex[url.UserID] = make(map[string]string)
+		}
+
+		// Для append-only лога последняя запись перезаписывает предыдущие
+		s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
+		s.shortCodeMap[url.ShortURL] = url
 
 		countRecords++
 
@@ -95,9 +97,18 @@ func (s *InMemoryStorage) GetShortKey(ctx context.Context, originalURL string) (
 
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	shortKey, found := s.originalURLs[originalURL]
 
 	var err error
+
+	userID := ctx.Value(jwtauth.UserIDContextKey)
+
+	if userID == nil {
+		return models.URLMapping{}, errors.New("userID is not set")
+	}
+
+	// Проверка существования URL
+	shortKey, found := s.userURLIndex[userID.(string)][originalURL]
+
 	if !found {
 		shortKey = ""
 		err = storage.ErrURLNotFound
@@ -115,20 +126,35 @@ func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (
 
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	originalURL, found := s.shortURLs[shortKey]
 
-	var err error
+	/*
+		userID := ctx.Value(jwtauth.UserIDContextKey)
+		if userID == nil {
+			return models.URLMapping{}, errors.New("userID is not set")
+		}
+	*/
+
+	url, found := s.shortCodeMap[shortKey]
+
 	if !found {
-		originalURL = ""
-		err = storage.ErrURLNotFound
+		return models.URLMapping{}, storage.ErrURLNotFound
 	}
+
+	if url.DeletedFlag {
+		return models.URLMapping{}, storage.ErrURLDeleted
+	}
+	/*
+		if url.UserID != userID {
+			return models.URLMapping{}, storage.ErrURLNotFound
+		}
+	*/
 
 	mapping := models.URLMapping{
-		ShortURL:    shortKey,
-		OriginalURL: originalURL,
+		ShortURL:    url.ShortURL,
+		OriginalURL: url.OriginalURL,
 	}
 
-	return mapping, err
+	return mapping, nil
 
 }
 
@@ -140,30 +166,45 @@ func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping *models.URLMappin
 
 	// После установки блокировки проверяем нет ли записи с таким ShortURL
 	// Возможно, shortURL был сгененрирован ранее
-	_, found := s.shortURLs[mapping.ShortURL]
+	_, found := s.shortCodeMap[mapping.ShortURL]
 
 	if found {
 		return storage.ErrShortURLExists
 	}
 
-	// Проверяем существует ли уже короткий url для данного OriginalURL
-	shortURL, found := s.originalURLs[mapping.OriginalURL]
+	userID := ctx.Value(jwtauth.UserIDContextKey)
+	if userID == nil {
+		return errors.New("userID is not set")
+	}
 
-	if found {
+	if _, ok := s.userURLIndex[userID.(string)]; !ok {
+		s.userURLIndex[userID.(string)] = make(map[string]string)
+	}
+
+	// Проверка существования URL
+	if shortURL, exists := s.userURLIndex[userID.(string)][mapping.OriginalURL]; exists {
 		mapping.ShortURL = shortURL
 		return storage.ErrURLExists
 	}
 
-	s.shortURLs[mapping.ShortURL] = mapping.OriginalURL
-	s.originalURLs[mapping.OriginalURL] = mapping.ShortURL
+	// Добавляем записи
+	s.userURLIndex[userID.(string)][mapping.OriginalURL] = mapping.ShortURL
 
 	s.countRecords++
 
-	// сохраняем данные в файл
-	record := record{UUID: s.countRecords, ShortURL: mapping.ShortURL, OriginalURL: mapping.OriginalURL}
-	err := s.encoder.Encode(record)
+	userURLMapping := models.UserURLMapping{
+		UUID:        s.countRecords,
+		ShortURL:    mapping.ShortURL,
+		OriginalURL: mapping.OriginalURL,
+		UserID:      userID.(string),
+		DeletedFlag: false,
+	}
+	s.shortCodeMap[mapping.ShortURL] = userURLMapping
+
+	err := s.encoder.Encode(userURLMapping)
 
 	return err
+
 }
 
 func (s *InMemoryStorage) Ping(ctx context.Context) error {
@@ -203,6 +244,57 @@ func (s *InMemoryStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapp
 		err := s.SaveURL(ctx, &url)
 		if err != nil {
 			return err
+		}
+	}
+
+	return nil
+}
+
+func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error) {
+
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	userID := ctx.Value(jwtauth.UserIDContextKey)
+	if userID == nil {
+		return nil, errors.New("userID is not set")
+	}
+
+	// Проверяем существование пользователя в индексе
+	userURLs, exists := s.userURLIndex[userID.(string)]
+	if !exists {
+		return nil, nil // Возвращаем nil вместо ошибки если пользователь не найден
+	}
+
+	var result []models.URLMapping
+	// Итерируемся по всем URL пользователя
+	for originalURL, shortCode := range userURLs {
+		result = append(result, models.URLMapping{
+			OriginalURL: originalURL,
+			ShortURL:    baseURL + "/" + shortCode,
+		})
+
+	}
+	return result, nil
+
+}
+
+func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error {
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	for _, code := range urls {
+		if mapping, exists := s.shortCodeMap[code]; exists {
+			// Проверяем, что URL принадлежит пользователю
+			if mapping.UserID == userID {
+				mapping.DeletedFlag = true
+				s.shortCodeMap[code] = mapping
+				err := s.encoder.Encode(mapping)
+				if err != nil {
+					return err
+				}
+			}
 		}
 	}
 
