@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -44,7 +45,7 @@ func NewPostgresStorage(StoragePath string) (*PostgresStorage, error) {
 		return nil, err
 	}
 
-	getURLStmt, err := db.Prepare(`SELECT original_url	FROM short_urls WHERE short_code = $1`)
+	getURLStmt, err := db.Prepare(`SELECT original_url, is_deleted	FROM short_urls WHERE short_code = $1`)
 
 	if err != nil {
 		return nil, err
@@ -102,7 +103,9 @@ func (s *PostgresStorage) GetRedirectURL(ctx context.Context, shortKey string) (
 
 	//userID := ctx.Value(jwtauth.UserIDContextKey)
 
-	err := s.getURLStmt.QueryRowContext(ctx, shortKey).Scan(&mapping.OriginalURL)
+	var deletedFlag bool
+
+	err := s.getURLStmt.QueryRowContext(ctx, shortKey).Scan(&mapping.OriginalURL, &deletedFlag)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return mapping, fmt.Errorf("%w", storage.ErrURLNotFound)
@@ -110,6 +113,9 @@ func (s *PostgresStorage) GetRedirectURL(ctx context.Context, shortKey string) (
 		return mapping, fmt.Errorf("ошибка при поиске URL: %w", err)
 	}
 
+	if deletedFlag {
+		return mapping, storage.ErrURLDeleted
+	}
 	return mapping, nil
 
 }
@@ -239,4 +245,24 @@ func (s *PostgresStorage) GetUserUrls(ctx context.Context, baseURL string) ([]mo
 	}
 
 	return userURLs, nil
+}
+
+func (s *PostgresStorage) BatchMarkAsDeleted(userID string, urls []string) error {
+
+	var params []interface{}
+	query := "UPDATE short_urls SET is_deleted = true WHERE short_code IN ("
+
+	for i, url := range urls {
+		query += fmt.Sprintf("$%d,", i+1)
+		params = append(params, url)
+	}
+	query = strings.TrimSuffix(query, ",") + ") AND user_id = $" + fmt.Sprintf("%d", len(urls)+1)
+	params = append(params, userID)
+
+	_, err := s.db.Exec(query, params...)
+	if err != nil {
+		return fmt.Errorf("error updating batch: %w", err)
+	}
+
+	return nil
 }

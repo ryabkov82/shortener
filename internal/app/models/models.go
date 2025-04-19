@@ -11,6 +11,7 @@ type UserURLMapping struct {
 	ShortURL    string `json:"short_url"`    // Короткий URL
 	OriginalURL string `json:"original_url"` // Оригинальный URL
 	UserID      string `json:"user_id"`
+	DeletedFlag bool   `json:"is_deleted"`
 }
 
 type BatchRequest struct {

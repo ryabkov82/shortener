@@ -140,6 +140,9 @@ func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (
 		return models.URLMapping{}, storage.ErrURLNotFound
 	}
 
+	if url.DeletedFlag {
+		return models.URLMapping{}, storage.ErrURLDeleted
+	}
 	/*
 		if url.UserID != userID {
 			return models.URLMapping{}, storage.ErrURLNotFound
@@ -194,6 +197,7 @@ func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping *models.URLMappin
 		ShortURL:    mapping.ShortURL,
 		OriginalURL: mapping.OriginalURL,
 		UserID:      userID.(string),
+		DeletedFlag: false,
 	}
 	s.shortCodeMap[mapping.ShortURL] = userURLMapping
 
@@ -273,4 +277,26 @@ func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]mo
 	}
 	return result, nil
 
+}
+
+func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error {
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	for _, code := range urls {
+		if mapping, exists := s.shortCodeMap[code]; exists {
+			// Проверяем, что URL принадлежит пользователю
+			if mapping.UserID == userID {
+				mapping.DeletedFlag = true
+				s.shortCodeMap[code] = mapping
+				err := s.encoder.Encode(mapping)
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
+
+	return nil
 }

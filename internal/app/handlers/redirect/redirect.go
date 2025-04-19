@@ -28,6 +28,11 @@ func GetHandler(urlHandler URLHandler, log *zap.Logger) http.HandlerFunc {
 				log.Info("Shortened key not found", zap.String("shortKey", id))
 				return
 			}
+			if errors.Is(err, storage.ErrURLDeleted) {
+				http.Error(res, "URL has been deleted", http.StatusGone)
+				log.Info("URL has been deleted", zap.String("shortKey", id))
+				return
+			}
 			http.Error(res, "failed get redirect URL", http.StatusInternalServerError)
 			log.Error("failed get redirect URL", zap.Error(err))
 			return

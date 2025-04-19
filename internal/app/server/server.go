@@ -7,6 +7,7 @@ import (
 
 	"github.com/ryabkov82/shortener/internal/app/config"
 	"github.com/ryabkov82/shortener/internal/app/handlers/batch"
+	"github.com/ryabkov82/shortener/internal/app/handlers/deluserurls"
 	"github.com/ryabkov82/shortener/internal/app/handlers/ping"
 	"github.com/ryabkov82/shortener/internal/app/handlers/redirect"
 	"github.com/ryabkov82/shortener/internal/app/handlers/shortenapi"
@@ -26,6 +27,7 @@ import (
 func StartServer(log *zap.Logger, cfg *config.Config) {
 
 	srv := &service.Service{}
+
 	if cfg.DBConnect != "" {
 		pg, err := postgres.NewPostgresStorage(cfg.DBConnect)
 
@@ -83,6 +85,7 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 	router.Get("/ping", ping.GetHandler(srv, log))
 	router.Post("/api/shorten/batch", batch.GetHandler(srv, cfg.BaseURL, log))
 	router.Get("/api/user/urls", userurls.GetHandler(srv, cfg.BaseURL, log))
+	router.Delete("/api/user/urls", deluserurls.GetHandler(srv, cfg.BaseURL, log))
 
 	log.Info("Server started", zap.String("address", cfg.HTTPServerAddr))
 
