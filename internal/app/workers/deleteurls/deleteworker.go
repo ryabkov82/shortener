@@ -21,8 +21,6 @@ type DeleteWorker struct {
 	batchChan   chan map[string][]string // агрерированные в батчи задачи на удаление сокращенных url в разрезе пользователей
 	stopChan    chan struct{}            // канал завершения
 	wg          sync.WaitGroup           // для ожидания завершения воркеров
-	shutdown    bool                     // флаг завершения работы
-	mu          sync.RWMutex             // защита флага shutdown
 	workerCount int
 	batchSize   int
 	batchWindow time.Duration
@@ -55,13 +53,6 @@ func (w *DeleteWorker) Start() {
 }
 
 func (w *DeleteWorker) Submit(task DeleteTask) error {
-
-	w.mu.RLock()
-	defer w.mu.RUnlock()
-
-	if w.shutdown {
-		return errors.New("сервис завершает работу, новые задачи не принимаются")
-	}
 
 	select {
 	case w.taskChan <- task:
@@ -177,9 +168,6 @@ func (w *DeleteWorker) processUserBatch(userID string, urls []string) error {
 
 // GracefulStop реализует graceful shutdown с таймаутом
 func (w *DeleteWorker) GracefulStop(timeout time.Duration) {
-	w.mu.Lock()
-	w.shutdown = true
-	w.mu.Unlock()
 
 	close(w.stopChan)
 
