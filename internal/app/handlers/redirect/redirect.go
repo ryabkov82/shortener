@@ -2,6 +2,7 @@ package redirect
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"go.uber.org/zap"
@@ -22,9 +23,14 @@ func GetHandler(urlHandler URLHandler, log *zap.Logger) http.HandlerFunc {
 		// Получаем адрес перенаправления
 		originalURL, err := urlHandler.GetRedirectURL(req.Context(), id)
 		if err != nil {
-			if err == storage.ErrURLNotFound {
+			if errors.Is(err, storage.ErrURLNotFound) {
 				http.Error(res, "Shortened key not found", http.StatusNotFound)
 				log.Info("Shortened key not found", zap.String("shortKey", id))
+				return
+			}
+			if errors.Is(err, storage.ErrURLDeleted) {
+				http.Error(res, "URL has been deleted", http.StatusGone)
+				log.Info("URL has been deleted", zap.String("shortKey", id))
 				return
 			}
 			http.Error(res, "failed get redirect URL", http.StatusInternalServerError)

@@ -5,7 +5,9 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/ryabkov82/shortener/internal/app/jwtauth"
 	"github.com/ryabkov82/shortener/internal/app/models"
+	"github.com/ryabkov82/shortener/internal/app/workers/deleteurls"
 )
 
 type Repository interface {
@@ -15,14 +17,24 @@ type Repository interface {
 	Ping(context.Context) error
 	SaveNewURLs(context.Context, []models.URLMapping) error
 	GetExistingURLs(context.Context, []string) (map[string]string, error)
+	GetUserUrls(context.Context, string) ([]models.URLMapping, error)
+	BatchMarkAsDeleted(userID string, urls []string) error
 }
 
 type Service struct {
-	repo Repository
+	repo         Repository
+	deleteworker *deleteurls.DeleteWorker
 }
 
 func NewService(storage Repository) *Service {
-	return &Service{repo: storage}
+
+	delworker := deleteurls.NewDeleteWorker(1, 10, 500*time.Millisecond, storage)
+	delworker.Start()
+
+	return &Service{
+		repo:         storage,
+		deleteworker: delworker,
+	}
 }
 
 func (s *Service) GetShortKey(ctx context.Context, originalURL string) (string, error) {
@@ -97,6 +109,36 @@ func (s *Service) Batch(ctx context.Context, batchRequest []models.BatchRequest,
 
 	return batchResponse, nil
 
+}
+
+func (s *Service) GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error) {
+
+	// Получаем существующие URL одним запросом
+	URLs, err := s.repo.GetUserUrls(ctx, baseURL)
+	if err != nil {
+		return nil, err
+	}
+	return URLs, nil
+
+}
+
+func (s *Service) DeleteUserUrls(ctx context.Context, shortURLs []string) error {
+
+	userID := ctx.Value(jwtauth.UserIDContextKey)
+
+	deltask := deleteurls.DeleteTask{
+		UserID:    userID.(string),
+		ShortURLs: shortURLs,
+	}
+
+	err := s.deleteworker.Submit(deltask)
+
+	return err
+
+}
+
+func (s *Service) GracefulStop(timeout time.Duration) {
+	s.deleteworker.GracefulStop(timeout)
 }
 
 func generateShortKey() string {
