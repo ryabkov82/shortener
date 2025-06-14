@@ -1,0 +1,2358 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>client: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/ryabkov82/shortener/cmd/client/main.go (0.0%)</option>
+				
+				<option value="file1">github.com/ryabkov82/shortener/cmd/shortener/main.go (0.0%)</option>
+				
+				<option value="file2">github.com/ryabkov82/shortener/internal/app/config/config.go (0.0%)</option>
+				
+				<option value="file3">github.com/ryabkov82/shortener/internal/app/handlers/batch/batch.go (71.4%)</option>
+				
+				<option value="file4">github.com/ryabkov82/shortener/internal/app/handlers/deluserurls/deluserurls.go (54.5%)</option>
+				
+				<option value="file5">github.com/ryabkov82/shortener/internal/app/handlers/ping/ping.go (100.0%)</option>
+				
+				<option value="file6">github.com/ryabkov82/shortener/internal/app/handlers/redirect/redirect.go (83.3%)</option>
+				
+				<option value="file7">github.com/ryabkov82/shortener/internal/app/handlers/shortenapi/shortenapi.go (67.6%)</option>
+				
+				<option value="file8">github.com/ryabkov82/shortener/internal/app/handlers/shorturl/shorturl.go (70.0%)</option>
+				
+				<option value="file9">github.com/ryabkov82/shortener/internal/app/handlers/userurls/userurls.go (62.5%)</option>
+				
+				<option value="file10">github.com/ryabkov82/shortener/internal/app/httpgzip/httpgzip.go (85.7%)</option>
+				
+				<option value="file11">github.com/ryabkov82/shortener/internal/app/jwtauth/jwtauth.go (100.0%)</option>
+				
+				<option value="file12">github.com/ryabkov82/shortener/internal/app/logger/logger.go (80.0%)</option>
+				
+				<option value="file13">github.com/ryabkov82/shortener/internal/app/server/middleware/auth/auth.go (67.9%)</option>
+				
+				<option value="file14">github.com/ryabkov82/shortener/internal/app/server/middleware/logger/logger.go (100.0%)</option>
+				
+				<option value="file15">github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip/mwgzip.go (89.5%)</option>
+				
+				<option value="file16">github.com/ryabkov82/shortener/internal/app/server/server.go (0.0%)</option>
+				
+				<option value="file17">github.com/ryabkov82/shortener/internal/app/service/mocks/Repository.go (41.1%)</option>
+				
+				<option value="file18">github.com/ryabkov82/shortener/internal/app/service/service.go (86.4%)</option>
+				
+				<option value="file19">github.com/ryabkov82/shortener/internal/app/storage/inmemory/inmemory.go (54.1%)</option>
+				
+				<option value="file20">github.com/ryabkov82/shortener/internal/app/storage/postgres/migrate.go (0.0%)</option>
+				
+				<option value="file21">github.com/ryabkov82/shortener/internal/app/storage/postgres/postgres.go (0.0%)</option>
+				
+				<option value="file22">github.com/ryabkov82/shortener/internal/app/workers/deleteurls/deleteworker.go (63.1%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">no coverage</span>
+				<span class="cov1">low coverage</span>
+				<span class="cov2">*</span>
+				<span class="cov3">*</span>
+				<span class="cov4">*</span>
+				<span class="cov5">*</span>
+				<span class="cov6">*</span>
+				<span class="cov7">*</span>
+				<span class="cov8">*</span>
+				<span class="cov9">*</span>
+				<span class="cov10">high coverage</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package main
+
+import (
+        "bufio"
+        "fmt"
+        "io"
+        "net/http"
+        "net/url"
+        "os"
+        "strings"
+)
+
+func main() <span class="cov0" title="0">{
+        endpoint := "http://localhost:8080/"
+        // контейнер данных для запроса
+        data := url.Values{}
+        // приглашение в консоли
+        fmt.Println("Введите длинный URL")
+        // открываем потоковое чтение из консоли
+        reader := bufio.NewReader(os.Stdin)
+        // читаем строку из консоли
+        long, err := reader.ReadString('\n')
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+        <span class="cov0" title="0">long = strings.TrimSuffix(long, "\n")
+        long = strings.TrimSuffix(long, "\r")
+        // заполняем контейнер данными
+        data.Set("url", long)
+        // добавляем HTTP-клиент
+        client := &amp;http.Client{}
+        // пишем запрос
+        // запрос методом POST должен, помимо заголовков, содержать тело
+        // тело должно быть источником потокового чтения io.Reader
+        request, err := http.NewRequest(http.MethodPost, endpoint, strings.NewReader(long))
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+        // в заголовках запроса указываем кодировку
+        //request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+        // отправляем запрос и получаем ответ
+        <span class="cov0" title="0">response, err := client.Do(request)
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+        // выводим код ответа
+        <span class="cov0" title="0">fmt.Println("Статус-код ", response.Status)
+        defer response.Body.Close()
+        // читаем поток из тела ответа
+        body, err := io.ReadAll(response.Body)
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+        // и печатаем его
+        <span class="cov0" title="0">fmt.Println(string(body))</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package main
+
+import (
+        "go.uber.org/zap"
+
+        "github.com/ryabkov82/shortener/internal/app/config"
+        "github.com/ryabkov82/shortener/internal/app/logger"
+        "github.com/ryabkov82/shortener/internal/app/server"
+)
+
+func main() <span class="cov0" title="0">{
+
+        cfg := config.Load()
+
+        if err := logger.Initialize(cfg.LogLevel); err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+
+        // Запуск сервера с использованием конфигурации
+        <span class="cov0" title="0">logger.Log.Info("Starting server", zap.String("address", cfg.HTTPServerAddr), zap.String("BaseURL", cfg.BaseURL))
+        //log.Printf("Starting server on %s with base URL %s", cfg.HTTPServerAddr, cfg.BaseURL)
+        server.StartServer(logger.Log, cfg)</span>
+
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package config
+
+import (
+        "errors"
+        "flag"
+        "log"
+        "net/url"
+        "os"
+        "strconv"
+        "strings"
+)
+
+type Config struct {
+        HTTPServerAddr string
+        BaseURL        string
+        LogLevel       string
+        FileStorage    string
+        DBConnect      string
+        JwtKey         string
+}
+
+func validateHTTPServerAddr(addr string) error <span class="cov0" title="0">{
+
+        hp := strings.Split(addr, ":")
+        if len(hp) != 2 </span><span class="cov0" title="0">{
+                return errors.New("need address in a form host:port")
+        }</span>
+        <span class="cov0" title="0">_, err := strconv.Atoi(hp[1])
+
+        return err</span>
+}
+
+func validateBaseURL(baseURL string) error <span class="cov0" title="0">{
+
+        _, err := url.Parse(baseURL)
+
+        return err
+}</span>
+
+func Load() *Config <span class="cov0" title="0">{
+
+        cfg := new(Config)
+        cfg.HTTPServerAddr = "localhost:8080"
+        cfg.BaseURL = "http://localhost:8080"
+        cfg.JwtKey = "your_strong_secret_here"
+
+        flag.Func("a", "Server address host:port", func(flagValue string) error </span><span class="cov0" title="0">{
+
+                err := validateHTTPServerAddr(flagValue)
+
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov0" title="0">cfg.HTTPServerAddr = flagValue
+                return nil</span>
+        })
+
+        <span class="cov0" title="0">flag.Func("b", "Base address shortened url", func(flagValue string) error </span><span class="cov0" title="0">{
+
+                err := validateBaseURL(flagValue)
+
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov0" title="0">cfg.BaseURL = flagValue
+                return nil</span>
+        })
+
+        <span class="cov0" title="0">flag.StringVar(&amp;cfg.LogLevel, "l", "info", "log level")
+
+        flag.StringVar(&amp;cfg.FileStorage, "f", "storage.dat", "File storage path")
+
+        flag.StringVar(&amp;cfg.DBConnect, "d", "", "Database connect string")
+
+        flag.Parse()
+
+        if envHTTPServerAddr := os.Getenv("SERVER_ADDRESS"); envHTTPServerAddr != "" </span><span class="cov0" title="0">{
+
+                err := validateHTTPServerAddr(envHTTPServerAddr)
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Fatalf("error validate SERVER_ADDRESS: %s", err)
+                }</span>
+
+                <span class="cov0" title="0">cfg.HTTPServerAddr = envHTTPServerAddr</span>
+        }
+
+        <span class="cov0" title="0">if envBaseURL := os.Getenv("BASE_URL"); envBaseURL != "" </span><span class="cov0" title="0">{
+
+                err := validateBaseURL(envBaseURL)
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Fatalf("error validate BASE_URL: %s", err)
+                }</span>
+
+                <span class="cov0" title="0">cfg.BaseURL = envBaseURL</span>
+        }
+
+        <span class="cov0" title="0">if envFileStorage := os.Getenv("FILE_STORAGE_PATH"); envFileStorage != "" </span><span class="cov0" title="0">{
+                cfg.FileStorage = envFileStorage
+        }</span>
+
+        <span class="cov0" title="0">if envDBConnect := os.Getenv("DATABASE_DSN"); envDBConnect != "" </span><span class="cov0" title="0">{
+                cfg.DBConnect = envDBConnect
+        }</span>
+
+        <span class="cov0" title="0">if envJWTSECRET := os.Getenv("JWT_SECRET"); envJWTSECRET != "" </span><span class="cov0" title="0">{
+                if len(envJWTSECRET) &lt; 32 </span><span class="cov0" title="0">{
+                        log.Fatal("JWT_SECRET must be at least 32 characters long")
+                }</span>
+
+                <span class="cov0" title="0">cfg.JwtKey = envJWTSECRET</span>
+        }
+
+        // Убедимся, что BaseURL не заканчивается на "/"
+        <span class="cov0" title="0">cfg.BaseURL = strings.TrimSuffix(cfg.BaseURL, "/")
+
+        return cfg</span>
+
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package batch
+
+import (
+        "context"
+        "encoding/json"
+        "net/http"
+
+        "go.uber.org/zap"
+
+        "github.com/ryabkov82/shortener/internal/app/models"
+)
+
+type URLHandler interface {
+        Batch(context.Context, []models.BatchRequest, string) ([]models.BatchResponse, error)
+}
+
+func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.HandlerFunc <span class="cov1" title="1">{
+        return func(res http.ResponseWriter, req *http.Request) </span><span class="cov10" title="2">{
+
+                // Декодируем тело запроса
+                var requestData []models.BatchRequest
+                decoder := json.NewDecoder(req.Body)
+                err := decoder.Decode(&amp;requestData)
+                if err != nil </span><span class="cov1" title="1">{
+                        http.Error(res, "Failed to read request body", http.StatusBadRequest)
+                        log.Error("Failed to read request body", zap.Error(err))
+                        return
+                }</span>
+
+                <span class="cov1" title="1">responseData, err := urlHandler.Batch(req.Context(), requestData, baseURL)
+
+                if err != nil </span><span class="cov0" title="0">{
+                        http.Error(res, "Failed to proccessing request data", http.StatusBadRequest)
+                        log.Error("Failed to proccessing request data", zap.Error(err))
+                        return
+                }</span>
+
+                <span class="cov1" title="1">res.Header().Set("content-type", "application/json")
+                // устанавливаем код 201
+                res.WriteHeader(http.StatusCreated)
+                // пишем тело ответа
+                resp, err := json.Marshal(responseData)
+                if err != nil </span><span class="cov0" title="0">{
+                        http.Error(res, err.Error(), http.StatusInternalServerError)
+                        log.Error("Failed to encode response data", zap.Error(err))
+                        return
+                }</span>
+                <span class="cov1" title="1">res.Write(resp)</span>
+
+        }
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package deluserurls
+
+import (
+        "context"
+        "encoding/json"
+        "net/http"
+
+        "go.uber.org/zap"
+)
+
+type URLHandler interface {
+        DeleteUserUrls(context.Context, []string) error
+}
+
+func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.HandlerFunc <span class="cov1" title="1">{
+        return func(res http.ResponseWriter, req *http.Request) </span><span class="cov10" title="4">{
+
+                var shortURLs []string
+                if err := json.NewDecoder(req.Body).Decode(&amp;shortURLs); err != nil </span><span class="cov0" title="0">{
+                        http.Error(res, "Invalid request body", http.StatusBadRequest)
+                        return
+                }</span>
+
+                <span class="cov10" title="4">err := urlHandler.DeleteUserUrls(req.Context(), shortURLs)
+
+                if err != nil </span><span class="cov0" title="0">{
+                        http.Error(res, "Failed to delete user urls", http.StatusBadRequest)
+                        log.Error("Failed to delete user urls", zap.Error(err))
+                        return
+                }</span>
+
+                <span class="cov10" title="4">res.WriteHeader(http.StatusAccepted)</span>
+
+        }
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package ping
+
+import (
+        "context"
+        "net/http"
+
+        "go.uber.org/zap"
+)
+
+type URLHandler interface {
+        Ping(context.Context) error
+}
+
+func GetHandler(urlHandler URLHandler, log *zap.Logger) http.HandlerFunc <span class="cov1" title="1">{
+        return func(res http.ResponseWriter, req *http.Request) </span><span class="cov10" title="2">{
+
+                err := urlHandler.Ping(req.Context())
+                if err != nil </span><span class="cov1" title="1">{
+                        http.Error(res, "Failed to connect to database", http.StatusInternalServerError)
+                        log.Error("Failed to connect to database", zap.Error(err))
+                        return
+                }</span>
+                <span class="cov1" title="1">log.Debug("Connect to database is successful")
+
+                // устанавливаем код 200
+                res.WriteHeader(http.StatusOK)
+                res.Write([]byte("Connect to database is successful"))</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package redirect
+
+import (
+        "context"
+        "errors"
+        "net/http"
+
+        "go.uber.org/zap"
+
+        "github.com/go-chi/chi/v5"
+        "github.com/ryabkov82/shortener/internal/app/storage"
+)
+
+type URLHandler interface {
+        GetRedirectURL(context.Context, string) (string, error)
+}
+
+func GetHandler(urlHandler URLHandler, log *zap.Logger) http.HandlerFunc <span class="cov4" title="2">{
+        return func(res http.ResponseWriter, req *http.Request) </span><span class="cov10" title="7">{
+
+                id := chi.URLParam(req, "id")
+
+                // Получаем адрес перенаправления
+                originalURL, err := urlHandler.GetRedirectURL(req.Context(), id)
+                if err != nil </span><span class="cov8" title="5">{
+                        if errors.Is(err, storage.ErrURLNotFound) </span><span class="cov4" title="2">{
+                                http.Error(res, "Shortened key not found", http.StatusNotFound)
+                                log.Info("Shortened key not found", zap.String("shortKey", id))
+                                return
+                        }</span>
+                        <span class="cov6" title="3">if errors.Is(err, storage.ErrURLDeleted) </span><span class="cov6" title="3">{
+                                http.Error(res, "URL has been deleted", http.StatusGone)
+                                log.Info("URL has been deleted", zap.String("shortKey", id))
+                                return
+                        }</span>
+                        <span class="cov0" title="0">http.Error(res, "failed get redirect URL", http.StatusInternalServerError)
+                        log.Error("failed get redirect URL", zap.Error(err))
+                        return</span>
+                }
+                <span class="cov4" title="2">log.Info("Shortened key found", zap.String("shortKey", id), zap.String("redirect", originalURL))
+
+                // Устанавливаем заголовок ответа Location
+                res.Header().Set("Location", originalURL)
+                // устанавливаем код 307
+                res.WriteHeader(http.StatusTemporaryRedirect)</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package shortenapi
+
+import (
+        "context"
+        "encoding/json"
+        "errors"
+        "net/http"
+        "net/url"
+
+        "github.com/ryabkov82/shortener/internal/app/storage"
+        "go.uber.org/zap"
+)
+
+type URLHandler interface {
+        GetShortKey(context.Context, string) (string, error)
+}
+
+type Request struct {
+        URL string `json:"url"`
+}
+
+type Response struct {
+        Result string `json:"result"`
+}
+
+func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.HandlerFunc <span class="cov1" title="1">{
+        return func(res http.ResponseWriter, req *http.Request) </span><span class="cov10" title="3">{
+
+                var request Request
+
+                if err := json.NewDecoder(req.Body).Decode(&amp;request); err != nil </span><span class="cov0" title="0">{
+                        http.Error(res, "Failed to read request body", http.StatusBadRequest)
+                        log.Error("Failed to read request body", zap.Error(err))
+                        return
+                }</span>
+
+                <span class="cov10" title="3">originalURL := string(request.URL)
+
+                if originalURL == "" </span><span class="cov0" title="0">{
+                        http.Error(res, "URL parameter is missing", http.StatusBadRequest)
+                        log.Error("URL parameter is missing")
+                        return
+                }</span>
+
+                // Проверяем, что передан URL
+                <span class="cov10" title="3">_, err := url.ParseRequestURI(originalURL)
+
+                if err != nil </span><span class="cov1" title="1">{
+                        http.Error(res, "invalid request", http.StatusBadRequest)
+                        log.Error("invalid request", zap.Error(err))
+                        return
+                }</span>
+
+                <span class="cov6" title="2">log.Debug("get URL", zap.String("originalURL", originalURL))
+
+                // Возможно, shortURL уже сгенерирован...
+                shortURL, err := urlHandler.GetShortKey(req.Context(), originalURL)
+
+                if err != nil </span><span class="cov1" title="1">{
+                        if !errors.Is(err, storage.ErrURLExists) </span><span class="cov0" title="0">{
+                                http.Error(res, "Failed to get short URL", http.StatusInternalServerError)
+                                log.Error("Failed to get short URL", zap.Error(err))
+                                return
+                        }</span>
+                }
+
+                <span class="cov6" title="2">log.Debug("shortKey generate", zap.String("shortKey", shortURL))
+
+                res.Header().Set("content-type", "application/json")
+                if err == nil </span><span class="cov1" title="1">{
+                        log.Debug("shortKey generate", zap.String("shortKey", shortURL))
+                        // устанавливаем код 201
+                        res.WriteHeader(http.StatusCreated)
+                }</span> else<span class="cov1" title="1"> {
+                        log.Debug("url exists, shortKey", zap.String("shortKey", shortURL))
+                        // устанавливаем код 409 Conflict
+                        res.WriteHeader(http.StatusConflict)
+                }</span>
+                // пишем тело ответа
+                <span class="cov6" title="2">response := Response{Result: baseURL + "/" + shortURL}
+                resp, err := json.Marshal(response)
+                if err != nil </span><span class="cov0" title="0">{
+                        http.Error(res, err.Error(), http.StatusInternalServerError)
+                        log.Error("Failed to get short URL", zap.Error(err))
+                        return
+                }</span>
+                <span class="cov6" title="2">res.Write(resp)</span>
+
+        }
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package shorturl
+
+import (
+        "context"
+        "errors"
+        "io"
+        "net/http"
+        "net/url"
+
+        "github.com/ryabkov82/shortener/internal/app/storage"
+        "go.uber.org/zap"
+)
+
+type URLHandler interface {
+        GetShortKey(context.Context, string) (string, error)
+}
+
+func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.HandlerFunc <span class="cov1" title="1">{
+        return func(res http.ResponseWriter, req *http.Request) </span><span class="cov10" title="3">{
+
+                body, err := io.ReadAll(req.Body)
+                if err != nil </span><span class="cov0" title="0">{
+                        http.Error(res, "Failed to read request body", http.StatusBadRequest)
+                        log.Error("Failed to read request body", zap.Error(err))
+                        return
+                }</span>
+                <span class="cov10" title="3">originalURL := string(body)
+
+                if originalURL == "" </span><span class="cov0" title="0">{
+                        http.Error(res, "URL parameter is missing", http.StatusBadRequest)
+                        log.Error("URL parameter is missing")
+                        return
+                }</span>
+
+                // Проверяем, что передан URL
+                <span class="cov10" title="3">_, err = url.ParseRequestURI(originalURL)
+
+                if err != nil </span><span class="cov1" title="1">{
+                        http.Error(res, "invalid request", http.StatusBadRequest)
+                        log.Error("invalid request", zap.Error(err))
+                        return
+                }</span>
+
+                <span class="cov6" title="2">log.Debug("get URL", zap.String("originalURL", originalURL))
+
+                // Возможно, shortURL уже сгенерирован...
+                shortURL, err := urlHandler.GetShortKey(req.Context(), originalURL)
+
+                if err != nil </span><span class="cov1" title="1">{
+                        if !errors.Is(err, storage.ErrURLExists) </span><span class="cov0" title="0">{
+                                http.Error(res, "Failed to get short URL", http.StatusInternalServerError)
+                                log.Error("Failed to get short URL", zap.Error(err))
+                                return
+                        }</span>
+                }
+
+                <span class="cov6" title="2">res.Header().Set("content-type", "text/plain")
+                if err == nil </span><span class="cov1" title="1">{
+                        log.Debug("shortKey generate", zap.String("shortKey", shortURL))
+                        // устанавливаем код 201
+                        res.WriteHeader(http.StatusCreated)
+                }</span> else<span class="cov1" title="1"> {
+                        log.Debug("url exists, shortKey", zap.String("shortKey", shortURL))
+                        // устанавливаем код 409 Conflict
+                        res.WriteHeader(http.StatusConflict)
+                }</span>
+                // пишем тело ответа
+                <span class="cov6" title="2">res.Write([]byte(baseURL + "/" + shortURL))</span>
+
+        }
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package userurls
+
+import (
+        "context"
+        "encoding/json"
+        "net/http"
+
+        "go.uber.org/zap"
+
+        "github.com/ryabkov82/shortener/internal/app/models"
+)
+
+type URLHandler interface {
+        GetUserUrls(context.Context, string) ([]models.URLMapping, error)
+}
+
+func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.HandlerFunc <span class="cov1" title="1">{
+        return func(res http.ResponseWriter, req *http.Request) </span><span class="cov10" title="2">{
+
+                responseData, err := urlHandler.GetUserUrls(req.Context(), baseURL)
+
+                if err != nil </span><span class="cov0" title="0">{
+                        http.Error(res, "Failed to get user urls", http.StatusBadRequest)
+                        log.Error("Failed to get user urls", zap.Error(err))
+                        return
+                }</span>
+
+                <span class="cov10" title="2">if len(responseData) == 0 </span><span class="cov1" title="1">{
+                        // устанавливаем код 204
+                        res.WriteHeader(http.StatusNoContent)
+                }</span> else<span class="cov1" title="1"> {
+                        res.Header().Set("content-type", "application/json")
+                        // устанавливаем код 200
+                        res.WriteHeader(http.StatusOK)
+                        // пишем тело ответа
+                        resp, err := json.Marshal(responseData)
+                        if err != nil </span><span class="cov0" title="0">{
+                                http.Error(res, err.Error(), http.StatusInternalServerError)
+                                log.Error("Failed to encode response data", zap.Error(err))
+                                return
+                        }</span>
+                        <span class="cov1" title="1">res.Write(resp)</span>
+
+                }
+
+        }
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package httpgzip
+
+import (
+        "compress/gzip"
+        "io"
+        "net/http"
+)
+
+// compressWriter реализует интерфейс http.ResponseWriter и позволяет прозрачно для сервера
+// сжимать передаваемые данные и выставлять правильные HTTP-заголовки
+type compressWriter struct {
+        w  http.ResponseWriter
+        zw *gzip.Writer
+}
+
+func NewCompressWriter(w http.ResponseWriter) *compressWriter <span class="cov10" title="24">{
+        return &amp;compressWriter{
+                w:  w,
+                zw: gzip.NewWriter(w),
+        }
+}</span>
+
+func (c *compressWriter) Header() http.Header <span class="cov9" title="19">{
+        return c.w.Header()
+}</span>
+
+func (c *compressWriter) Write(p []byte) (int, error) <span class="cov9" title="17">{
+        return c.zw.Write(p)
+}</span>
+
+func (c *compressWriter) WriteHeader(statusCode int) <span class="cov10" title="24">{
+        //if statusCode &lt; 300 {
+        c.w.Header().Set("Content-Encoding", "gzip")
+        //}
+        c.w.WriteHeader(statusCode)
+}</span>
+
+// Close закрывает gzip.Writer и досылает все данные из буфера.
+func (c *compressWriter) Close() error <span class="cov10" title="24">{
+        return c.zw.Close()
+}</span>
+
+// compressReader реализует интерфейс io.ReadCloser и позволяет прозрачно для сервера
+// декомпрессировать получаемые от клиента данные
+type compressReader struct {
+        r  io.ReadCloser
+        zr *gzip.Reader
+}
+
+func NewCompressReader(r io.ReadCloser) (*compressReader, error) <span class="cov7" title="9">{
+        zr, err := gzip.NewReader(r)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov7" title="9">return &amp;compressReader{
+                r:  r,
+                zr: zr,
+        }, nil</span>
+}
+
+func (c compressReader) Read(p []byte) (n int, err error) <span class="cov7" title="9">{
+        return c.zr.Read(p)
+}</span>
+
+func (c *compressReader) Close() error <span class="cov7" title="9">{
+        if err := c.r.Close(); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov7" title="9">return c.zr.Close()</span>
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package jwtauth
+
+import (
+        "github.com/golang-jwt/jwt/v5"
+        "github.com/google/uuid"
+)
+
+type Claims struct {
+        UserID string `json:"user_id"`
+        jwt.RegisteredClaims
+}
+
+// Определяем свой тип для ключа контекста.
+type ContextKey string
+
+// Константа для ключа
+const UserIDContextKey ContextKey = "userID"
+
+// Генерирует новый JWT с уникальным ID пользователя
+func GenerateNewToken(jwtKey []byte) (string, string, error) <span class="cov10" title="9">{
+        userID := uuid.New().String() // Генерируем уникальный ID
+        //expirationTime := time.Now().Add(24 * time.Hour)
+
+        claims := &amp;Claims{
+                UserID: userID,
+                //        RegisteredClaims: jwt.RegisteredClaims{
+                //                ExpiresAt: jwt.NewNumericDate(expirationTime),
+                //        },
+        }
+
+        token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+        tokenString, err := token.SignedString(jwtKey)
+        return tokenString, userID, err
+}</span>
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package logger
+
+import (
+        "go.uber.org/zap"
+)
+
+// По умолчанию установлен no-op-логер, который не выводит никаких сообщений.
+var Log *zap.Logger = zap.NewNop()
+
+// Initialize инициализирует синглтон логера с необходимым уровнем логирования.
+func Initialize(level string) error <span class="cov10" title="7">{
+        // преобразуем текстовый уровень логирования в zap.AtomicLevel
+        lvl, err := zap.ParseAtomicLevel(level)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        // создаём новую конфигурацию логера
+        <span class="cov10" title="7">cfg := zap.NewProductionConfig()
+        // устанавливаем уровень
+        cfg.Level = lvl
+        // создаём логер на основе конфигурации
+        zl, err := cfg.Build()
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        // устанавливаем синглтон
+        <span class="cov10" title="7">Log = zl
+        return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package auth
+
+import (
+        "context"
+        "fmt"
+        "net/http"
+
+        "github.com/golang-jwt/jwt/v5"
+        "github.com/ryabkov82/shortener/internal/app/jwtauth"
+)
+
+func JWTAutoIssue(jwtKey []byte) func(next http.Handler) http.Handler <span class="cov4" title="3">{
+        // Middleware: проверяет JWT или выдаёт новый
+
+        return func(next http.Handler) http.Handler </span><span class="cov4" title="3">{
+                fn := func(w http.ResponseWriter, r *http.Request) </span><span class="cov8" title="8">{
+
+                        cookie, err := r.Cookie("token")
+                        if err != nil || cookie == nil </span><span class="cov0" title="0">{
+                                userID := issueNewToken(w, jwtKey)
+                                ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, userID)
+                                r = r.WithContext(ctx)
+                                next.ServeHTTP(w, r)
+                                return
+                        }</span>
+
+                        <span class="cov8" title="8">tokenStr := cookie.Value
+                        claims := &amp;jwtauth.Claims{}
+
+                        token, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) </span><span class="cov8" title="8">{
+                                if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok </span><span class="cov0" title="0">{
+                                        return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+                                }</span>
+                                <span class="cov8" title="8">return jwtKey, nil</span>
+                        })
+
+                        <span class="cov8" title="8">if err != nil || !token.Valid </span><span class="cov0" title="0">{
+                                userID := issueNewToken(w, jwtKey)
+                                ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, userID)
+                                r = r.WithContext(ctx)
+                                next.ServeHTTP(w, r)
+                                return
+                        }</span>
+
+                        <span class="cov8" title="8">ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, claims.UserID)
+                        r = r.WithContext(ctx)
+                        // Передаем управление следующему обработчику в цепочке middleware
+                        next.ServeHTTP(w, r)</span>
+                }
+
+                // Возвращаем созданный выше обработчик, приведя его к типу http.HandlerFunc
+                <span class="cov4" title="3">return http.HandlerFunc(fn)</span>
+
+        }
+}
+
+func StrictJWTAutoIssue(jwtKey []byte) func(next http.Handler) http.Handler <span class="cov3" title="2">{
+        // Middleware: проверяет JWT или выдаёт новый
+
+        return func(next http.Handler) http.Handler </span><span class="cov3" title="2">{
+                fn := func(w http.ResponseWriter, r *http.Request) </span><span class="cov10" title="12">{
+
+                        cookie, err := r.Cookie("token")
+                        if err != nil || cookie == nil </span><span class="cov1" title="1">{
+                                _ = issueNewToken(w, jwtKey)
+                                http.Error(w, "Status unauthorized", http.StatusUnauthorized)
+                                return
+                        }</span>
+
+                        <span class="cov9" title="11">tokenStr := cookie.Value
+                        claims := &amp;jwtauth.Claims{}
+
+                        token, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) </span><span class="cov9" title="11">{
+                                if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok </span><span class="cov0" title="0">{
+                                        return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+                                }</span>
+                                <span class="cov9" title="11">return jwtKey, nil</span>
+                        })
+
+                        <span class="cov9" title="11">if err != nil || !token.Valid </span><span class="cov0" title="0">{
+                                _ = issueNewToken(w, jwtKey)
+                                http.Error(w, "Status unauthorized", http.StatusUnauthorized)
+                                return
+                        }</span>
+
+                        <span class="cov9" title="11">ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, claims.UserID)
+                        r = r.WithContext(ctx)
+                        // Передаем управление следующему обработчику в цепочке middleware
+                        next.ServeHTTP(w, r)</span>
+                }
+
+                // Возвращаем созданный выше обработчик, приведя его к типу http.HandlerFunc
+                <span class="cov3" title="2">return http.HandlerFunc(fn)</span>
+
+        }
+}
+
+// Выдаёт новый токен и куку
+func issueNewToken(w http.ResponseWriter, jwtKey []byte) string <span class="cov1" title="1">{
+        token, userID, err := jwtauth.GenerateNewToken(jwtKey)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, "Failed to generate token", http.StatusInternalServerError)
+                return ""
+        }</span>
+        <span class="cov1" title="1">setTokenCookie(w, token)
+        //log.Printf("Issued new JWT for user: %s", userID)
+        return userID</span>
+}
+
+// Устанавливает JWT в куки
+func setTokenCookie(w http.ResponseWriter, token string) <span class="cov1" title="1">{
+        http.SetCookie(w, &amp;http.Cookie{
+                Name:     "token",
+                Value:    token,
+                HttpOnly: true,
+                Path:     "/",
+                //Secure:   true, // HTTPS-only
+                SameSite: http.SameSiteStrictMode,
+        })
+}</span>
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package logger
+
+import (
+        "net/http"
+        "time"
+
+        "github.com/go-chi/chi/v5/middleware"
+        "go.uber.org/zap"
+)
+
+func RequestLogging(log *zap.Logger) func(next http.Handler) http.Handler <span class="cov6" title="7">{
+        return func(next http.Handler) http.Handler </span><span class="cov6" title="7">{
+
+                fn := func(w http.ResponseWriter, r *http.Request) </span><span class="cov10" title="24">{
+
+                        // создаем обертку вокруг `http.ResponseWriter`
+                        // для получения сведений об ответе
+                        ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
+
+                        // Момент получения запроса, чтобы вычислить время обработки
+                        t1 := time.Now()
+
+                        // Запись отправится в лог в defer
+                        // в этот момент запрос уже будет обработан
+                        defer func() </span><span class="cov10" title="24">{
+                                log.Info("request completed",
+                                        zap.String("method", r.Method),
+                                        zap.String("path", r.URL.Path),
+                                        zap.Int("status", ww.Status()),
+                                        zap.Int("bytes", ww.BytesWritten()),
+                                        zap.String("duration", time.Since(t1).String()),
+                                )
+                        }</span>()
+
+                        // Передаем управление следующему обработчику в цепочке middleware
+                        <span class="cov10" title="24">next.ServeHTTP(ww, r)</span>
+                }
+
+                // Возвращаем созданный выше обработчик, приведя его к типу http.HandlerFunc
+                <span class="cov6" title="7">return http.HandlerFunc(fn)</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package mwgzip
+
+import (
+        "net/http"
+        "strings"
+
+        "github.com/ryabkov82/shortener/internal/app/httpgzip"
+)
+
+func Gzip(next http.Handler) http.Handler <span class="cov6" title="7">{
+        fn := func(w http.ResponseWriter, r *http.Request) </span><span class="cov10" title="24">{
+                // по умолчанию устанавливаем оригинальный http.ResponseWriter как тот,
+                // который будем передавать следующей функции
+                ow := w
+
+                // проверяем, что клиент умеет получать от сервера сжатые данные в формате gzip
+                acceptEncoding := r.Header.Get("Accept-Encoding")
+                supportsGzip := strings.Contains(acceptEncoding, "gzip")
+                if supportsGzip </span><span class="cov10" title="24">{
+                        // оборачиваем оригинальный http.ResponseWriter новым с поддержкой сжатия
+                        cw := httpgzip.NewCompressWriter(w)
+                        // меняем оригинальный http.ResponseWriter на новый
+                        ow = cw
+                        // не забываем отправить клиенту все сжатые данные после завершения middleware
+                        defer cw.Close()
+                }</span>
+
+                // проверяем, что клиент отправил серверу сжатые данные в формате gzip
+                <span class="cov10" title="24">contentEncoding := r.Header.Get("Content-Encoding")
+                sendsGzip := strings.Contains(contentEncoding, "gzip")
+                if sendsGzip </span><span class="cov7" title="9">{
+                        // оборачиваем тело запроса в io.Reader с поддержкой декомпрессии
+                        cr, err := httpgzip.NewCompressReader(r.Body)
+                        if err != nil </span><span class="cov0" title="0">{
+                                w.WriteHeader(http.StatusInternalServerError)
+                                return
+                        }</span>
+                        // меняем тело запроса на новое
+                        <span class="cov7" title="9">r.Body = cr
+                        defer cr.Close()</span>
+                }
+
+                // передаём управление хендлеру
+                <span class="cov10" title="24">next.ServeHTTP(ow, r)</span>
+        }
+
+        // Возвращаем созданный выше обработчик, приведя его к типу http.HandlerFunc
+        <span class="cov6" title="7">return http.HandlerFunc(fn)</span>
+
+}
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package server
+
+import (
+        "context"
+        "net/http"
+        "os"
+        "os/signal"
+        "syscall"
+        "time"
+
+        "go.uber.org/zap"
+
+        "github.com/ryabkov82/shortener/internal/app/config"
+        "github.com/ryabkov82/shortener/internal/app/handlers/batch"
+        "github.com/ryabkov82/shortener/internal/app/handlers/deluserurls"
+        "github.com/ryabkov82/shortener/internal/app/handlers/ping"
+        "github.com/ryabkov82/shortener/internal/app/handlers/redirect"
+        "github.com/ryabkov82/shortener/internal/app/handlers/shortenapi"
+        "github.com/ryabkov82/shortener/internal/app/handlers/shorturl"
+        "github.com/ryabkov82/shortener/internal/app/handlers/userurls"
+        "github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
+        mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
+        "github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
+        "github.com/ryabkov82/shortener/internal/app/service"
+        "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
+        "github.com/ryabkov82/shortener/internal/app/storage/postgres"
+
+        "github.com/go-chi/chi/v5"
+)
+
+// StartServer запускает HTTP-сервер.
+func StartServer(log *zap.Logger, cfg *config.Config) <span class="cov0" title="0">{
+
+        srv := &amp;service.Service{}
+
+        if cfg.DBConnect != "" </span><span class="cov0" title="0">{
+                pg, err := postgres.NewPostgresStorage(cfg.DBConnect)
+
+                if err != nil </span><span class="cov0" title="0">{
+                        panic(err)</span>
+                }
+                <span class="cov0" title="0">srv = service.NewService(pg)
+                log.Info("Storage postgres")</span>
+        } else<span class="cov0" title="0"> {
+                st, err := inmemory.NewInMemoryStorage(cfg.FileStorage)
+
+                if err != nil </span><span class="cov0" title="0">{
+                        panic(err)</span>
+                }
+                // загружаем сохраненные данные из файла..
+                <span class="cov0" title="0">if err := st.Load(cfg.FileStorage); err != nil </span><span class="cov0" title="0">{
+                        panic(err)</span>
+                }
+                <span class="cov0" title="0">srv = service.NewService(st)
+                log.Info("Storage inmemory", zap.String("FileStorage", cfg.FileStorage))</span>
+        }
+
+        <span class="cov0" title="0">router := chi.NewRouter()
+        router.Use(mwlogger.RequestLogging(log))
+        router.Use(mwgzip.Gzip)
+
+        /*
+                // Группа с автоматической аутентификацией
+                router.Group(func(router chi.Router) {
+                        router.Use(auth.JWTAutoIssue([]byte(cfg.JwtKey)))
+
+                        router.Post("/", shorturl.GetHandler(srv, cfg.BaseURL, log))
+                        router.Get("/{id}", redirect.GetHandler(srv, log))
+
+                        router.Post("/api/shorten", shortenapi.GetHandler(srv, cfg.BaseURL, log))
+
+                        router.Get("/ping", ping.GetHandler(srv, log))
+                        router.Post("/api/shorten/batch", batch.GetHandler(srv, cfg.BaseURL, log))
+                })
+
+                // Группа со строгой аутентификацией
+                router.Group(func(router chi.Router) {
+                        router.Use(auth.StrictJWTAutoIssue([]byte(cfg.JwtKey)))
+                        router.Get("/api/user/urls", userurls.GetHandler(srv, cfg.BaseURL, log))
+                })
+        */
+
+        router.Use(auth.JWTAutoIssue([]byte(cfg.JwtKey)))
+
+        router.Post("/", shorturl.GetHandler(srv, cfg.BaseURL, log))
+        router.Get("/{id}", redirect.GetHandler(srv, log))
+
+        router.Post("/api/shorten", shortenapi.GetHandler(srv, cfg.BaseURL, log))
+
+        router.Get("/ping", ping.GetHandler(srv, log))
+        router.Post("/api/shorten/batch", batch.GetHandler(srv, cfg.BaseURL, log))
+        router.Get("/api/user/urls", userurls.GetHandler(srv, cfg.BaseURL, log))
+        router.Delete("/api/user/urls", deluserurls.GetHandler(srv, cfg.BaseURL, log))
+
+        log.Info("Server started", zap.String("address", cfg.HTTPServerAddr))
+
+        // Запуск HTTP-сервера в отдельной горутине
+
+        server := &amp;http.Server{
+                Addr:    cfg.HTTPServerAddr,
+                Handler: router, // Ваш роутер
+        }
+
+        go func() </span><span class="cov0" title="0">{
+                if err := server.ListenAndServe(); err != nil &amp;&amp; err != http.ErrServerClosed </span><span class="cov0" title="0">{
+                        log.Error("failed to serve server", zap.Error(err))
+                }</span>
+        }()
+
+        // Обработка сигналов завершения
+        <span class="cov0" title="0">quit := make(chan os.Signal, 1)
+        signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+        &lt;-quit
+
+        log.Info("Shutting down server...")
+
+        // Создаем контекст с таймаутом для graceful shutdown
+        ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+        defer cancel()
+
+        // Остановка HTTP-сервера
+        if err := server.Shutdown(ctx); err != nil </span><span class="cov0" title="0">{
+                log.Info("HTTP server shutdown error", zap.Error(err))
+        }</span>
+
+        // корректное завершение работы воркеров сервиса
+        <span class="cov0" title="0">srv.GracefulStop(5 * time.Second)
+
+        log.Info("Server shutdown complete")</span>
+
+}
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: github.com/ryabkov82/shortener/internal/app/service (interfaces: Repository)
+
+// Package mocks is a generated GoMock package.
+package mocks
+
+import (
+        context "context"
+        reflect "reflect"
+
+        gomock "github.com/golang/mock/gomock"
+        models "github.com/ryabkov82/shortener/internal/app/models"
+)
+
+// MockRepository is a mock of Repository interface.
+type MockRepository struct {
+        ctrl     *gomock.Controller
+        recorder *MockRepositoryMockRecorder
+}
+
+// MockRepositoryMockRecorder is the mock recorder for MockRepository.
+type MockRepositoryMockRecorder struct {
+        mock *MockRepository
+}
+
+// NewMockRepository creates a new mock instance.
+func NewMockRepository(ctrl *gomock.Controller) *MockRepository <span class="cov5" title="2">{
+        mock := &amp;MockRepository{ctrl: ctrl}
+        mock.recorder = &amp;MockRepositoryMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockRepository) EXPECT() *MockRepositoryMockRecorder <span class="cov10" title="4">{
+        return m.recorder
+}</span>
+
+// BatchMarkAsDeleted mocks base method.
+func (m *MockRepository) BatchMarkAsDeleted(arg0 string, arg1 []string) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "BatchMarkAsDeleted", arg0, arg1)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// BatchMarkAsDeleted indicates an expected call of BatchMarkAsDeleted.
+func (mr *MockRepositoryMockRecorder) BatchMarkAsDeleted(arg0, arg1 interface{}) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchMarkAsDeleted", reflect.TypeOf((*MockRepository)(nil).BatchMarkAsDeleted), arg0, arg1)
+}</span>
+
+// GetExistingURLs mocks base method.
+func (m *MockRepository) GetExistingURLs(arg0 context.Context, arg1 []string) (map[string]string, error) <span class="cov1" title="1">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetExistingURLs", arg0, arg1)
+        ret0, _ := ret[0].(map[string]string)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetExistingURLs indicates an expected call of GetExistingURLs.
+func (mr *MockRepositoryMockRecorder) GetExistingURLs(arg0, arg1 interface{}) *gomock.Call <span class="cov1" title="1">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExistingURLs", reflect.TypeOf((*MockRepository)(nil).GetExistingURLs), arg0, arg1)
+}</span>
+
+// GetRedirectURL mocks base method.
+func (m *MockRepository) GetRedirectURL(arg0 context.Context, arg1 string) (models.URLMapping, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetRedirectURL", arg0, arg1)
+        ret0, _ := ret[0].(models.URLMapping)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetRedirectURL indicates an expected call of GetRedirectURL.
+func (mr *MockRepositoryMockRecorder) GetRedirectURL(arg0, arg1 interface{}) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRedirectURL", reflect.TypeOf((*MockRepository)(nil).GetRedirectURL), arg0, arg1)
+}</span>
+
+// GetShortKey mocks base method.
+func (m *MockRepository) GetShortKey(arg0 context.Context, arg1 string) (models.URLMapping, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetShortKey", arg0, arg1)
+        ret0, _ := ret[0].(models.URLMapping)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetShortKey indicates an expected call of GetShortKey.
+func (mr *MockRepositoryMockRecorder) GetShortKey(arg0, arg1 interface{}) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetShortKey", reflect.TypeOf((*MockRepository)(nil).GetShortKey), arg0, arg1)
+}</span>
+
+// GetUserUrls mocks base method.
+func (m *MockRepository) GetUserUrls(arg0 context.Context, arg1 string) ([]models.URLMapping, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetUserUrls", arg0, arg1)
+        ret0, _ := ret[0].([]models.URLMapping)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetUserUrls indicates an expected call of GetUserUrls.
+func (mr *MockRepositoryMockRecorder) GetUserUrls(arg0, arg1 interface{}) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserUrls", reflect.TypeOf((*MockRepository)(nil).GetUserUrls), arg0, arg1)
+}</span>
+
+// Ping mocks base method.
+func (m *MockRepository) Ping(arg0 context.Context) error <span class="cov5" title="2">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "Ping", arg0)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// Ping indicates an expected call of Ping.
+func (mr *MockRepositoryMockRecorder) Ping(arg0 interface{}) *gomock.Call <span class="cov5" title="2">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Ping", reflect.TypeOf((*MockRepository)(nil).Ping), arg0)
+}</span>
+
+// SaveNewURLs mocks base method.
+func (m *MockRepository) SaveNewURLs(arg0 context.Context, arg1 []models.URLMapping) error <span class="cov1" title="1">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "SaveNewURLs", arg0, arg1)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// SaveNewURLs indicates an expected call of SaveNewURLs.
+func (mr *MockRepositoryMockRecorder) SaveNewURLs(arg0, arg1 interface{}) *gomock.Call <span class="cov1" title="1">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveNewURLs", reflect.TypeOf((*MockRepository)(nil).SaveNewURLs), arg0, arg1)
+}</span>
+
+// SaveURL mocks base method.
+func (m *MockRepository) SaveURL(arg0 context.Context, arg1 *models.URLMapping) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "SaveURL", arg0, arg1)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// SaveURL indicates an expected call of SaveURL.
+func (mr *MockRepositoryMockRecorder) SaveURL(arg0, arg1 interface{}) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveURL", reflect.TypeOf((*MockRepository)(nil).SaveURL), arg0, arg1)
+}</span>
+</pre>
+		
+		<pre class="file" id="file18" style="display: none">package service
+
+import (
+        "context"
+        "math/rand"
+        "time"
+
+        "github.com/ryabkov82/shortener/internal/app/jwtauth"
+        "github.com/ryabkov82/shortener/internal/app/models"
+        "github.com/ryabkov82/shortener/internal/app/workers/deleteurls"
+)
+
+type Repository interface {
+        GetShortKey(context.Context, string) (models.URLMapping, error)
+        GetRedirectURL(context.Context, string) (models.URLMapping, error)
+        SaveURL(context.Context, *models.URLMapping) error
+        Ping(context.Context) error
+        SaveNewURLs(context.Context, []models.URLMapping) error
+        GetExistingURLs(context.Context, []string) (map[string]string, error)
+        GetUserUrls(context.Context, string) ([]models.URLMapping, error)
+        BatchMarkAsDeleted(userID string, urls []string) error
+}
+
+type Service struct {
+        repo         Repository
+        deleteworker *deleteurls.DeleteWorker
+}
+
+func NewService(storage Repository) *Service <span class="cov4" title="7">{
+
+        delworker := deleteurls.NewDeleteWorker(1, 10, 500*time.Millisecond, storage)
+        delworker.Start()
+
+        return &amp;Service{
+                repo:         storage,
+                deleteworker: delworker,
+        }
+}</span>
+
+func (s *Service) GetShortKey(ctx context.Context, originalURL string) (string, error) <span class="cov5" title="12">{
+
+        shortKey := generateShortKey()
+        // Cохраняем переданный URL
+        mapping := models.URLMapping{
+                ShortURL:    shortKey,
+                OriginalURL: originalURL,
+        }
+
+        err := s.repo.SaveURL(ctx, &amp;mapping)
+
+        return mapping.ShortURL, err
+}</span>
+
+func (s *Service) GetRedirectURL(ctx context.Context, shortKey string) (string, error) <span class="cov4" title="7">{
+
+        // Получаем адрес перенаправления
+        mapping, err := s.repo.GetRedirectURL(ctx, shortKey)
+        return mapping.OriginalURL, err
+}</span>
+
+func (s *Service) Ping(ctx context.Context) error <span class="cov2" title="2">{
+        return s.repo.Ping(ctx)
+}</span>
+
+func (s *Service) Batch(ctx context.Context, batchRequest []models.BatchRequest, baseURL string) ([]models.BatchResponse, error) <span class="cov1" title="1">{
+
+        // Собираем все оригинальные URL для проверки
+        originalURLs := make([]string, len(batchRequest))
+        for i, item := range batchRequest </span><span class="cov2" title="2">{
+                originalURLs[i] = item.OriginalURL
+        }</span>
+
+        // Получаем существующие URL одним запросом
+        <span class="cov1" title="1">existingURLs, err := s.repo.GetExistingURLs(ctx, originalURLs)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov1" title="1">var newURLs []models.URLMapping
+        batchResponse := make([]models.BatchResponse, 0, len(batchRequest))
+
+        for _, item := range batchRequest </span><span class="cov2" title="2">{
+                // Проверяем, есть ли URL уже в базе
+                if shortURL, ok := existingURLs[item.OriginalURL]; ok </span><span class="cov0" title="0">{
+                        batchResponse = append(batchResponse, models.BatchResponse{
+                                CorrelationID: item.CorrelationID,
+                                ShortURL:      baseURL + "/" + shortURL,
+                        })
+                        continue</span>
+                }
+
+                // Генерируем новый короткий URL
+                <span class="cov2" title="2">shortURL := generateShortKey()
+                newURLs = append(newURLs, models.URLMapping{
+                        OriginalURL: item.OriginalURL,
+                        ShortURL:    shortURL,
+                })
+
+                batchResponse = append(batchResponse, models.BatchResponse{
+                        CorrelationID: item.CorrelationID,
+                        ShortURL:      baseURL + "/" + shortURL,
+                })</span>
+        }
+
+        // Сохраняем новые URL пачкой
+        <span class="cov1" title="1">if err := s.repo.SaveNewURLs(ctx, newURLs); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov1" title="1">return batchResponse, nil</span>
+
+}
+
+func (s *Service) GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error) <span class="cov2" title="2">{
+
+        // Получаем существующие URL одним запросом
+        URLs, err := s.repo.GetUserUrls(ctx, baseURL)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov2" title="2">return URLs, nil</span>
+
+}
+
+func (s *Service) DeleteUserUrls(ctx context.Context, shortURLs []string) error <span class="cov3" title="4">{
+
+        userID := ctx.Value(jwtauth.UserIDContextKey)
+
+        deltask := deleteurls.DeleteTask{
+                UserID:    userID.(string),
+                ShortURLs: shortURLs,
+        }
+
+        err := s.deleteworker.Submit(deltask)
+
+        return err
+
+}</span>
+
+func (s *Service) GracefulStop(timeout time.Duration) <span class="cov0" title="0">{
+        s.deleteworker.GracefulStop(timeout)
+}</span>
+
+func generateShortKey() string <span class="cov6" title="14">{
+        const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        const keyLength = 8
+
+        rand.New(rand.NewSource(time.Now().UnixNano()))
+
+        shortKey := make([]byte, keyLength)
+        for i := range shortKey </span><span class="cov10" title="112">{
+                shortKey[i] = charset[rand.Intn(len(charset))]
+        }</span>
+        <span class="cov6" title="14">return string(shortKey)</span>
+}
+</pre>
+		
+		<pre class="file" id="file19" style="display: none">package inmemory
+
+import (
+        "bufio"
+        "context"
+        "encoding/json"
+        "errors"
+        "os"
+        "sync"
+
+        "github.com/ryabkov82/shortener/internal/app/jwtauth"
+        "github.com/ryabkov82/shortener/internal/app/models"
+        "github.com/ryabkov82/shortener/internal/app/storage"
+)
+
+type InMemoryStorage struct {
+        userURLIndex map[string]map[string]string     // userID -&gt; originalURL -&gt; shortCode
+        shortCodeMap map[string]models.UserURLMapping // shortCode -&gt; UserURLMapping
+        countRecords uint64
+        file         *os.File
+        encoder      *json.Encoder
+        mu           sync.RWMutex
+}
+
+func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span class="cov6" title="5">{
+
+        file, err := os.OpenFile(fileStoragePath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov6" title="5">return &amp;InMemoryStorage{
+                userURLIndex: make(map[string]map[string]string),
+                shortCodeMap: make(map[string]models.UserURLMapping),
+                countRecords: 0,
+                file:         file,
+                encoder:      json.NewEncoder(file),
+        }, nil</span>
+}
+
+func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov6" title="5">{
+
+        file, err := os.OpenFile(fileStoragePath, os.O_RDONLY|os.O_CREATE, 0666)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov6" title="5">defer file.Close()
+
+        // Создаем сканер для чтения файла построчно
+        scanner := bufio.NewScanner(file)
+
+        var countRecords uint64
+
+        // Читаем файл построчно
+        for scanner.Scan() </span><span class="cov0" title="0">{
+                line := scanner.Bytes()
+
+                // Пропускаем пустые строки
+                if len(line) == 0 </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+
+                <span class="cov0" title="0">var url models.UserURLMapping
+
+                if err := json.Unmarshal(line, &amp;url); err != nil </span><span class="cov0" title="0">{
+                        continue</span> // Пропускаем некорректные записи, но продолжаем загрузку
+                }
+
+                // Валидация обязательных полей
+                <span class="cov0" title="0">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+
+                // Обновляем userURLIndex
+                <span class="cov0" title="0">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov0" title="0">{
+                        s.userURLIndex[url.UserID] = make(map[string]string)
+                }</span>
+
+                // Для append-only лога последняя запись перезаписывает предыдущие
+                <span class="cov0" title="0">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
+                s.shortCodeMap[url.ShortURL] = url
+
+                countRecords++</span>
+
+        }
+
+        <span class="cov6" title="5">s.countRecords = countRecords
+
+        // Проверяем, не возникла ли ошибка при сканировании
+        err = scanner.Err()
+
+        return err</span>
+}
+
+func (s *InMemoryStorage) GetShortKey(ctx context.Context, originalURL string) (models.URLMapping, error) <span class="cov0" title="0">{
+
+        s.mu.RLock()
+        defer s.mu.RUnlock()
+
+        var err error
+
+        userID := ctx.Value(jwtauth.UserIDContextKey)
+
+        if userID == nil </span><span class="cov0" title="0">{
+                return models.URLMapping{}, errors.New("userID is not set")
+        }</span>
+
+        // Проверка существования URL
+        <span class="cov0" title="0">shortKey, found := s.userURLIndex[userID.(string)][originalURL]
+
+        if !found </span><span class="cov0" title="0">{
+                shortKey = ""
+                err = storage.ErrURLNotFound
+        }</span>
+
+        <span class="cov0" title="0">mapping := models.URLMapping{
+                ShortURL:    shortKey,
+                OriginalURL: originalURL,
+        }
+
+        return mapping, err</span>
+}
+
+func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (models.URLMapping, error) <span class="cov7" title="7">{
+
+        s.mu.RLock()
+        defer s.mu.RUnlock()
+
+        /*
+                userID := ctx.Value(jwtauth.UserIDContextKey)
+                if userID == nil {
+                        return models.URLMapping{}, errors.New("userID is not set")
+                }
+        */
+
+        url, found := s.shortCodeMap[shortKey]
+
+        if !found </span><span class="cov3" title="2">{
+                return models.URLMapping{}, storage.ErrURLNotFound
+        }</span>
+
+        <span class="cov6" title="5">if url.DeletedFlag </span><span class="cov4" title="3">{
+                return models.URLMapping{}, storage.ErrURLDeleted
+        }</span>
+        /*
+                if url.UserID != userID {
+                        return models.URLMapping{}, storage.ErrURLNotFound
+                }
+        */
+
+        <span class="cov3" title="2">mapping := models.URLMapping{
+                ShortURL:    url.ShortURL,
+                OriginalURL: url.OriginalURL,
+        }
+
+        return mapping, nil</span>
+
+}
+
+func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping *models.URLMapping) error <span class="cov10" title="13">{
+
+        // Устанавливаем блокировку
+        s.mu.Lock()
+        defer s.mu.Unlock()
+
+        // После установки блокировки проверяем нет ли записи с таким ShortURL
+        // Возможно, shortURL был сгененрирован ранее
+        _, found := s.shortCodeMap[mapping.ShortURL]
+
+        if found </span><span class="cov0" title="0">{
+                return storage.ErrShortURLExists
+        }</span>
+
+        <span class="cov10" title="13">userID := ctx.Value(jwtauth.UserIDContextKey)
+        if userID == nil </span><span class="cov0" title="0">{
+                return errors.New("userID is not set")
+        }</span>
+
+        <span class="cov10" title="13">if _, ok := s.userURLIndex[userID.(string)]; !ok </span><span class="cov7" title="7">{
+                s.userURLIndex[userID.(string)] = make(map[string]string)
+        }</span>
+
+        // Проверка существования URL
+        <span class="cov10" title="13">if shortURL, exists := s.userURLIndex[userID.(string)][mapping.OriginalURL]; exists </span><span class="cov3" title="2">{
+                mapping.ShortURL = shortURL
+                return storage.ErrURLExists
+        }</span>
+
+        // Добавляем записи
+        <span class="cov9" title="11">s.userURLIndex[userID.(string)][mapping.OriginalURL] = mapping.ShortURL
+
+        s.countRecords++
+
+        userURLMapping := models.UserURLMapping{
+                UUID:        s.countRecords,
+                ShortURL:    mapping.ShortURL,
+                OriginalURL: mapping.OriginalURL,
+                UserID:      userID.(string),
+                DeletedFlag: false,
+        }
+        s.shortCodeMap[mapping.ShortURL] = userURLMapping
+
+        err := s.encoder.Encode(userURLMapping)
+
+        return err</span>
+
+}
+
+func (s *InMemoryStorage) Ping(ctx context.Context) error <span class="cov0" title="0">{
+        return nil
+}</span>
+
+func (s *InMemoryStorage) GetExistingURLs(ctx context.Context, originalURLs []string) (map[string]string, error) <span class="cov0" title="0">{
+
+        existing := make(map[string]string)
+
+        if len(originalURLs) == 0 </span><span class="cov0" title="0">{
+                return existing, nil
+        }</span>
+
+        <span class="cov0" title="0">for _, originalURL := range originalURLs </span><span class="cov0" title="0">{
+                mapping, err := s.GetShortKey(ctx, originalURL)
+                if err != nil </span><span class="cov0" title="0">{
+                        if errors.Is(err, storage.ErrURLNotFound) </span><span class="cov0" title="0">{
+                                continue</span>
+                        } else<span class="cov0" title="0"> {
+                                return nil, err
+                        }</span>
+                }
+                <span class="cov0" title="0">existing[mapping.OriginalURL] = mapping.ShortURL</span>
+        }
+
+        <span class="cov0" title="0">return existing, nil</span>
+
+}
+
+func (s *InMemoryStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapping) error <span class="cov0" title="0">{
+        if len(urls) == 0 </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">for _, url := range urls </span><span class="cov0" title="0">{
+                err := s.SaveURL(ctx, &amp;url)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+        }
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error) <span class="cov3" title="2">{
+
+        s.mu.RLock()
+        defer s.mu.RUnlock()
+
+        userID := ctx.Value(jwtauth.UserIDContextKey)
+        if userID == nil </span><span class="cov0" title="0">{
+                return nil, errors.New("userID is not set")
+        }</span>
+
+        // Проверяем существование пользователя в индексе
+        <span class="cov3" title="2">userURLs, exists := s.userURLIndex[userID.(string)]
+        if !exists </span><span class="cov1" title="1">{
+                return nil, nil // Возвращаем nil вместо ошибки если пользователь не найден
+        }</span>
+
+        <span class="cov1" title="1">var result []models.URLMapping
+        // Итерируемся по всем URL пользователя
+        for originalURL, shortCode := range userURLs </span><span class="cov3" title="2">{
+                result = append(result, models.URLMapping{
+                        OriginalURL: originalURL,
+                        ShortURL:    baseURL + "/" + shortCode,
+                })
+
+        }</span>
+        <span class="cov1" title="1">return result, nil</span>
+
+}
+
+func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error <span class="cov5" title="4">{
+
+        s.mu.Lock()
+        defer s.mu.Unlock()
+
+        for _, code := range urls </span><span class="cov6" title="5">{
+                if mapping, exists := s.shortCodeMap[code]; exists </span><span class="cov5" title="4">{
+                        // Проверяем, что URL принадлежит пользователю
+                        if mapping.UserID == userID </span><span class="cov4" title="3">{
+                                mapping.DeletedFlag = true
+                                s.shortCodeMap[code] = mapping
+                                err := s.encoder.Encode(mapping)
+                                if err != nil </span><span class="cov0" title="0">{
+                                        return err
+                                }</span>
+                        }
+                }
+        }
+
+        <span class="cov5" title="4">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file20" style="display: none">package postgres
+
+import (
+        "database/sql"
+        "embed"
+        "time"
+
+        "github.com/golang-migrate/migrate/v4"
+        "github.com/golang-migrate/migrate/v4/database/postgres"
+        "github.com/golang-migrate/migrate/v4/source/iofs"
+)
+
+//go:embed migrations/*.sql
+var fs embed.FS
+
+func applyMigrations(db *sql.DB) error <span class="cov0" title="0">{
+        // 1. Создаем драйвер для источника миграций (из embed.FS)
+        sourceDriver, err := iofs.New(fs, "migrations")
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        // 2. Создаем драйвер для базы данных
+        <span class="cov0" title="0">dbDriver, err := postgres.WithInstance(db, &amp;postgres.Config{
+                StatementTimeout: 5 * time.Minute, // Для операций миграции
+        })
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        // 3. Инициализируем мигратор
+        <span class="cov0" title="0">m, err := migrate.NewWithInstance(
+                "iofs",       // Имя драйвера источника
+                sourceDriver, // Экземпляр драйвера источника
+                "postgres",   // Имя драйвера БД
+                dbDriver)     // Экземпляр драйвера БД
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        // 4. Применяем миграции
+        <span class="cov0" title="0">if err := m.Up(); err != nil &amp;&amp; err != migrate.ErrNoChange </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file21" style="display: none">package postgres
+
+import (
+        "context"
+        "database/sql"
+        "errors"
+        "fmt"
+        "strings"
+        "time"
+
+        _ "github.com/jackc/pgx/v5/stdlib"
+
+        "github.com/ryabkov82/shortener/internal/app/jwtauth"
+        "github.com/ryabkov82/shortener/internal/app/models"
+        "github.com/ryabkov82/shortener/internal/app/storage"
+)
+
+type PostgresStorage struct {
+        db              *sql.DB
+        getShortURLStmt *sql.Stmt
+        getURLStmt      *sql.Stmt
+        insertURLStmt   *sql.Stmt
+}
+
+func NewPostgresStorage(StoragePath string) (*PostgresStorage, error) <span class="cov0" title="0">{
+
+        db, err := sql.Open("pgx", StoragePath)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        //err = initDB(db)
+        // Применяем миграции из текущего пакета
+        <span class="cov0" title="0">if err := applyMigrations(db); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("migrations failed: %w", err)
+        }</span>
+
+        <span class="cov0" title="0">db.SetMaxOpenConns(25)
+        db.SetMaxIdleConns(25)
+        db.SetConnMaxLifetime(5 * time.Minute)
+
+        getShortURLStmt, err := db.Prepare(`SELECT short_code FROM short_urls WHERE original_url = $1 and user_id = $2`)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">getURLStmt, err := db.Prepare(`SELECT original_url, is_deleted        FROM short_urls WHERE short_code = $1`)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">insertURLStmt, err := db.Prepare(`
+        INSERT INTO short_urls (original_url, short_code, user_id)
+        VALUES ($1, $2, $3)
+        ON CONFLICT (user_id, original_url) DO UPDATE SET
+                original_url = EXCLUDED.original_url -- Фейковое обновление
+        RETURNING short_code, xmax;
+        `)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;PostgresStorage{db, getShortURLStmt, getURLStmt, insertURLStmt}, nil</span>
+
+}
+
+func (s *PostgresStorage) Ping(ctx context.Context) error <span class="cov0" title="0">{
+
+        // устанавливаем таймаут 5 секунд
+        ctxTm, cancel := context.WithTimeout(ctx, 5*time.Second)
+        defer cancel()
+        err := s.db.PingContext(ctxTm)
+        return err
+}</span>
+
+func (s *PostgresStorage) GetShortKey(ctx context.Context, originalURL string) (models.URLMapping, error) <span class="cov0" title="0">{
+
+        mapping := models.URLMapping{
+                OriginalURL: originalURL,
+        }
+
+        userID := ctx.Value(jwtauth.UserIDContextKey)
+
+        err := s.getShortURLStmt.QueryRowContext(ctx, originalURL, userID).Scan(&amp;mapping.ShortURL)
+        if err != nil </span><span class="cov0" title="0">{
+                if errors.Is(err, sql.ErrNoRows) </span><span class="cov0" title="0">{
+                        return mapping, storage.ErrURLNotFound
+                }</span>
+                <span class="cov0" title="0">return mapping, err</span>
+        }
+
+        <span class="cov0" title="0">return mapping, nil</span>
+}
+
+func (s *PostgresStorage) GetRedirectURL(ctx context.Context, shortKey string) (models.URLMapping, error) <span class="cov0" title="0">{
+
+        mapping := models.URLMapping{
+                ShortURL: shortKey,
+        }
+
+        //userID := ctx.Value(jwtauth.UserIDContextKey)
+
+        var deletedFlag bool
+
+        err := s.getURLStmt.QueryRowContext(ctx, shortKey).Scan(&amp;mapping.OriginalURL, &amp;deletedFlag)
+        if err != nil </span><span class="cov0" title="0">{
+                if errors.Is(err, sql.ErrNoRows) </span><span class="cov0" title="0">{
+                        return mapping, fmt.Errorf("%w", storage.ErrURLNotFound)
+                }</span>
+                <span class="cov0" title="0">return mapping, fmt.Errorf("ошибка при поиске URL: %w", err)</span>
+        }
+
+        <span class="cov0" title="0">if deletedFlag </span><span class="cov0" title="0">{
+                return mapping, storage.ErrURLDeleted
+        }</span>
+        <span class="cov0" title="0">return mapping, nil</span>
+
+}
+
+func (s *PostgresStorage) SaveURL(ctx context.Context, mapping *models.URLMapping) error <span class="cov0" title="0">{
+
+        var xmax int64 // Системный столбец, показывающий был ли конфликт
+
+        userID := ctx.Value(jwtauth.UserIDContextKey)
+
+        err := s.insertURLStmt.QueryRowContext(ctx, mapping.OriginalURL, mapping.ShortURL, userID).Scan(&amp;mapping.ShortURL, &amp;xmax)
+
+        if err != nil </span><span class="cov0" title="0">{
+                // сюда попадем в том числе, если был конфликт по полю short_code
+                return err
+        }</span>
+        // Если xmax &gt; 0, значит запись с original_url уже существовала (был конфликт)
+        <span class="cov0" title="0">if xmax &gt; 0 </span><span class="cov0" title="0">{
+                err = storage.ErrURLExists
+        }</span>
+
+        <span class="cov0" title="0">return err</span>
+
+}
+
+func (s *PostgresStorage) GetExistingURLs(ctx context.Context, originalURLs []string) (map[string]string, error) <span class="cov0" title="0">{
+
+        existing := make(map[string]string)
+
+        if len(originalURLs) == 0 </span><span class="cov0" title="0">{
+                return existing, nil
+        }</span>
+
+        // Создаем запрос с параметрами для всех URL
+        <span class="cov0" title="0">query := "SELECT original_url, short_code FROM short_urls WHERE original_url = ANY($1) and user_id = $2"
+
+        userID := ctx.Value(jwtauth.UserIDContextKey)
+
+        // Просто передаем слайс - pgx/stdlib автоматически конвертирует
+        rows, err := s.db.QueryContext(ctx, query, originalURLs, userID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">defer rows.Close()
+
+        for rows.Next() </span><span class="cov0" title="0">{
+                var originalURL string
+                var shortURL string
+                if err := rows.Scan(&amp;originalURL, &amp;shortURL); err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                <span class="cov0" title="0">existing[originalURL] = shortURL</span>
+        }
+        <span class="cov0" title="0">err = rows.Err()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return existing, nil</span>
+}
+
+func (s *PostgresStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapping) error <span class="cov0" title="0">{
+        if len(urls) == 0 </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">userID := ctx.Value(jwtauth.UserIDContextKey)
+
+        // Начинаем транзакцию
+        tx, err := s.db.Begin()
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">defer func() </span><span class="cov0" title="0">{
+                if err != nil </span><span class="cov0" title="0">{
+                        tx.Rollback()
+                }</span>
+        }()
+
+        // Подготавливаем statement для пакетной вставки
+        <span class="cov0" title="0">stmt, err := tx.Prepare("INSERT INTO short_urls (original_url, short_code, user_id) VALUES($1, $2, $3)")
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">defer stmt.Close()
+
+        // Выполняем вставку для каждого URL
+        for _, url := range urls </span><span class="cov0" title="0">{
+                _, err = stmt.ExecContext(ctx, url.OriginalURL, url.ShortURL, userID)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+        }
+
+        <span class="cov0" title="0">return tx.Commit()</span>
+}
+
+func (s *PostgresStorage) GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error) <span class="cov0" title="0">{
+
+        userID := ctx.Value(jwtauth.UserIDContextKey)
+
+        // Создаем запрос поиска всех сокращенных пользователем url
+        query := "SELECT original_url, short_code FROM short_urls WHERE user_id = $1"
+
+        rows, err := s.db.QueryContext(ctx, query, userID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">defer rows.Close()
+
+        var userURLs []models.URLMapping
+
+        for rows.Next() </span><span class="cov0" title="0">{
+                var originalURL string
+                var shortURL string
+                if err := rows.Scan(&amp;originalURL, &amp;shortURL); err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                <span class="cov0" title="0">userURLs = append(userURLs, models.URLMapping{
+                        OriginalURL: originalURL,
+                        ShortURL:    baseURL + "/" + shortURL,
+                })</span>
+        }
+        <span class="cov0" title="0">err = rows.Err()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return userURLs, nil</span>
+}
+
+func (s *PostgresStorage) BatchMarkAsDeleted(userID string, urls []string) error <span class="cov0" title="0">{
+
+        var params []interface{}
+        query := "UPDATE short_urls SET is_deleted = true WHERE short_code IN ("
+
+        for i, url := range urls </span><span class="cov0" title="0">{
+                query += fmt.Sprintf("$%d,", i+1)
+                params = append(params, url)
+        }</span>
+        <span class="cov0" title="0">query = strings.TrimSuffix(query, ",") + ") AND user_id = $" + fmt.Sprintf("%d", len(urls)+1)
+        params = append(params, userID)
+
+        _, err := s.db.Exec(query, params...)
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("error updating batch: %w", err)
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file22" style="display: none">package deleteurls
+
+import (
+        "errors"
+        "log"
+        "sync"
+        "time"
+)
+
+type Repository interface {
+        BatchMarkAsDeleted(userID string, urls []string) error
+}
+
+type DeleteTask struct {
+        UserID    string
+        ShortURLs []string
+}
+
+type DeleteWorker struct {
+        taskChan    chan DeleteTask          // канал задач на удаление сокращенных url
+        batchChan   chan map[string][]string // агрегированные в батчи задачи на удаление сокращенных url в разрезе пользователей
+        stopChan    chan struct{}            // канал завершения
+        wg          sync.WaitGroup           // для ожидания завершения воркеров
+        workerCount int
+        batchSize   int
+        batchWindow time.Duration
+        repo        Repository
+}
+
+func NewDeleteWorker(workerCount, batchSize int, batchWindow time.Duration, storage Repository) *DeleteWorker <span class="cov7" title="7">{
+        return &amp;DeleteWorker{
+                taskChan:    make(chan DeleteTask, 10000),
+                batchChan:   make(chan map[string][]string, 100),
+                stopChan:    make(chan struct{}),
+                workerCount: workerCount,
+                batchSize:   batchSize,
+                batchWindow: batchWindow,
+                repo:        storage,
+        }
+}</span>
+
+func (w *DeleteWorker) Start() <span class="cov7" title="7">{
+
+        w.wg.Add(w.workerCount + 1) // +1 для сборщика батчей
+
+        // Запускаем сборщик батчей
+        go w.batchCollector()
+
+        // Запускаем воркеров для обработки батчей
+        for i := 0; i &lt; w.workerCount; i++ </span><span class="cov7" title="7">{
+                go w.batchProcessor()
+        }</span>
+}
+
+func (w *DeleteWorker) Submit(task DeleteTask) error <span class="cov5" title="4">{
+
+        select </span>{
+        case w.taskChan &lt;- task:<span class="cov5" title="4">
+                return nil</span>
+        default:<span class="cov0" title="0">
+                return errors.New("очередь переполнена")</span> // Очередь переполнена
+        }
+}
+
+func (w *DeleteWorker) batchCollector() <span class="cov7" title="7">{
+
+        defer w.wg.Done()
+
+        batch := make(map[string][]string)
+        ticker := time.NewTicker(w.batchWindow)
+        defer ticker.Stop()
+
+        for </span><span class="cov10" title="17">{
+                select </span>{
+                case &lt;-w.stopChan:<span class="cov0" title="0">
+                        // При завершении отправляем оставшиеся задачи
+                        if len(batch) &gt; 0 </span><span class="cov0" title="0">{
+                                w.batchChan &lt;- batch
+                        }</span>
+                        <span class="cov0" title="0">close(w.batchChan)
+                        return</span>
+
+                case task, ok := &lt;-w.taskChan:<span class="cov5" title="4">
+
+                        if !ok </span><span class="cov0" title="0">{
+                                // Канал закрыт, отправляем оставшиеся данные
+                                if len(batch) &gt; 0 </span><span class="cov0" title="0">{
+                                        w.batchChan &lt;- batch
+                                }</span>
+                                <span class="cov0" title="0">close(w.batchChan)
+                                return</span>
+                        }
+
+                        // Добавляем URL в батч для данного пользователя
+                        <span class="cov5" title="4">if urls, exists := batch[task.UserID]; exists </span><span class="cov0" title="0">{
+                                batch[task.UserID] = append(urls, task.ShortURLs...)
+                        }</span> else<span class="cov5" title="4"> {
+                                batch[task.UserID] = task.ShortURLs
+                        }</span>
+
+                        // Если батч достиг размера - отправляем на обработку
+                        <span class="cov5" title="4">if len(batch) &gt;= w.batchSize </span><span class="cov0" title="0">{
+                                w.batchChan &lt;- batch
+                                batch = make(map[string][]string)
+                                ticker.Reset(w.batchWindow)
+                        }</span>
+
+                case &lt;-ticker.C:<span class="cov6" title="6">
+                        // По таймеру отправляем собранные задачи
+                        if len(batch) &gt; 0 </span><span class="cov5" title="4">{
+                                w.batchChan &lt;- batch
+                                batch = make(map[string][]string)
+                        }</span>
+                }
+        }
+}
+
+func (w *DeleteWorker) batchProcessor() <span class="cov7" title="7">{
+
+        defer w.wg.Done()
+
+        for batch := range w.batchChan </span><span class="cov5" title="4">{
+                // Используем WaitGroup для ожидания завершения всех горутин
+                var batchWg sync.WaitGroup
+                batchWg.Add(len(batch))
+
+                // Создаем канал для ограничения количества одновременно работающих горутин
+                concurrencyLimit := make(chan struct{}, w.workerCount*2)
+
+                for userID, urls := range batch </span><span class="cov5" title="4">{
+                        // Захватываем слот в канале (ограничиваем параллелизм)
+                        concurrencyLimit &lt;- struct{}{}
+
+                        go func(userID string, urls []string) </span><span class="cov5" title="4">{
+                                defer batchWg.Done()
+                                defer func() </span><span class="cov5" title="4">{ &lt;-concurrencyLimit }</span>() // Освобождаем слот
+
+                                // Разбиваем на под-батчи для очень больших списков URL
+                                <span class="cov5" title="4">const subBatchSize = 50
+                                for i := 0; i &lt; len(urls); i += subBatchSize </span><span class="cov5" title="4">{
+                                        end := i + subBatchSize
+                                        if end &gt; len(urls) </span><span class="cov5" title="4">{
+                                                end = len(urls)
+                                        }</span>
+                                        <span class="cov5" title="4">subBatch := urls[i:end]
+
+                                        if err := w.processUserBatch(userID, subBatch); err != nil </span><span class="cov0" title="0">{
+                                                log.Printf("Ошибка при пометке URL как удалённых для пользователя %s: %v", userID, err)
+                                                // Можно добавить retry логику здесь при необходимости
+                                        }</span>
+                                }
+                        }(userID, urls)
+                }
+
+                // Ожидаем завершения обработки всего батча
+                <span class="cov5" title="4">batchWg.Wait()</span>
+        }
+}
+
+func (w *DeleteWorker) processUserBatch(userID string, urls []string) error <span class="cov5" title="4">{
+        // 1. Обновляем в БД
+        if err := w.repo.BatchMarkAsDeleted(userID, urls); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov5" title="4">return nil</span>
+}
+
+// GracefulStop реализует graceful shutdown с таймаутом
+func (w *DeleteWorker) GracefulStop(timeout time.Duration) <span class="cov0" title="0">{
+
+        close(w.stopChan)
+
+        done := make(chan struct{})
+        go func() </span><span class="cov0" title="0">{
+                w.wg.Wait()
+                close(done)
+        }</span>()
+
+        <span class="cov0" title="0">select </span>{
+        case &lt;-done:<span class="cov0" title="0">
+                log.Println("Все воркеры завершили работу")</span>
+        case &lt;-time.After(timeout):<span class="cov0" title="0">
+                log.Println("Таймаут ожидания завершения воркеров")</span>
+        }
+
+        <span class="cov0" title="0">close(w.taskChan)</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

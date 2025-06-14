@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"os/signal"
 	"syscall"
@@ -26,10 +27,13 @@ import (
 	"github.com/ryabkov82/shortener/internal/app/storage/postgres"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/ryabkov82/shortener/internal/app/pprof"
 )
 
 // StartServer запускает HTTP-сервер.
 func StartServer(log *zap.Logger, cfg *config.Config) {
+
+	pprof.StartPProf(log, cfg.ConfigPProf)
 
 	srv := &service.Service{}
 

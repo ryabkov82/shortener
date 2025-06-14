@@ -4,7 +4,42 @@ import (
 	"compress/gzip"
 	"io"
 	"net/http"
+	"sync"
 )
+
+// оптимизация, пулы
+var writerPool = sync.Pool{
+	New: func() interface{} {
+		return gzip.NewWriter(io.Discard)
+	},
+}
+
+var readerPool = sync.Pool{
+	New: func() interface{} {
+		return new(gzip.Reader)
+	},
+}
+
+func init() {
+	InitPools()
+}
+
+func InitPools() {
+
+	// Предзаполнение пула (опционально)
+	for i := 0; i < 32; i++ {
+		writerPool.Put(writerPool.New())
+		readerPool.Put(readerPool.New())
+	}
+}
+
+func PutWriter(zw *gzip.Writer) {
+	writerPool.Put(zw)
+}
+
+func PutReader(zr *gzip.Reader) {
+	readerPool.Put(zr)
+}
 
 // compressWriter реализует интерфейс http.ResponseWriter и позволяет прозрачно для сервера
 // сжимать передаваемые данные и выставлять правильные HTTP-заголовки
@@ -14,9 +49,11 @@ type compressWriter struct {
 }
 
 func NewCompressWriter(w http.ResponseWriter) *compressWriter {
+	zw := writerPool.Get().(*gzip.Writer)
+	zw.Reset(w)
 	return &compressWriter{
 		w:  w,
-		zw: gzip.NewWriter(w),
+		zw: zw,
 	}
 }
 
@@ -25,6 +62,7 @@ func (c *compressWriter) Header() http.Header {
 }
 
 func (c *compressWriter) Write(p []byte) (int, error) {
+	c.w.Header().Del("Content-Length")
 	return c.zw.Write(p)
 }
 
@@ -37,7 +75,9 @@ func (c *compressWriter) WriteHeader(statusCode int) {
 
 // Close закрывает gzip.Writer и досылает все данные из буфера.
 func (c *compressWriter) Close() error {
-	return c.zw.Close()
+	err := c.zw.Close()
+	PutWriter(c.zw) // Возвращаем writer в пул
+	return err
 }
 
 // compressReader реализует интерфейс io.ReadCloser и позволяет прозрачно для сервера
@@ -48,11 +88,11 @@ type compressReader struct {
 }
 
 func NewCompressReader(r io.ReadCloser) (*compressReader, error) {
-	zr, err := gzip.NewReader(r)
-	if err != nil {
+	zr := readerPool.Get().(*gzip.Reader)
+	if err := zr.Reset(r); err != nil {
+		readerPool.Put(zr)
 		return nil, err
 	}
-
 	return &compressReader{
 		r:  r,
 		zr: zr,
@@ -64,8 +104,7 @@ func (c compressReader) Read(p []byte) (n int, err error) {
 }
 
 func (c *compressReader) Close() error {
-	if err := c.r.Close(); err != nil {
-		return err
-	}
-	return c.zr.Close()
+	err := c.r.Close()
+	PutReader(c.zr) // Возвращаем reader в пул
+	return err
 }

@@ -18,7 +18,7 @@ type DeleteTask struct {
 
 type DeleteWorker struct {
 	taskChan    chan DeleteTask          // канал задач на удаление сокращенных url
-	batchChan   chan map[string][]string // агрерированные в батчи задачи на удаление сокращенных url в разрезе пользователей
+	batchChan   chan map[string][]string // агрегированные в батчи задачи на удаление сокращенных url в разрезе пользователей
 	stopChan    chan struct{}            // канал завершения
 	wg          sync.WaitGroup           // для ожидания завершения воркеров
 	workerCount int

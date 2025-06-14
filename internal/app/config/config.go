@@ -17,6 +17,15 @@ type Config struct {
 	FileStorage    string
 	DBConnect      string
 	JwtKey         string
+	ConfigPProf    PProfConfig
+}
+
+type PProfConfig struct {
+	Enabled  bool
+	AuthUser string
+	AuthPass string
+	Endpoint string // "/debug/pprof"
+	BindAddr string // ":6060"
 }
 
 func validateHTTPServerAddr(addr string) error {
@@ -43,6 +52,11 @@ func Load() *Config {
 	cfg.HTTPServerAddr = "localhost:8080"
 	cfg.BaseURL = "http://localhost:8080"
 	cfg.JwtKey = "your_strong_secret_here"
+	cfg.ConfigPProf.Enabled = true
+	cfg.ConfigPProf.AuthUser = "admin"
+	cfg.ConfigPProf.AuthPass = "admin"
+	cfg.ConfigPProf.Endpoint = "/debug/pprof"
+	cfg.ConfigPProf.BindAddr = ":6060"
 
 	flag.Func("a", "Server address host:port", func(flagValue string) error {
 
@@ -110,6 +124,19 @@ func Load() *Config {
 		}
 
 		cfg.JwtKey = envJWTSECRET
+	}
+
+	if envPPROFUSER := os.Getenv("PPROF_USER"); envPPROFUSER != "" {
+		cfg.ConfigPProf.AuthUser = envPPROFUSER
+	}
+
+	if envPPROFPASS := os.Getenv("PPROF_PASS"); envPPROFPASS != "" {
+		cfg.ConfigPProf.AuthPass = envPPROFPASS
+	}
+
+	if envPPROFENABLED := os.Getenv("PPROF_ENABLED"); envPPROFENABLED != "" {
+		pprofEnabled, _ := strconv.ParseBool(envPPROFENABLED)
+		cfg.ConfigPProf.Enabled = pprofEnabled
 	}
 
 	// Убедимся, что BaseURL не заканчивается на "/"
