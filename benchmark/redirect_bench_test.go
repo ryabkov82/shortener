@@ -12,6 +12,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-resty/resty/v2"
+
 	"github.com/ryabkov82/shortener/internal/app/logger"
 
 	"github.com/ryabkov82/shortener/internal/app/handlers/redirect"

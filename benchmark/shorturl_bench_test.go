@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/go-resty/resty/v2"
+
 	"github.com/ryabkov82/shortener/internal/app/jwtauth"
 	"github.com/ryabkov82/shortener/internal/app/logger"
 

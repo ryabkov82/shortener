@@ -7,8 +7,9 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/ryabkov82/shortener/internal/app/storage"
 	"go.uber.org/zap"
+
+	"github.com/ryabkov82/shortener/internal/app/storage"
 )
 
 type URLHandler interface {
