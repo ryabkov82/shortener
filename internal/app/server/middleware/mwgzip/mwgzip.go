@@ -1,3 +1,4 @@
+// Пакет mwgzip предоставляет middleware для сжатия и распаковки HTTP-трафика в формате gzip.
 package mwgzip
 
 import (
@@ -7,44 +8,49 @@ import (
 	"github.com/ryabkov82/shortener/internal/app/httpgzip"
 )
 
+// Gzip создает middleware для обработки gzip сжатия HTTP-запросов и ответов.
+//
+// Middleware выполняет:
+// - Сжатие ответов в gzip, если клиент поддерживает прием сжатых данных
+// - Распаковку входящих запросов, если они сжаты gzip
+// - Прозрачную передачу данных, если gzip не используется
+//
+// Возвращает:
+//
+//	func(next http.Handler) http.Handler - middleware функцию
 func Gzip(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		// по умолчанию устанавливаем оригинальный http.ResponseWriter как тот,
-		// который будем передавать следующей функции
+		// Используем оригинальный ResponseWriter по умолчанию
 		ow := w
 
-		// проверяем, что клиент умеет получать от сервера сжатые данные в формате gzip
+		// Проверяем поддержку gzip на стороне клиента
 		acceptEncoding := r.Header.Get("Accept-Encoding")
 		supportsGzip := strings.Contains(acceptEncoding, "gzip")
 		if supportsGzip {
-			// оборачиваем оригинальный http.ResponseWriter новым с поддержкой сжатия
+			// Создаем обертку с поддержкой сжатия
 			cw := httpgzip.NewCompressWriter(w)
-			// меняем оригинальный http.ResponseWriter на новый
 			ow = cw
-			// не забываем отправить клиенту все сжатые данные после завершения middleware
+			// Гарантируем закрытие компрессора
 			defer cw.Close()
 		}
 
-		// проверяем, что клиент отправил серверу сжатые данные в формате gzip
+		// Проверяем сжатие входящего запроса
 		contentEncoding := r.Header.Get("Content-Encoding")
 		sendsGzip := strings.Contains(contentEncoding, "gzip")
 		if sendsGzip {
-			// оборачиваем тело запроса в io.Reader с поддержкой декомпрессии
+			// Создаем reader с поддержкой распаковки
 			cr, err := httpgzip.NewCompressReader(r.Body)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
-			// меняем тело запроса на новое
 			r.Body = cr
 			defer cr.Close()
 		}
 
-		// передаём управление хендлеру
+		// Передаем управление следующему обработчику
 		next.ServeHTTP(ow, r)
 	}
 
-	// Возвращаем созданный выше обработчик, приведя его к типу http.HandlerFunc
 	return http.HandlerFunc(fn)
-
 }
