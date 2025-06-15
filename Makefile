@@ -36,11 +36,11 @@ test-cover:
 
 # Базовые бенчмарки (in-memory)
 bench:
-	go test -bench=InMemory -benchmem -memprofile=profiles/base_1.pprof -benchtime=5s $(BENCH_DIR)
+	go test -bench=InMemory -benchmem -memprofile=profiles/result.pprof -benchtime=5s $(BENCH_DIR)
 
 # Бенчмарки с Postgres
 bench-pg: start-db
-	$(SET_ENV) && go test -bench=Postgres -benchmem -memprofile=profiles/base_pg.pprof -benchtime=5s $(BENCH_DIR)
+	$(SET_ENV) && go test -bench=Postgres -benchmem -memprofile=profiles/result.pprof -benchtime=5s $(BENCH_DIR)
 
 # Полный набор бенчмарков
 bench-full: bench bench-pg
