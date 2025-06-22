@@ -1,3 +1,4 @@
+// Пакет jwtauth предоставляет функционал для работы с JWT токенами аутентификации.
 package jwtauth
 
 import (
@@ -5,27 +6,42 @@ import (
 	"github.com/google/uuid"
 )
 
+// Claims представляет кастомные claims JWT токена.
+// Содержит идентификатор пользователя и стандартные claims.
 type Claims struct {
-	UserID string `json:"user_id"`
-	jwt.RegisteredClaims
+	UserID               string `json:"user_id"` // Уникальный идентификатор пользователя
+	jwt.RegisteredClaims        // Стандартные claims JWT
 }
 
-// Определяем свой тип для ключа контекста.
+// ContextKey тип для ключей контекста.
+// Используется для безопасного доступа к значениям в context.Context.
 type ContextKey string
 
-// Константа для ключа
+// UserIDContextKey ключ для хранения ID пользователя в контексте.
 const UserIDContextKey ContextKey = "userID"
 
-// Генерирует новый JWT с уникальным ID пользователя
+// GenerateNewToken генерирует новый JWT токен для пользователя.
+//
+// Параметры:
+//   - jwtKey: секретный ключ для подписи токена
+//
+// Возвращает:
+//   - string: подписанный JWT токен
+//   - string: сгенерированный ID пользователя
+//   - error: ошибка генерации токена
+//
+// Пример использования:
+//
+//	token, userID, err := GenerateNewToken([]byte("secret"))
 func GenerateNewToken(jwtKey []byte) (string, string, error) {
-	userID := uuid.New().String() // Генерируем уникальный ID
-	//expirationTime := time.Now().Add(24 * time.Hour)
+	userID := uuid.New().String() // Генерация уникального ID пользователя
 
 	claims := &Claims{
 		UserID: userID,
-		//	RegisteredClaims: jwt.RegisteredClaims{
-		//		ExpiresAt: jwt.NewNumericDate(expirationTime),
-		//	},
+		// При необходимости можно добавить время экспирации:
+		// RegisteredClaims: jwt.RegisteredClaims{
+		//     ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+		// },
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

@@ -1,3 +1,4 @@
+// Пакет logger предоставляет middleware для логирования HTTP-запросов.
 package logger
 
 import (
@@ -8,35 +9,46 @@ import (
 	"go.uber.org/zap"
 )
 
+// RequestLogging создает middleware для логирования HTTP-запросов.
+//
+// Middleware логирует:
+// - HTTP-метод
+// - Путь запроса
+// - Статус ответа
+// - Размер ответа в байтах
+// - Время обработки запроса
+//
+// Параметры:
+//
+//	log - логгер zap для записи логов
+//
+// Возвращает:
+//
+//	func(next http.Handler) http.Handler - middleware функцию
 func RequestLogging(log *zap.Logger) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
-
 		fn := func(w http.ResponseWriter, r *http.Request) {
-
-			// создаем обертку вокруг `http.ResponseWriter`
-			// для получения сведений об ответе
+			// Создаем обертку для ResponseWriter для получения метрик ответа
 			ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
 
-			// Момент получения запроса, чтобы вычислить время обработки
+			// Фиксируем время начала обработки запроса
 			t1 := time.Now()
 
-			// Запись отправится в лог в defer
-			// в этот момент запрос уже будет обработан
+			// Отложенное выполнение логирования после обработки запроса
 			defer func() {
 				log.Info("request completed",
-					zap.String("method", r.Method),
-					zap.String("path", r.URL.Path),
-					zap.Int("status", ww.Status()),
-					zap.Int("bytes", ww.BytesWritten()),
-					zap.String("duration", time.Since(t1).String()),
+					zap.String("method", r.Method),                  // HTTP-метод (GET, POST и т.д.)
+					zap.String("path", r.URL.Path),                  // Путь запроса
+					zap.Int("status", ww.Status()),                  // HTTP-статус ответа
+					zap.Int("bytes", ww.BytesWritten()),             // Размер ответа в байтах
+					zap.String("duration", time.Since(t1).String()), // Время обработки
 				)
 			}()
 
-			// Передаем управление следующему обработчику в цепочке middleware
+			// Передаем управление следующему обработчику
 			next.ServeHTTP(ww, r)
 		}
 
-		// Возвращаем созданный выше обработчик, приведя его к типу http.HandlerFunc
 		return http.HandlerFunc(fn)
 	}
 }

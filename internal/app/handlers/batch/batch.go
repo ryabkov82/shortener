@@ -1,3 +1,9 @@
+// Пакет batch предоставляет обработчик для пакетного создания сокращённых URL.
+//
+// Пакет реализует:
+// - Приём массива URL в JSON-формате
+// - Параллельную обработку запросов
+// - Возврат результатов в коррелируемом формате
 package batch
 
 import (
@@ -10,13 +16,65 @@ import (
 	"github.com/ryabkov82/shortener/internal/app/models"
 )
 
+// URLHandler определяет контракт для обработки пакетных запросов.
 type URLHandler interface {
-	Batch(context.Context, []models.BatchRequest, string) ([]models.BatchResponse, error)
+	// Batch обрабатывает массив запросов на сокращение URL.
+	//
+	// Параметры:
+	//   ctx - контекст выполнения
+	//   requests - массив запросов
+	//   baseURL - базовый URL для генерации коротких ссылок
+	//
+	// Возвращает:
+	//   []models.BatchResponse - массив результатов
+	//   error - ошибка выполнения
+	Batch(ctx context.Context, requests []models.BatchRequest, baseURL string) ([]models.BatchResponse, error)
 }
 
+// GetHandler создаёт HTTP-обработчик для пакетного создания URL.
+//
+// Спецификация API:
+//
+//	Метод: POST
+//	Content-Type: application/json
+//	Путь: /api/shorten/batch
+//
+// Формат запроса:
+//
+//	[
+//	  {
+//	    "correlation_id": "уникальный_идентификатор",
+//	    "original_url": "https://example.com"
+//	  },
+//	  ...
+//	]
+//
+// Формат ответа:
+//
+//	[
+//	  {
+//	    "correlation_id": "уникальный_идентификатор",
+//	    "short_url": "http://short.ly/abc"
+//	  },
+//	  ...
+//	]
+//
+// Коды ответа:
+//   - 201 Created - успешная обработка
+//   - 400 Bad Request - невалидный JSON
+//   - 500 Internal Server Error - внутренняя ошибка сервера
+//
+// Параметры:
+//
+//	urlHandler - сервис для обработки URL
+//	baseURL - базовый адрес для коротких ссылок
+//	log - логгер для записи событий
+//
+// Возвращает:
+//
+//	http.HandlerFunc - HTTP-обработчик
 func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
-
 		// Декодируем тело запроса
 		var requestData []models.BatchRequest
 		decoder := json.NewDecoder(req.Body)
@@ -46,6 +104,5 @@ func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.Han
 			return
 		}
 		res.Write(resp)
-
 	}
 }

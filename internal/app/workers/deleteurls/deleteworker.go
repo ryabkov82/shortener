@@ -1,3 +1,10 @@
+// Пакет deleteurls предоставляет асинхронный обработчик для пакетного удаления URL в сервисе сокращения ссылок.
+//
+// Пакет реализует паттерн "рабочий пул" с:
+// - Группировкой запросов по пользователям
+// - Настраиваемым размером пакета и временем ожидания
+// - Параллельной обработкой с помощью пула воркеров
+// - Поддержкой плавного завершения работы
 package deleteurls
 
 import (
@@ -7,26 +14,39 @@ import (
 	"time"
 )
 
+// Repository определяет интерфейс хранилища, необходимый для работы DeleteWorker.
 type Repository interface {
+	// BatchMarkAsDeleted помечает несколько URL как удаленные для указанного пользователя.
+	// Возвращает ошибку в случае неудачи.
 	BatchMarkAsDeleted(userID string, urls []string) error
 }
 
+// DeleteTask представляет запрос на удаление нескольких сокращенных URL для пользователя.
 type DeleteTask struct {
-	UserID    string
-	ShortURLs []string
+	UserID    string   // ID пользователя, инициировавшего запрос
+	ShortURLs []string // Список сокращенных URL для пометки как удаленных
 }
 
+// DeleteWorker управляет жизненным циклом обработки удаления URL.
+// Агрегирует запросы в пакеты и обрабатывает их асинхронно.
 type DeleteWorker struct {
-	taskChan    chan DeleteTask          // канал задач на удаление сокращенных url
-	batchChan   chan map[string][]string // агрерированные в батчи задачи на удаление сокращенных url в разрезе пользователей
-	stopChan    chan struct{}            // канал завершения
-	wg          sync.WaitGroup           // для ожидания завершения воркеров
-	workerCount int
-	batchSize   int
-	batchWindow time.Duration
-	repo        Repository
+	taskChan    chan DeleteTask          // Канал для входящих задач
+	batchChan   chan map[string][]string // Канал для агрегированных пакетов задач
+	stopChan    chan struct{}            // Канал для сигнала остановки
+	wg          sync.WaitGroup           // Для синхронизации завершения воркеров
+	workerCount int                      // Количество воркеров
+	batchSize   int                      // Максимальный размер пакета
+	batchWindow time.Duration            // Максимальное время формирования пакета
+	repo        Repository               // Репозиторий для работы с хранилищем
 }
 
+// NewDeleteWorker создает новый экземпляр DeleteWorker с заданными параметрами.
+//
+// Параметры:
+//   - workerCount: количество воркеров для обработки пакетов
+//   - batchSize: максимальный размер пакета перед обработкой
+//   - batchWindow: максимальное время ожидания формирования пакета
+//   - storage: реализация интерфейса Repository
 func NewDeleteWorker(workerCount, batchSize int, batchWindow time.Duration, storage Repository) *DeleteWorker {
 	return &DeleteWorker{
 		taskChan:    make(chan DeleteTask, 10000),
@@ -39,31 +59,31 @@ func NewDeleteWorker(workerCount, batchSize int, batchWindow time.Duration, stor
 	}
 }
 
+// Start запускает воркеры и сборщик пакетов.
 func (w *DeleteWorker) Start() {
+	w.wg.Add(w.workerCount + 1) // +1 для сборщика пакетов
 
-	w.wg.Add(w.workerCount + 1) // +1 для сборщика батчей
+	go w.batchCollector() // Запускаем сборщик пакетов
 
-	// Запускаем сборщик батчей
-	go w.batchCollector()
-
-	// Запускаем воркеров для обработки батчей
 	for i := 0; i < w.workerCount; i++ {
-		go w.batchProcessor()
+		go w.batchProcessor() // Запускаем воркеры
 	}
 }
 
+// Submit добавляет новую задачу на удаление в очередь обработки.
+// Возвращает ошибку если очередь переполнена.
 func (w *DeleteWorker) Submit(task DeleteTask) error {
-
 	select {
 	case w.taskChan <- task:
 		return nil
 	default:
-		return errors.New("очередь переполнена") // Очередь переполнена
+		return errors.New("очередь переполнена")
 	}
 }
 
+// batchCollector собирает задачи в пакеты по пользователям.
+// Отправляет пакеты на обработку при достижении batchSize или по истечении batchWindow.
 func (w *DeleteWorker) batchCollector() {
-
 	defer w.wg.Done()
 
 	batch := make(map[string][]string)
@@ -73,7 +93,6 @@ func (w *DeleteWorker) batchCollector() {
 	for {
 		select {
 		case <-w.stopChan:
-			// При завершении отправляем оставшиеся задачи
 			if len(batch) > 0 {
 				w.batchChan <- batch
 			}
@@ -81,9 +100,7 @@ func (w *DeleteWorker) batchCollector() {
 			return
 
 		case task, ok := <-w.taskChan:
-
 			if !ok {
-				// Канал закрыт, отправляем оставшиеся данные
 				if len(batch) > 0 {
 					w.batchChan <- batch
 				}
@@ -91,14 +108,12 @@ func (w *DeleteWorker) batchCollector() {
 				return
 			}
 
-			// Добавляем URL в батч для данного пользователя
 			if urls, exists := batch[task.UserID]; exists {
 				batch[task.UserID] = append(urls, task.ShortURLs...)
 			} else {
 				batch[task.UserID] = task.ShortURLs
 			}
 
-			// Если батч достиг размера - отправляем на обработку
 			if len(batch) >= w.batchSize {
 				w.batchChan <- batch
 				batch = make(map[string][]string)
@@ -106,7 +121,6 @@ func (w *DeleteWorker) batchCollector() {
 			}
 
 		case <-ticker.C:
-			// По таймеру отправляем собранные задачи
 			if len(batch) > 0 {
 				w.batchChan <- batch
 				batch = make(map[string][]string)
@@ -115,27 +129,23 @@ func (w *DeleteWorker) batchCollector() {
 	}
 }
 
+// batchProcessor обрабатывает пакеты задач, используя пул воркеров.
 func (w *DeleteWorker) batchProcessor() {
-
 	defer w.wg.Done()
 
 	for batch := range w.batchChan {
-		// Используем WaitGroup для ожидания завершения всех горутин
 		var batchWg sync.WaitGroup
 		batchWg.Add(len(batch))
 
-		// Создаем канал для ограничения количества одновременно работающих горутин
 		concurrencyLimit := make(chan struct{}, w.workerCount*2)
 
 		for userID, urls := range batch {
-			// Захватываем слот в канале (ограничиваем параллелизм)
 			concurrencyLimit <- struct{}{}
 
 			go func(userID string, urls []string) {
 				defer batchWg.Done()
-				defer func() { <-concurrencyLimit }() // Освобождаем слот
+				defer func() { <-concurrencyLimit }()
 
-				// Разбиваем на под-батчи для очень больших списков URL
 				const subBatchSize = 50
 				for i := 0; i < len(urls); i += subBatchSize {
 					end := i + subBatchSize
@@ -146,29 +156,26 @@ func (w *DeleteWorker) batchProcessor() {
 
 					if err := w.processUserBatch(userID, subBatch); err != nil {
 						log.Printf("Ошибка при пометке URL как удалённых для пользователя %s: %v", userID, err)
-						// Можно добавить retry логику здесь при необходимости
 					}
 				}
 			}(userID, urls)
 		}
 
-		// Ожидаем завершения обработки всего батча
 		batchWg.Wait()
 	}
 }
 
+// processUserBatch выполняет пометку URL как удаленных в хранилище.
 func (w *DeleteWorker) processUserBatch(userID string, urls []string) error {
-	// 1. Обновляем в БД
 	if err := w.repo.BatchMarkAsDeleted(userID, urls); err != nil {
 		return err
 	}
-
 	return nil
 }
 
-// GracefulStop реализует graceful shutdown с таймаутом
+// GracefulStop выполняет плавное завершение работы с заданным таймаутом.
+// Дожидается завершения обработки текущих задач или истечения таймаута.
 func (w *DeleteWorker) GracefulStop(timeout time.Duration) {
-
 	close(w.stopChan)
 
 	done := make(chan struct{})

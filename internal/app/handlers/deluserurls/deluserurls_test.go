@@ -11,8 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ryabkov82/shortener/internal/app/models"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/ryabkov82/shortener/internal/app/models"
 
 	"github.com/ryabkov82/shortener/internal/app/handlers/redirect"
 	"github.com/ryabkov82/shortener/internal/app/jwtauth"
