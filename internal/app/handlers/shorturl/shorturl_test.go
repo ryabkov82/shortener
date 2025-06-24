@@ -78,9 +78,9 @@ func TestGetHandler(t *testing.T) {
 	cookie := createSignedCookie()
 
 	tests := []struct {
+		cookie         *http.Cookie
 		name           string
 		originalURL    string
-		cookie         *http.Cookie
 		wantStatusCode int
 	}{
 		{

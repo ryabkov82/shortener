@@ -109,12 +109,12 @@ func TestGetHandler(t *testing.T) {
 	}
 
 	tests := []struct {
+		cookie         *http.Cookie
 		name           string
 		userID         string
-		cookie         *http.Cookie
 		codesToDelete  []string
+		shouldBeMarked []string
 		wantStatus     int
-		shouldBeMarked []string // Какие URL должны быть помечены удаленными
 	}{
 		{
 			name:           "successful deletion",

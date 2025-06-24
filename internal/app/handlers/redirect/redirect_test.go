@@ -93,10 +93,10 @@ func TestGetHandler(t *testing.T) {
 	st.SaveURL(ctx, &mapping)
 
 	tests := []struct {
+		cookie         *http.Cookie
 		name           string
 		originalURL    string
 		shortKey       string
-		cookie         *http.Cookie
 		wantStatusCode int
 	}{
 		{

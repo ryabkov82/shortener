@@ -82,9 +82,9 @@ func TestGetHandler(t *testing.T) {
 	defer srv.Close()
 
 	tests := []struct {
+		cookie         *http.Cookie
 		name           string
 		request        Request
-		cookie         *http.Cookie
 		wantStatusCode int
 	}{
 		{

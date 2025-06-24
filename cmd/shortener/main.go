@@ -25,7 +25,7 @@ func main() {
 
 	// Запуск сервера с использованием конфигурации
 	logger.Log.Info("Starting server", zap.String("address", cfg.HTTPServerAddr), zap.String("BaseURL", cfg.BaseURL))
-	//log.Printf("Starting server on %s with base URL %s", cfg.HTTPServerAddr, cfg.BaseURL)
+	// log.Printf("Starting server on %s with base URL %s", cfg.HTTPServerAddr, cfg.BaseURL)
 	server.StartServer(logger.Log, cfg)
 
 }

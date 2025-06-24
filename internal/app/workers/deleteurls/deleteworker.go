@@ -1,4 +1,4 @@
-// Пакет deleteurls предоставляет асинхронный обработчик для пакетного удаления URL в сервисе сокращения ссылок.
+// Package deleteurls предоставляет асинхронный обработчик для пакетного удаления URL в сервисе сокращения ссылок.
 //
 // Пакет реализует паттерн "рабочий пул" с:
 // - Группировкой запросов по пользователям
@@ -30,14 +30,14 @@ type DeleteTask struct {
 // DeleteWorker управляет жизненным циклом обработки удаления URL.
 // Агрегирует запросы в пакеты и обрабатывает их асинхронно.
 type DeleteWorker struct {
-	taskChan    chan DeleteTask          // Канал для входящих задач
-	batchChan   chan map[string][]string // Канал для агрегированных пакетов задач
-	stopChan    chan struct{}            // Канал для сигнала остановки
-	wg          sync.WaitGroup           // Для синхронизации завершения воркеров
-	workerCount int                      // Количество воркеров
-	batchSize   int                      // Максимальный размер пакета
-	batchWindow time.Duration            // Максимальное время формирования пакета
-	repo        Repository               // Репозиторий для работы с хранилищем
+	repo        Repository
+	taskChan    chan DeleteTask
+	batchChan   chan map[string][]string
+	stopChan    chan struct{}
+	wg          sync.WaitGroup
+	workerCount int
+	batchSize   int
+	batchWindow time.Duration
 }
 
 // NewDeleteWorker создает новый экземпляр DeleteWorker с заданными параметрами.

@@ -1,4 +1,4 @@
-// Пакет mwgzip предоставляет middleware для сжатия и распаковки HTTP-трафика в формате gzip.
+// Package mwgzip предоставляет middleware для сжатия и распаковки HTTP-трафика в формате gzip.
 package mwgzip
 
 import (

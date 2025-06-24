@@ -1,4 +1,4 @@
-// Пакет config предоставляет загрузку и валидацию конфигурации приложения.
+// Package config предоставляет загрузку и валидацию конфигурации приложения.
 //
 // Поддерживает несколько источников конфигурации:
 // - Аргументы командной строки
@@ -34,11 +34,11 @@ type Config struct {
 
 // PProfConfig содержит настройки профилирования pprof.
 type PProfConfig struct {
-	Enabled  bool   // Включено ли профилирование
-	AuthUser string // Логин для basic auth
-	AuthPass string // Пароль для basic auth
-	Endpoint string // Путь для эндпоинтов (по умолчанию "/debug/pprof")
-	BindAddr string // Адрес для pprof (по умолчанию ":6060")
+	AuthUser string
+	AuthPass string
+	Endpoint string
+	BindAddr string
+	Enabled  bool
 }
 
 // validateHTTPServerAddr проверяет корректность адреса сервера.

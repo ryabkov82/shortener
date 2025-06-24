@@ -97,7 +97,7 @@ func TestGetHandler(t *testing.T) {
 		if err != nil {
 			panic(err)
 		}
-		//url.ShortURL = shortURL
+		// url.ShortURL = shortURL
 	}
 
 	t.Run("Успешное получение ссылок пользователя", func(t *testing.T) {

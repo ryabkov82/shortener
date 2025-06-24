@@ -1,4 +1,4 @@
-// Пакет postgres предоставляет реализацию хранилища URL на PostgreSQL.
+// Package postgres предоставляет реализацию хранилища URL на PostgreSQL.
 //
 // Пакет включает:
 // - Подключение к PostgreSQL с настройкой пула соединений
@@ -38,13 +38,13 @@ type PostgresStorage struct {
 // Возвращает:
 //   - *PostgresStorage: инициализированное хранилище
 //   - error: ошибка при подключении или инициализации
-func NewPostgresStorage(StoragePath string) (*PostgresStorage, error) {
-	db, err := sql.Open("pgx", StoragePath)
+func NewPostgresStorage(storagePath string) (*PostgresStorage, error) {
+	db, err := sql.Open("pgx", storagePath)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := applyMigrations(db); err != nil {
+	if err = applyMigrations(db); err != nil {
 		return nil, fmt.Errorf("migrations failed: %w", err)
 	}
 

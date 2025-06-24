@@ -1,4 +1,4 @@
-// Пакет inmemory реализует in-memory хранилище для сервиса сокращения URL с персистентностью в файл.
+// Package inmemory реализует in-memory хранилище для сервиса сокращения URL с персистентностью в файл.
 //
 // Основные особенности:
 // - Хранение данных в памяти с синхронизацией через RWMutex
@@ -29,12 +29,12 @@ import (
 // - file/encoder: для персистентного хранения
 // - mu: RWMutex для синхронизации доступа
 type InMemoryStorage struct {
-	userURLIndex map[string]map[string]string     // userID -> originalURL -> shortCode
-	shortCodeMap map[string]models.UserURLMapping // shortCode -> UserURLMapping
-	countRecords uint64                           // Счетчик записей
-	file         *os.File                         // Файл для персистентности
-	encoder      *json.Encoder                    // JSON-энкодер для записи
-	mu           sync.RWMutex                     // Блокировка для конкурентного доступа
+	userURLIndex map[string]map[string]string
+	shortCodeMap map[string]models.UserURLMapping
+	file         *os.File
+	encoder      *json.Encoder
+	countRecords uint64
+	mu           sync.RWMutex
 }
 
 // NewInMemoryStorage создает новое in-memory хранилище с файловой персистентностью.

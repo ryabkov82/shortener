@@ -36,7 +36,7 @@ test-cover:
 
 # Базовые бенчмарки (in-memory)
 bench:
-	go test -bench=InMemory -benchmem -memprofile=profiles/result.pprof -benchtime=5s $(BENCH_DIR)
+	go test -bench=InMemory -benchmem -memprofile=profiles/optimized.pprof -benchtime=5s $(BENCH_DIR)
 
 # Бенчмарки с Postgres
 bench-pg: start-db

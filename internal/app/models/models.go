@@ -1,4 +1,4 @@
-// Пакет models содержит основные структуры данных приложения.
+// Package models содержит основные структуры данных приложения.
 //
 // Пакет определяет:
 // - Модели для хранения URL
@@ -34,11 +34,11 @@ type URLMapping struct {
 // - Системе хранения URL
 // - Административных функциях
 type UserURLMapping struct {
-	UUID        uint64 `json:"uuid"`         // Уникальный ID записи в БД
-	ShortURL    string `json:"short_url"`    // Короткий URL (только путь)
-	OriginalURL string `json:"original_url"` // Оригинальный полный URL
-	UserID      string `json:"user_id"`      // Идентификатор пользователя
-	DeletedFlag bool   `json:"is_deleted"`   // Флаг удаления (soft delete)
+	ShortURL    string `json:"short_url"`
+	OriginalURL string `json:"original_url"`
+	UserID      string `json:"user_id"`
+	UUID        uint64 `json:"uuid"`
+	DeletedFlag bool   `json:"is_deleted"`
 }
 
 // BatchRequest представляет элемент запроса для пакетного создания URL.
