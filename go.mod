@@ -1,6 +1,6 @@
 module github.com/ryabkov82/shortener
 
-go 1.23.0
+go 1.22.12
 
 toolchain go1.23.4
 
