@@ -1,19 +1,25 @@
-package shorturl
+package batch
 
 import (
+	"bytes"
+	"compress/gzip"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"os"
 	"testing"
 
+	"github.com/ryabkov82/shortener/internal/app/service"
+
 	"github.com/ryabkov82/shortener/internal/app/logger"
+
 	"github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
 	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
 	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
-	"github.com/ryabkov82/shortener/internal/app/service"
 	"github.com/ryabkov82/shortener/internal/app/storage/postgres"
 	"github.com/ryabkov82/shortener/internal/testutils"
+
+	"github.com/ryabkov82/shortener/internal/app/models"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-resty/resty/v2"
@@ -28,8 +34,7 @@ func TestGetHandler_InMemory(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	testShortenURL(t, st)
-
+	testBatch(t, st)
 }
 
 func TestGetHandler_Postgres(t *testing.T) {
@@ -45,10 +50,10 @@ func TestGetHandler_Postgres(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	testShortenURL(t, pg)
+	testBatch(t, pg)
 }
 
-func testShortenURL(t *testing.T, st service.Repository) {
+func testBatch(t *testing.T, st service.Repository) {
 
 	service := service.NewService(st)
 
@@ -62,59 +67,69 @@ func testShortenURL(t *testing.T, st service.Repository) {
 	r.Use(auth.JWTAutoIssue(testutils.TestSecretKey))
 
 	baseURL := "http://localhost:8080/"
-	r.Post("/", GetHandler(service, baseURL, logger.Log))
+	r.Post("/api/shorten/batch", GetHandler(service, baseURL, logger.Log))
+
+	cookie, _ := testutils.CreateSignedCookie()
 
 	// запускаем тестовый сервер, будет выбран первый свободный порт
 	srv := httptest.NewServer(r)
 	// останавливаем сервер после завершения теста
 	defer srv.Close()
-
-	cookie, _ := testutils.CreateSignedCookie()
-
 	tests := []struct {
 		cookie         *http.Cookie
 		name           string
-		originalURL    string
+		request        string
 		wantStatusCode int
 	}{
 		{
-			name:           "positive test #1",
-			originalURL:    "https://practicum.yandex.ru/",
+			name: "positive test #1",
+			request: `[
+									{
+										"correlation_id": "123",
+										"original_url": "https://example.com/page1"
+									},
+									{
+										"correlation_id": "456",
+										"original_url": "https://example.com/page2"
+									}
+								]`,
 			cookie:         cookie,
 			wantStatusCode: 201,
 		},
 		{
-			name:           "positive test #1",
-			originalURL:    "https://practicum.yandex.ru/",
-			cookie:         cookie,
-			wantStatusCode: 409,
-		},
-		{
 			name:           "negative test #2",
-			originalURL:    "not url",
+			request:        "{}",
 			cookie:         cookie,
 			wantStatusCode: 400,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
+			buf := bytes.NewBuffer(nil)
+			zb := gzip.NewWriter(buf)
+			_, err := zb.Write([]byte(tt.request))
+			assert.NoError(t, err)
+			err = zb.Close()
+			assert.NoError(t, err)
+
 			resp, err := resty.New().R().
-				SetCookie(tt.cookie).
-				SetBody(tt.originalURL).
-				Post(srv.URL)
+				SetBody(buf).
+				SetHeader("Content-Encoding", "gzip").
+				SetHeader("Accept-Encoding", "gzip").
+				Post(srv.URL + "/api/shorten/batch")
 
 			assert.NoError(t, err)
 
 			// Проверяем статус ответа
 			assert.Equal(t, tt.wantStatusCode, resp.StatusCode())
 			if tt.wantStatusCode == 201 {
-				shortURL := resp.Body()
-				// Проверяем, что получен URL
-				_, err = url.Parse(string(shortURL))
+				// проверим, что получили данные в нужном формате
+				var response []models.BatchResponse
+				err = json.Unmarshal(resp.Body(), &response)
 				assert.NoError(t, err)
 			}
+
 		})
 	}
 

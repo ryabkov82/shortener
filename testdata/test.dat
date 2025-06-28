@@ -1,0 +1,16 @@
+{"short_url":"ibmXVNaV","original_url":"https://example.com/page1","user_id":"5ba1d0b4-4181-4106-b1a6-30db84c23696","uuid":1,"is_deleted":false}
+{"short_url":"9rXsvC4S","original_url":"https://example.com/page2","user_id":"5ba1d0b4-4181-4106-b1a6-30db84c23696","uuid":2,"is_deleted":false}
+{"short_url":"F1uAExiU","original_url":"https://example.com/1","user_id":"b297778d-7ed2-4534-8354-601bae1d90c4","uuid":3,"is_deleted":false}
+{"short_url":"B8Tiyxt5","original_url":"https://example.com/2","user_id":"b297778d-7ed2-4534-8354-601bae1d90c4","uuid":4,"is_deleted":false}
+{"short_url":"Qf8jKpDn","original_url":"https://example.com/3","user_id":"b297778d-7ed2-4534-8354-601bae1d90c4","uuid":5,"is_deleted":false}
+{"short_url":"U0DAoPvC","original_url":"https://example.com/4","user_id":"b297778d-7ed2-4534-8354-601bae1d90c4","uuid":6,"is_deleted":false}
+{"short_url":"2txiBS0w","original_url":"https://example.com/5","user_id":"51e42fba-34ed-41b3-be90-4e6da6543d47","uuid":7,"is_deleted":false}
+{"short_url":"EYm7J2zF","original_url":"https://practicum.yandex.ru/","user_id":"1f101aae-0c96-476c-a5f5-7dbff769fd3e","uuid":8,"is_deleted":false}
+{"short_url":"VChPGj7N","original_url":"https://practicum.yandex.ru/","user_id":"2f1152e1-32e3-4cfb-a8a2-b4370875a0c6","uuid":9,"is_deleted":false}
+{"short_url":"rIiMYDZz","original_url":"https://practicum.yandex.ru/","user_id":"d217266b-7415-42e2-b4a3-3ef27522ff37","uuid":10,"is_deleted":false}
+{"short_url":"as4LaIcw","original_url":"https://example.com/1","user_id":"e680ff61-9ac6-4162-a9e5-d854e79c9937","uuid":11,"is_deleted":false}
+{"short_url":"ALwDo8OR","original_url":"https://example.com/2","user_id":"e680ff61-9ac6-4162-a9e5-d854e79c9937","uuid":12,"is_deleted":false}
+{"short_url":"pqvmpDoX","original_url":"https://example.com/3","user_id":"8c450892-0afc-45e7-b2b8-520ef51b36c9","uuid":13,"is_deleted":false}
+{"short_url":"F1uAExiU","original_url":"https://example.com/1","user_id":"b297778d-7ed2-4534-8354-601bae1d90c4","uuid":3,"is_deleted":true}
+{"short_url":"B8Tiyxt5","original_url":"https://example.com/2","user_id":"b297778d-7ed2-4534-8354-601bae1d90c4","uuid":4,"is_deleted":true}
+{"short_url":"Qf8jKpDn","original_url":"https://example.com/3","user_id":"b297778d-7ed2-4534-8354-601bae1d90c4","uuid":5,"is_deleted":true}

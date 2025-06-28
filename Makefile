@@ -5,11 +5,31 @@ BENCH_DIR = ./benchmark
 TEST_DIR = ./...
 DOCKER_COMPOSE = docker-compose -f docker-compose.test.yml
 
+# Определяем переменные для версии
+VERSION := "1.0.0"
+ifeq ($(OS),Windows_NT)
+	BUILD_DATE := $(shell powershell -command "Get-Date -Format 'yyyy-MM-ddTHH:mm:sszzz'")
+else
+	BUILD_DATE := $(shell date +'%Y-%m-%dT%H:%M:%S%z')
+endif
+
+COMMIT_HASH := $(shell git rev-parse --short HEAD)
+
 ifeq ($(OS),Windows_NT)
     SET_ENV = set TEST_DB_DSN=host=localhost port=5433 user=test password=test dbname=test sslmode=disable
 else
     SET_ENV = TEST_DB_DSN="postgres://test:test@localhost:5433/test?sslmode=disable"
 endif
+
+.PHONY: build
+build:
+	@echo "Building shortener..."
+	go build -v -ldflags "\
+		-X 'main.buildVersion=${VERSION}' \
+		-X 'main.buildDate=${BUILD_DATE}' \
+		-X 'main.buildCommit=${COMMIT_HASH}'" \
+		-o bin/shortener cmd/shortener/main.go
+	@echo "Build complete"
 
 # Цели по умолчанию
 .PHONY: default

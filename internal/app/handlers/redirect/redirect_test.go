@@ -16,49 +16,42 @@ import (
 	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
 	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
 	"github.com/ryabkov82/shortener/internal/app/service"
-	storage "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
+	"github.com/ryabkov82/shortener/internal/app/storage/postgres"
+	"github.com/ryabkov82/shortener/internal/testutils"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
 )
 
-var (
-	testSecretKey = []byte("test-secret-key")
-)
+func TestGetHandler_InMemory(t *testing.T) {
 
-func createSignedCookie() (*http.Cookie, string) {
+	st, err := testutils.InitializeInMemoryStorage()
 
-	tokenString, userID, err := jwtauth.GenerateNewToken(testSecretKey)
 	if err != nil {
-		panic(err)
+		t.Fatal(err)
 	}
 
-	return &http.Cookie{
-		Name:     "token",
-		Value:    tokenString,
-		HttpOnly: true,
-		Path:     "/",
-		//Secure:   true, // HTTPS-only
-		SameSite: http.SameSiteStrictMode,
-	}, userID
-
+	testRedirect(t, st)
 }
 
-func TestGetHandler(t *testing.T) {
+func TestGetHandler_Postgres(t *testing.T) {
 
-	fileStorage := "test.dat"
-	err := os.Remove(fileStorage)
-	if err != nil && os.IsNotExist(err) {
-		panic(err)
+	dsn := os.Getenv("TEST_DB_DSN")
+
+	if dsn == "" {
+		t.Fatal("TEST_DB_DSN не установлен")
 	}
+	pg, err := postgres.NewPostgresStorage(dsn)
 
-	st, err := storage.NewInMemoryStorage(fileStorage)
 	if err != nil {
-		panic(err)
+		t.Fatal(err)
 	}
-	st.Load(fileStorage)
 
+	testRedirect(t, pg)
+}
+
+func testRedirect(t *testing.T, st service.Repository) {
 	service := service.NewService(st)
 
 	if err := logger.Initialize("debug"); err != nil {
@@ -73,7 +66,7 @@ func TestGetHandler(t *testing.T) {
 	r := chi.NewRouter()
 	r.Use(mwlogger.RequestLogging(logger.Log))
 	r.Use(mwgzip.Gzip)
-	r.Use(auth.JWTAutoIssue(testSecretKey))
+	r.Use(auth.JWTAutoIssue(testutils.TestSecretKey))
 
 	r.Get("/{id}", GetHandler(service, logger.Log))
 
@@ -88,7 +81,7 @@ func TestGetHandler(t *testing.T) {
 		return redirectAttemptedError
 	})
 
-	cookie, userID := createSignedCookie()
+	cookie, userID := testutils.CreateSignedCookie()
 	ctx := context.WithValue(context.Background(), jwtauth.UserIDContextKey, userID)
 	st.SaveURL(ctx, &mapping)
 
@@ -138,4 +131,5 @@ func TestGetHandler(t *testing.T) {
 			}
 		})
 	}
+
 }

@@ -10,55 +10,22 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ryabkov82/shortener/internal/app/jwtauth"
 	"github.com/ryabkov82/shortener/internal/app/logger"
 
 	"github.com/ryabkov82/shortener/internal/app/service"
-	storage "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
 
 	"github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
 	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
 	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
+	"github.com/ryabkov82/shortener/internal/app/storage/postgres"
+	"github.com/ryabkov82/shortener/internal/testutils"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
 )
 
-var (
-	testSecretKey = []byte("test-secret-key")
-)
-
-func createSignedCookie() *http.Cookie {
-
-	tokenString, _, err := jwtauth.GenerateNewToken(testSecretKey)
-	if err != nil {
-		panic(err)
-	}
-
-	return &http.Cookie{
-		Name:     "token",
-		Value:    tokenString,
-		HttpOnly: true,
-		Path:     "/",
-		//Secure:   true, // HTTPS-only
-		SameSite: http.SameSiteStrictMode,
-	}
-
-}
-
-func TestGetHandler(t *testing.T) {
-
-	fileStorage := "test.dat"
-	err := os.Remove(fileStorage)
-	if err != nil && os.IsNotExist(err) {
-		panic(err)
-	}
-	st, err := storage.NewInMemoryStorage(fileStorage)
-	if err != nil {
-		panic(err)
-	}
-	st.Load(fileStorage)
+func testShortenApi(t *testing.T, st service.Repository) {
 
 	service := service.NewService(st)
 
@@ -69,9 +36,9 @@ func TestGetHandler(t *testing.T) {
 	r := chi.NewRouter()
 	r.Use(mwlogger.RequestLogging(logger.Log))
 	r.Use(mwgzip.Gzip)
-	r.Use(auth.JWTAutoIssue(testSecretKey))
+	r.Use(auth.JWTAutoIssue(testutils.TestSecretKey))
 
-	cookie := createSignedCookie()
+	cookie, _ := testutils.CreateSignedCookie()
 
 	baseURL := "http://localhost:8080/"
 	r.Post("/api/shorten", GetHandler(service, baseURL, logger.Log))
@@ -142,4 +109,32 @@ func TestGetHandler(t *testing.T) {
 			}
 		})
 	}
+
+}
+
+func TestGetHandler_InMemory(t *testing.T) {
+
+	st, err := testutils.InitializeInMemoryStorage()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testShortenApi(t, st)
+}
+
+func TestGetHandler_Postgres(t *testing.T) {
+
+	dsn := os.Getenv("TEST_DB_DSN")
+
+	if dsn == "" {
+		t.Fatal("TEST_DB_DSN не установлен")
+	}
+	pg, err := postgres.NewPostgresStorage(dsn)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testShortenApi(t, pg)
 }
