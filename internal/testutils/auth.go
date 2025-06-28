@@ -1,4 +1,3 @@
-// auth_testutils.go
 package testutils
 
 import (
@@ -7,9 +6,9 @@ import (
 	"github.com/ryabkov82/shortener/internal/app/jwtauth"
 )
 
-var (
-	TestSecretKey = []byte("test-secret-key")
-)
+// TestSecretKey содержит тестовый ключ для подписи JWT.
+// Используется только в тестовой среде.
+var TestSecretKey = []byte("test-secret-key")
 
 // CreateSignedCookie создает тестовую HTTP-куку с подписанным JWT-токеном.
 // Используется для симуляции аутентифицированных запросов в тестах.

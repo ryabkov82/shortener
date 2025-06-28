@@ -343,3 +343,22 @@ func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error
 	}
 	return nil
 }
+
+// FilePath возвращает путь к файлу, используемому хранилищем.
+// Если файл не открыт, возвращает пустую строку.
+func (s *InMemoryStorage) FilePath() string {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	if s.file == nil {
+		return ""
+	}
+	return s.file.Name()
+}
+
+// Close освобождает ресурсы
+func (s *InMemoryStorage) Close() error {
+	if s.file != nil {
+		return s.file.Close()
+	}
+	return nil
+}

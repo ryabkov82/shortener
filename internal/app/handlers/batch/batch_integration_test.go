@@ -29,10 +29,11 @@ import (
 func TestGetHandler_InMemory(t *testing.T) {
 
 	st, err := testutils.InitializeInMemoryStorage()
-
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer st.Close()
+	defer os.Remove(st.FilePath())
 
 	testBatch(t, st)
 }

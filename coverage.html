@@ -99,7 +99,7 @@
 				
 				<option value="file21">github.com/ryabkov82/shortener/internal/app/service/service.go (87.2%)</option>
 				
-				<option value="file22">github.com/ryabkov82/shortener/internal/app/storage/inmemory/inmemory.go (83.3%)</option>
+				<option value="file22">github.com/ryabkov82/shortener/internal/app/storage/inmemory/inmemory.go (82.7%)</option>
 				
 				<option value="file23">github.com/ryabkov82/shortener/internal/app/storage/postgres/migrate.go (66.7%)</option>
 				
@@ -1484,14 +1484,14 @@ import (
 
 // Пул gzip.Writer для повторного использования объектов
 var writerPool = sync.Pool{
-        New: func() interface{} <span class="cov10" title="91">{
+        New: func() interface{} <span class="cov10" title="98">{
                 return gzip.NewWriter(io.Discard)
         }</span>,
 }
 
 // Пул gzip.Reader для повторного использования объектов
 var readerPool = sync.Pool{
-        New: func() interface{} <span class="cov10" title="91">{
+        New: func() interface{} <span class="cov9" title="93">{
                 return new(gzip.Reader)
         }</span>,
 }
@@ -1551,7 +1551,7 @@ func (c *compressWriter) Header() http.Header <span class="cov8" title="43">{
 }</span>
 
 // Write записывает сжатые данные в ответ.
-func (c *compressWriter) Write(p []byte) (int, error) <span class="cov8" title="34">{
+func (c *compressWriter) Write(p []byte) (int, error) <span class="cov7" title="34">{
         c.w.Header().Del("Content-Length")
         return c.zw.Write(p)
 }</span>
@@ -2678,26 +2678,26 @@ func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov5" 
         scanner := bufio.NewScanner(file)
         var countRecords uint64
 
-        for scanner.Scan() </span><span class="cov10" title="36">{
+        for scanner.Scan() </span><span class="cov10" title="38">{
                 line := scanner.Bytes()
                 if len(line) == 0 </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="36">var url models.UserURLMapping
+                <span class="cov10" title="38">var url models.UserURLMapping
                 if err := json.Unmarshal(line, &amp;url); err != nil </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="36">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
+                <span class="cov10" title="38">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="36">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov8" title="19">{
+                <span class="cov10" title="38">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov8" title="18">{
                         s.userURLIndex[url.UserID] = make(map[string]string)
                 }</span>
 
-                <span class="cov10" title="36">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
+                <span class="cov10" title="38">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
                 s.shortCodeMap[url.ShortURL] = url
                 countRecords++</span>
         }
@@ -2759,7 +2759,7 @@ func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (
                 return models.URLMapping{}, storage.ErrURLNotFound
         }</span>
 
-        <span class="cov5" title="5">if url.DeletedFlag </span><span class="cov3" title="3">{
+        <span class="cov4" title="5">if url.DeletedFlag </span><span class="cov3" title="3">{
                 return models.URLMapping{}, storage.ErrURLDeleted
         }</span>
 
@@ -2922,7 +2922,7 @@ func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error
         s.mu.Lock()
         defer s.mu.Unlock()
 
-        for _, code := range urls </span><span class="cov5" title="5">{
+        for _, code := range urls </span><span class="cov4" title="5">{
                 if mapping, exists := s.shortCodeMap[code]; exists &amp;&amp; mapping.UserID == userID </span><span class="cov3" title="3">{
                         mapping.DeletedFlag = true
                         s.shortCodeMap[code] = mapping
@@ -2932,6 +2932,25 @@ func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error
                 }
         }
         <span class="cov4" title="4">return nil</span>
+}
+
+// FilePath возвращает путь к файлу, используемому хранилищем.
+// Если файл не открыт, возвращает пустую строку.
+func (s *InMemoryStorage) FilePath() string <span class="cov1" title="1">{
+        s.mu.RLock()
+        defer s.mu.RUnlock()
+        if s.file == nil </span><span class="cov0" title="0">{
+                return ""
+        }</span>
+        <span class="cov1" title="1">return s.file.Name()</span>
+}
+
+// Close освобождает ресурсы
+func (s *InMemoryStorage) Close() error <span class="cov5" title="6">{
+        if s.file != nil </span><span class="cov5" title="6">{
+                return s.file.Close()
+        }</span>
+        <span class="cov0" title="0">return nil</span>
 }
 </pre>
 		
@@ -3511,8 +3530,7 @@ func (w *DeleteWorker) GracefulStop(timeout time.Duration) <span class="cov0" ti
 }
 </pre>
 		
-		<pre class="file" id="file26" style="display: none">// auth_testutils.go
-package testutils
+		<pre class="file" id="file26" style="display: none">package testutils
 
 import (
         "net/http"
@@ -3520,9 +3538,9 @@ import (
         "github.com/ryabkov82/shortener/internal/app/jwtauth"
 )
 
-var (
-        TestSecretKey = []byte("test-secret-key")
-)
+// TestSecretKey содержит тестовый ключ для подписи JWT.
+// Используется только в тестовой среде.
+var TestSecretKey = []byte("test-secret-key")
 
 // CreateSignedCookie создает тестовую HTTP-куку с подписанным JWT-токеном.
 // Используется для симуляции аутентифицированных запросов в тестах.
@@ -3582,7 +3600,9 @@ import (
         "strings"
 )
 
-// GetModuleRoot возвращает абсолютный путь к корню модуля
+// GetModuleRoot возвращает абсолютный путь к корневой директории Go-модуля.
+// Использует команду 'go list -m'. Может возвращать ошибку, если команда
+// не выполнена или модуль не инициализирован.
 func GetModuleRoot() (string, error) <span class="cov10" title="6">{
         out, err := exec.Command("go", "list", "-m", "-f", "{{.Dir}}").Output()
         if err != nil </span><span class="cov0" title="0">{

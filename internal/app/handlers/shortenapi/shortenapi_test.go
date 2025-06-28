@@ -25,7 +25,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func testShortenApi(t *testing.T, st service.Repository) {
+func testShortenAPI(t *testing.T, st service.Repository) {
 
 	service := service.NewService(st)
 
@@ -119,8 +119,9 @@ func TestGetHandler_InMemory(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer st.Close()
 
-	testShortenApi(t, st)
+	testShortenAPI(t, st)
 }
 
 func TestGetHandler_Postgres(t *testing.T) {
@@ -136,5 +137,5 @@ func TestGetHandler_Postgres(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	testShortenApi(t, pg)
+	testShortenAPI(t, pg)
 }

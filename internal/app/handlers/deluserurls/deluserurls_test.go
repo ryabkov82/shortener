@@ -36,6 +36,7 @@ func TestGetHandler_InMemory(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer st.Close()
 
 	testDelUserUrls(t, st)
 
