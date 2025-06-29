@@ -72,7 +72,7 @@ func TestMain(m *testing.M) {
 	}
 
 	// 2. Подготовка тестового окружения
-	if err := logger.Initialize("debug"); err != nil {
+	if err = logger.Initialize("debug"); err != nil {
 		panic(err)
 	}
 
