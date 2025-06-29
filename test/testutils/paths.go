@@ -23,5 +23,5 @@ func GetGlobalTestDataPath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(root, "testdata"), nil
+	return filepath.Join(root, "test", "testdata"), nil
 }
