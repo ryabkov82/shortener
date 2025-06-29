@@ -1498,14 +1498,14 @@ import (
 
 // Пул gzip.Writer для повторного использования объектов
 var writerPool = sync.Pool{
-        New: func() interface{} <span class="cov10" title="109">{
+        New: func() interface{} <span class="cov10" title="105">{
                 return gzip.NewWriter(io.Discard)
         }</span>,
 }
 
 // Пул gzip.Reader для повторного использования объектов
 var readerPool = sync.Pool{
-        New: func() interface{} <span class="cov9" title="100">{
+        New: func() interface{} <span class="cov9" title="102">{
                 return new(gzip.Reader)
         }</span>,
 }
@@ -2655,13 +2655,13 @@ type InMemoryStorage struct {
 // Пример:
 //
 //        storage, err := NewInMemoryStorage("data/storage.json")
-func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span class="cov5" title="6">{
+func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span class="cov6" title="6">{
         file, err := os.OpenFile(fileStoragePath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
 
-        <span class="cov5" title="6">return &amp;InMemoryStorage{
+        <span class="cov6" title="6">return &amp;InMemoryStorage{
                 userURLIndex: make(map[string]map[string]string),
                 shortCodeMap: make(map[string]models.UserURLMapping),
                 countRecords: 0,
@@ -2682,41 +2682,41 @@ func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span 
 // Возвращает:
 //
 //        error - ошибка чтения файла
-func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov5" title="6">{
+func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov6" title="6">{
         file, err := os.OpenFile(fileStoragePath, os.O_RDONLY|os.O_CREATE, 0666)
         if err != nil </span><span class="cov0" title="0">{
                 return err
         }</span>
-        <span class="cov5" title="6">defer file.Close()
+        <span class="cov6" title="6">defer file.Close()
 
         scanner := bufio.NewScanner(file)
         var countRecords uint64
 
-        for scanner.Scan() </span><span class="cov10" title="26">{
+        for scanner.Scan() </span><span class="cov10" title="25">{
                 line := scanner.Bytes()
                 if len(line) == 0 </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="26">var url models.UserURLMapping
+                <span class="cov10" title="25">var url models.UserURLMapping
                 if err := json.Unmarshal(line, &amp;url); err != nil </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="26">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
+                <span class="cov10" title="25">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="26">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov8" title="14">{
+                <span class="cov10" title="25">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov8" title="13">{
                         s.userURLIndex[url.UserID] = make(map[string]string)
                 }</span>
 
-                <span class="cov10" title="26">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
+                <span class="cov10" title="25">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
                 s.shortCodeMap[url.ShortURL] = url
                 countRecords++</span>
         }
 
-        <span class="cov5" title="6">s.countRecords = countRecords
+        <span class="cov6" title="6">s.countRecords = countRecords
         return scanner.Err()</span>
 }
 
@@ -2960,8 +2960,8 @@ func (s *InMemoryStorage) FilePath() string <span class="cov1" title="1">{
 }
 
 // Close освобождает ресурсы
-func (s *InMemoryStorage) Close() error <span class="cov5" title="6">{
-        if s.file != nil </span><span class="cov5" title="6">{
+func (s *InMemoryStorage) Close() error <span class="cov6" title="6">{
+        if s.file != nil </span><span class="cov6" title="6">{
                 return s.file.Close()
         }</span>
         <span class="cov0" title="0">return nil</span>
@@ -3439,7 +3439,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="14">{
         ticker := time.NewTicker(w.batchWindow)
         defer ticker.Stop()
 
-        for </span><span class="cov10" title="38">{
+        for </span><span class="cov10" title="37">{
                 select </span>{
                 case &lt;-w.stopChan:<span class="cov0" title="0">
                         if len(batch) &gt; 0 </span><span class="cov0" title="0">{
@@ -3469,7 +3469,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="14">{
                                 ticker.Reset(w.batchWindow)
                         }</span>
 
-                case &lt;-ticker.C:<span class="cov7" title="16">
+                case &lt;-ticker.C:<span class="cov7" title="15">
                         if len(batch) &gt; 0 </span><span class="cov6" title="8">{
                                 w.batchChan &lt;- batch
                                 batch = make(map[string][]string)
@@ -3544,7 +3544,29 @@ func (w *DeleteWorker) GracefulStop(timeout time.Duration) <span class="cov0" ti
 }
 </pre>
 		
-		<pre class="file" id="file26" style="display: none">package testconfig
+		<pre class="file" id="file26" style="display: none">// Package testconfig предоставляет утилиты для настройки тестового окружения с использованием testcontainers.
+//
+// Основные возможности:
+//   - Запуск контейнера PostgreSQL для интеграционных тестов
+//   - Автоматическая конфигурация подключения к БД
+//   - Параллельно-безопасная инициализация (используется sync.Once)
+//   - Логирование работы контейнера в реальном времени
+//
+// Пример использования:
+//
+//        ctx := context.Background()
+//        cfg := DefaultPGConfig()
+//        container, dsn, err := StartPGContainer(ctx, cfg)
+//        if err != nil {
+//            log.Fatal(err)
+//        }
+//        defer container.Terminate(ctx)
+//
+//        db, err := sql.Open("postgres", dsn)
+//        // ... работа с БД
+//
+// Пакет используется для интеграционных тестов, требующих изолированного экземпляра БД.
+package testconfig
 
 import (
         "context"
@@ -3573,6 +3595,8 @@ type PGConfig struct {
         Port     string
 }
 
+// DefaultPGConfig возвращает конфигурацию PostgreSQL со значениями по умолчанию
+// Используется образ postgres:13-alpine с пользователем test, паролем test и БД test на порту 5432
 func DefaultPGConfig() PGConfig <span class="cov1" title="1">{
         return PGConfig{
                 Image:    "postgres:13-alpine",
@@ -3583,6 +3607,14 @@ func DefaultPGConfig() PGConfig <span class="cov1" title="1">{
         }
 }</span>
 
+// StartPGContainer запускает контейнер PostgreSQL с заданной конфигурацией.
+// Использует sync.Once для гарантии однократного запуска контейнера.
+// Возвращает:
+//   - testcontainers.Container: интерфейс для управления контейнером
+//   - string: DSN строку для подключения к БД
+//   - error: ошибка, если возникла при запуске контейнера
+//
+// Контейнер будет автоматически остановлен при завершении работы приложения.
 func StartPGContainer(ctx context.Context, cfg PGConfig) (testcontainers.Container, string, error) <span class="cov1" title="1">{
         var startErr error
         pgOnce.Do(func() </span><span class="cov1" title="1">{
@@ -3652,6 +3684,8 @@ func StartPGContainer(ctx context.Context, cfg PGConfig) (testcontainers.Contain
         <span class="cov1" title="1">return pgContainer, pgDSN, startErr</span>
 }
 
+// GetTestPGDSN возвращает DSN строку для подключения к тестовой БД PostgreSQL.
+// Перед использованием необходимо вызвать StartPGContainer для инициализации контейнера.
 func GetTestPGDSN() string <span class="cov0" title="0">{
         return pgDSN
 }</span>
@@ -3684,6 +3718,30 @@ import (
         "github.com/stretchr/testify/assert"
 )
 
+// TestBatchHandler тестирует обработчик пакетного создания сокращённых URL (/api/shorten/batch).
+//
+// Проверяет следующие сценарии:
+//   - Успешное создание сокращённых URL для пакета ссылок
+//   - Обработку некорректных входных данных
+//   - Работу сжатия gzip на входящих и исходящих данных
+//   - Авторизацию через JWT cookie
+//   - Соответствие форматов запроса и ответа API
+//
+// Тест создаёт полноценное HTTP-окружение с:
+//   - Роутером Chi
+//   - Middleware: логирование, gzip, JWT-авторизация
+//   - Тестовым сервером httptest
+//   - Поддержкой сжатия на клиенте и сервере
+//
+// Примеры тест-кейсов:
+//   - Корректный запрос с валидными URL (ожидается 201 Created)
+//   - Некорректный JSON (ожидается 400 Bad Request)
+//
+// Используемые компоненты:
+//   - service.Service: бизнес-логика сервиса
+//   - logger: система логирования
+//   - testutils: утилиты для генерации тестовых данных
+//   - resty: HTTP-клиент для тестирования
 func TestBatch(t *testing.T, st service.Repository) <span class="cov1" title="1">{
 
         service := service.NewService(st)
@@ -3797,6 +3855,35 @@ import (
         "github.com/go-resty/resty/v2"
 )
 
+// TestDelUserUrls тестирует обработчик удаления пользовательских URL (/api/user/urls).
+//
+// Проверяет следующие сценарии:
+//   - Успешную пометку URL как удаленных (StatusAccepted)
+//   - Пакетное удаление нескольких URL
+//   - Попытку удаления несуществующих URL
+//   - Попытку удаления URL другого пользователя
+//   - Асинхронную природу удаления (проверка через последующий запрос)
+//   - Работу сжатия gzip на входящих данных
+//   - Авторизацию через JWT cookie
+//
+// Тест создает:
+//   - Тестовое хранилище с URL для двух пользователей
+//   - HTTP-сервер с middleware:
+//   - Логирование
+//   - Gzip сжатие
+//   - JWT авторизация
+//   - Набор тестовых случаев с разными сценариями удаления
+//
+// Примеры тест-кейсов:
+//   - Удаление одного URL (ожидается 202 Accepted)
+//   - Пакетное удаление (ожидается 202 Accepted)
+//   - Попытка удаления URL другого пользователя
+//   - Проверка статуса 410 Gone после удаления
+//
+// Особенности:
+//   - Использует асинхронную модель удаления
+//   - Проверяет реальное изменение статуса через последующий GET-запрос
+//   - Поддерживает сжатие gzip в запросах
 func TestDelUserUrls(t *testing.T, st service.Repository) <span class="cov1" title="1">{
 
         service := service.NewService(st)
@@ -3956,6 +4043,31 @@ import (
         "github.com/stretchr/testify/assert"
 )
 
+// TestRedirect тестирует обработчик редиректа по короткой ссылке (GET /{id}).
+//
+// Проверяет следующие сценарии:
+//   - Успешный редирект на оригинальный URL (StatusTemporaryRedirect)
+//   - Обработку несуществующего короткого URL (StatusNotFound)
+//   - Корректность заголовка Location при редиректе
+//   - Работу JWT авторизации через cookie
+//   - Обработку gzip сжатия через middleware
+//
+// Тест создает:
+//   - Тестовое хранилище с предзаполненным URL
+//   - HTTP-сервер с middleware:
+//   - Логирование запросов
+//   - Поддержка gzip
+//   - JWT авторизация
+//   - Специальную политику обработки редиректов для resty
+//
+// Примеры тест-кейсов:
+//   - Запрос существующего URL (ожидается 307 с правильным Location)
+//   - Запрос несуществующего URL (ожидается 404)
+//
+// Особенности:
+//   - Использует кастомную политику редиректов для проверки Location
+//   - Сохраняет тестовые данные перед выполнением тестов
+//   - Проверяет как положительные, так и отрицательные сценарии
 func TestRedirect(t *testing.T, st service.Repository) <span class="cov1" title="1">{
         service := service.NewService(st)
 
@@ -4066,6 +4178,32 @@ import (
         "github.com/stretchr/testify/assert"
 )
 
+// TestShortenAPI тестирует JSON API обработчик сокращения URL (POST /api/shorten).
+//
+// Проверяет следующие сценарии:
+//   - Успешное создание короткой ссылки (StatusCreated)
+//   - Попытку повторного сокращения того же URL (StatusConflict)
+//   - Обработку некорректного URL (StatusBadRequest)
+//   - Корректность формата JSON ответа
+//   - Работу JWT авторизации через cookie
+//   - Поддержку gzip сжатия запросов и ответов
+//
+// Тест создает:
+//   - Тестовый HTTP сервер с middleware:
+//   - Логирование запросов
+//   - Поддержка gzip
+//   - JWT авторизация
+//   - Набор тестовых случаев с разными входными данными
+//
+// Примеры тест-кейсов:
+//   - Корректный URL (ожидается 201 Created с валидным коротким URL)
+//   - Дублирующийся URL (ожидается 409 Conflict)
+//   - Некорректный URL (ожидается 400 Bad Request)
+//
+// Особенности:
+//   - Проверяет валидность возвращаемого короткого URL
+//   - Использует gzip сжатие для запросов
+//   - Поддерживает авторизацию через JWT cookie
 func TestShortenAPI(t *testing.T, st service.Repository) <span class="cov1" title="1">{
 
         service := service.NewService(st)
@@ -4175,6 +4313,32 @@ import (
         "github.com/stretchr/testify/assert"
 )
 
+// TestShortenURL тестирует текстовый обработчик сокращения URL (POST /).
+//
+// Проверяет следующие сценарии:
+//   - Успешное создание короткой ссылки (StatusCreated)
+//   - Попытку повторного сокращения того же URL (StatusConflict)
+//   - Обработку некорректного URL (StatusBadRequest)
+//   - Корректность возвращаемого текстового ответа
+//   - Работу JWT авторизации через cookie
+//   - Поддержку gzip сжатия через middleware
+//
+// Тест создает:
+//   - Тестовый HTTP сервер с middleware:
+//   - Логирование запросов
+//   - Поддержка gzip
+//   - JWT авторизация
+//   - Набор тестовых случаев с разными входными данными
+//
+// Примеры тест-кейсов:
+//   - Корректный URL (ожидается 201 Created с валидным коротким URL в теле ответа)
+//   - Дублирующийся URL (ожидается 409 Conflict)
+//   - Некорректный URL (ожидается 400 Bad Request)
+//
+// Особенности:
+//   - Проверяет валидность возвращаемого короткого URL
+//   - Работает с текстовым форматом запроса/ответа (в отличие от JSON API)
+//   - Поддерживает авторизацию через JWT cookie
 func TestShortenURL(t *testing.T, st service.Repository) <span class="cov1" title="1">{
 
         service := service.NewService(st)
@@ -4273,6 +4437,33 @@ import (
         "github.com/stretchr/testify/assert"
 )
 
+// TestUserUrls тестирует обработчик получения списка URL пользователя (GET /api/user/urls).
+//
+// Проверяет следующие сценарии:
+//   - Успешное получение списка URL авторизованного пользователя (StatusOK)
+//   - Пустой результат для нового пользователя (StatusNoContent)
+//   - Ошибку авторизации при отсутствии cookie (StatusUnauthorized)
+//   - Корректность формата JSON ответа
+//   - Автоматическую выдачу новой cookie при неавторизованном доступе
+//   - Работу JWT авторизации через StrictJWTAutoIssue middleware
+//
+// Тест создает:
+//   - Тестовое хранилище с URL для двух пользователей
+//   - HTTP-сервер с middleware:
+//   - Логирование запросов
+//   - Поддержка gzip
+//   - Строгая JWT авторизация с автоматической выдачей
+//   - Набор тестовых случаев с разными условиями авторизации
+//
+// Примеры тест-кейсов:
+//   - Авторизованный пользователь с URL (ожидается 200 OK с корректным списком)
+//   - Новый пользователь без URL (ожидается 204 NoContent)
+//   - Запрос без авторизации (ожидается 401 Unauthorized с новой cookie)
+//
+// Особенности:
+//   - Проверяет строгую авторизацию через StrictJWTAutoIssue
+//   - Тестирует автоматическую выдачу cookie при неавторизованном доступе
+//   - Поддерживает проверку структуры JSON ответа
 func TestUserUrls(t *testing.T, st service.Repository) <span class="cov1" title="1">{
 
         service := service.NewService(st)
@@ -4398,6 +4589,30 @@ import (
         storage "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
 )
 
+// InitializeInMemoryStorage создает и инициализирует хранилище в памяти для тестов.
+//
+// Функция выполняет:
+//   - Поиск глобальной директории с тестовыми данными проекта
+//   - Удаление предыдущего файла хранилища (если существует)
+//   - Создание нового in-memory хранилища
+//   - Загрузку данных из файла (если файл существует)
+//
+// Возвращает:
+//   - *storage.InMemoryStorage: инициализированное хранилище
+//   - error: ошибка, если возникла при создании хранилища
+//
+// Особенности:
+//   - Использует глобальную тестовую директорию проекта
+//   - Автоматически очищает предыдущее состояние хранилища
+//   - Поддерживает загрузку данных из файла
+//
+// Пример использования:
+//
+//        st, err := InitializeInMemoryStorage()
+//        if err != nil {
+//            log.Fatalf("Failed to initialize storage: %v", err)
+//        }
+//        defer st.Close()
 func InitializeInMemoryStorage() (*storage.InMemoryStorage, error) <span class="cov10" title="6">{
 
         // Для общих testdata проекта

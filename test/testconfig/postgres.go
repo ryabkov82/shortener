@@ -1,3 +1,25 @@
+// Package testconfig предоставляет утилиты для настройки тестового окружения с использованием testcontainers.
+//
+// Основные возможности:
+//   - Запуск контейнера PostgreSQL для интеграционных тестов
+//   - Автоматическая конфигурация подключения к БД
+//   - Параллельно-безопасная инициализация (используется sync.Once)
+//   - Логирование работы контейнера в реальном времени
+//
+// Пример использования:
+//
+//	ctx := context.Background()
+//	cfg := DefaultPGConfig()
+//	container, dsn, err := StartPGContainer(ctx, cfg)
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//	defer container.Terminate(ctx)
+//
+//	db, err := sql.Open("postgres", dsn)
+//	// ... работа с БД
+//
+// Пакет используется для интеграционных тестов, требующих изолированного экземпляра БД.
 package testconfig
 
 import (
@@ -27,6 +49,8 @@ type PGConfig struct {
 	Port     string
 }
 
+// DefaultPGConfig возвращает конфигурацию PostgreSQL со значениями по умолчанию
+// Используется образ postgres:13-alpine с пользователем test, паролем test и БД test на порту 5432
 func DefaultPGConfig() PGConfig {
 	return PGConfig{
 		Image:    "postgres:13-alpine",
@@ -37,6 +61,14 @@ func DefaultPGConfig() PGConfig {
 	}
 }
 
+// StartPGContainer запускает контейнер PostgreSQL с заданной конфигурацией.
+// Использует sync.Once для гарантии однократного запуска контейнера.
+// Возвращает:
+//   - testcontainers.Container: интерфейс для управления контейнером
+//   - string: DSN строку для подключения к БД
+//   - error: ошибка, если возникла при запуске контейнера
+//
+// Контейнер будет автоматически остановлен при завершении работы приложения.
 func StartPGContainer(ctx context.Context, cfg PGConfig) (testcontainers.Container, string, error) {
 	var startErr error
 	pgOnce.Do(func() {
@@ -106,6 +138,8 @@ func StartPGContainer(ctx context.Context, cfg PGConfig) (testcontainers.Contain
 	return pgContainer, pgDSN, startErr
 }
 
+// GetTestPGDSN возвращает DSN строку для подключения к тестовой БД PostgreSQL.
+// Перед использованием необходимо вызвать StartPGContainer для инициализации контейнера.
 func GetTestPGDSN() string {
 	return pgDSN
 }
