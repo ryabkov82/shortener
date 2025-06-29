@@ -4,21 +4,14 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/ryabkov82/shortener/internal/app/jwtauth"
-	"github.com/ryabkov82/shortener/internal/app/logger"
 
-	"github.com/ryabkov82/shortener/internal/app/handlers/redirect"
 	"github.com/ryabkov82/shortener/internal/app/models"
-	"github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
-	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
-	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
 	"github.com/ryabkov82/shortener/internal/app/service"
 	"github.com/ryabkov82/shortener/test/testutils"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
 )
@@ -48,29 +41,12 @@ import (
 //   - Использует кастомную политику редиректов для проверки Location
 //   - Сохраняет тестовые данные перед выполнением тестов
 //   - Проверяет как положительные, так и отрицательные сценарии
-func TestRedirect(t *testing.T, st service.Repository) {
-	service := service.NewService(st)
-
-	if err := logger.Initialize("debug"); err != nil {
-		panic(err)
-	}
+func TestRedirect(t *testing.T, repo service.Repository, client *resty.Client) {
 
 	mapping := models.URLMapping{
 		ShortURL:    "EYm7J2zF",
 		OriginalURL: "https://practicum.yandex.ru/",
 	}
-
-	r := chi.NewRouter()
-	r.Use(mwlogger.RequestLogging(logger.Log))
-	r.Use(mwgzip.Gzip)
-	r.Use(auth.JWTAutoIssue(testutils.TestSecretKey))
-
-	r.Get("/{id}", redirect.GetHandler(service, logger.Log))
-
-	// запускаем тестовый сервер, будет выбран первый свободный порт
-	srv := httptest.NewServer(r)
-	// останавливаем сервер после завершения теста
-	defer srv.Close()
 
 	var redirectAttemptedError = errors.New("redirect")
 	redirectPolicy := resty.RedirectPolicyFunc(func(req *http.Request, via []*http.Request) error {
@@ -80,7 +56,7 @@ func TestRedirect(t *testing.T, st service.Repository) {
 
 	cookie, userID := testutils.CreateSignedCookie()
 	ctx := context.WithValue(context.Background(), jwtauth.UserIDContextKey, userID)
-	st.SaveURL(ctx, &mapping)
+	repo.SaveURL(ctx, &mapping)
 
 	tests := []struct {
 		cookie         *http.Cookie
@@ -106,11 +82,10 @@ func TestRedirect(t *testing.T, st service.Repository) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			client := resty.New()
 			client.SetRedirectPolicy(redirectPolicy)
 			req := client.R().SetCookie(tt.cookie)
 			req.Method = http.MethodGet
-			req.URL = srv.URL + "/" + tt.shortKey
+			req.URL = "/" + tt.shortKey
 
 			resp, err := req.Send()
 

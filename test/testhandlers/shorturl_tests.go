@@ -2,24 +2,21 @@ package testhandlers
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"net/url"
 	"testing"
 
-	"github.com/ryabkov82/shortener/internal/app/handlers/shorturl"
-	"github.com/ryabkov82/shortener/internal/app/logger"
-	"github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
-	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
-	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
-	"github.com/ryabkov82/shortener/internal/app/service"
 	"github.com/ryabkov82/shortener/test/testutils"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
 )
 
 // TestShortenURL тестирует текстовый обработчик сокращения URL (POST /).
+//
+// Принимает:
+//
+//	t *testing.T - инстанс тестинга
+//	client *resty.Client - предварительно настроенный HTTP клиент (с базовым URL)
 //
 // Проверяет следующие сценарии:
 //   - Успешное создание короткой ссылки (StatusCreated)
@@ -45,26 +42,7 @@ import (
 //   - Проверяет валидность возвращаемого короткого URL
 //   - Работает с текстовым форматом запроса/ответа (в отличие от JSON API)
 //   - Поддерживает авторизацию через JWT cookie
-func TestShortenURL(t *testing.T, st service.Repository) {
-
-	service := service.NewService(st)
-
-	if err := logger.Initialize("debug"); err != nil {
-		panic(err)
-	}
-
-	r := chi.NewRouter()
-	r.Use(mwlogger.RequestLogging(logger.Log))
-	r.Use(mwgzip.Gzip)
-	r.Use(auth.JWTAutoIssue(testutils.TestSecretKey))
-
-	baseURL := "http://localhost:8080/"
-	r.Post("/", shorturl.GetHandler(service, baseURL, logger.Log))
-
-	// запускаем тестовый сервер, будет выбран первый свободный порт
-	srv := httptest.NewServer(r)
-	// останавливаем сервер после завершения теста
-	defer srv.Close()
+func TestShortenURL(t *testing.T, client *resty.Client) {
 
 	cookie, _ := testutils.CreateSignedCookie()
 
@@ -97,10 +75,10 @@ func TestShortenURL(t *testing.T, st service.Repository) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			resp, err := resty.New().R().
+			resp, err := client.R().
 				SetCookie(tt.cookie).
 				SetBody(tt.originalURL).
-				Post(srv.URL)
+				Post("/")
 
 			assert.NoError(t, err)
 

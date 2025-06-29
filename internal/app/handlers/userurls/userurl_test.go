@@ -3,8 +3,17 @@ package userurls_test
 import (
 	"testing"
 
+	"github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
+	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
+	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
+
+	"github.com/ryabkov82/shortener/internal/app/handlers/userurls"
+	"github.com/ryabkov82/shortener/internal/app/logger"
+	"github.com/ryabkov82/shortener/internal/app/service"
 	"github.com/ryabkov82/shortener/test/testhandlers"
 	"github.com/ryabkov82/shortener/test/testutils"
+
+	"github.com/go-chi/chi/v5"
 )
 
 func TestGetHandler_InMemory(t *testing.T) {
@@ -16,5 +25,22 @@ func TestGetHandler_InMemory(t *testing.T) {
 	}
 	defer st.Close()
 
-	testhandlers.TestUserUrls(t, st)
+	if err := logger.Initialize("debug"); err != nil {
+		panic(err)
+	}
+
+	service := service.NewService(st)
+
+	baseURL := "http://localhost:8080/"
+
+	tc := testutils.NewTestClient(func(r chi.Router) {
+		r.Use(mwlogger.RequestLogging(logger.Log))
+		r.Use(mwgzip.Gzip)
+		r.Use(auth.StrictJWTAutoIssue(testutils.TestSecretKey))
+
+		r.Get("/api/user/urls", userurls.GetHandler(service, baseURL, logger.Log))
+	})
+	defer tc.Close()
+
+	testhandlers.TestUserUrls(t, service, tc.Client)
 }

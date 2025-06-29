@@ -1,10 +1,8 @@
 package integration
 
 import (
-	"os"
 	"testing"
 
-	"github.com/ryabkov82/shortener/internal/app/storage/postgres"
 	"github.com/ryabkov82/shortener/test/testhandlers"
 )
 
@@ -18,8 +16,6 @@ import (
 //   - Обработку дубликатов URL
 //
 // Особенности:
-//   - Требует переменную окружения TEST_DB_DSN с параметрами подключения к PostgreSQL
-//   - Автоматически пропускается, если TEST_DB_DSN не задана
 //   - Использует базовые тест-кейсы из testhandlers.TestShortenURL
 //   - Проверяет специфичное для PostgreSQL поведение:
 //   - Работу транзакций
@@ -35,17 +31,5 @@ import (
 //   - Применённые миграции базы данных
 //   - Пакет testhandlers с базовыми тестами
 func TestGetHandler_Postgres(t *testing.T) {
-
-	dsn := os.Getenv("TEST_DB_DSN")
-
-	if dsn == "" {
-		t.Skip("TEST_DB_DSN не установлен")
-	}
-	pg, err := postgres.NewPostgresStorage(dsn)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	testhandlers.TestShortenURL(t, pg)
+	testhandlers.TestShortenURL(t, client)
 }

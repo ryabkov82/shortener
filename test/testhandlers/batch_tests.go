@@ -5,22 +5,12 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 
-	"github.com/ryabkov82/shortener/internal/app/service"
-
-	"github.com/ryabkov82/shortener/internal/app/logger"
-
-	"github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
-	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
-	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
 	"github.com/ryabkov82/shortener/test/testutils"
 
-	"github.com/ryabkov82/shortener/internal/app/handlers/batch"
 	"github.com/ryabkov82/shortener/internal/app/models"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
 )
@@ -49,28 +39,10 @@ import (
 //   - logger: система логирования
 //   - testutils: утилиты для генерации тестовых данных
 //   - resty: HTTP-клиент для тестирования
-func TestBatch(t *testing.T, st service.Repository) {
-
-	service := service.NewService(st)
-
-	if err := logger.Initialize("debug"); err != nil {
-		panic(err)
-	}
-
-	r := chi.NewRouter()
-	r.Use(mwlogger.RequestLogging(logger.Log))
-	r.Use(mwgzip.Gzip)
-	r.Use(auth.JWTAutoIssue(testutils.TestSecretKey))
-
-	baseURL := "http://localhost:8080/"
-	r.Post("/api/shorten/batch", batch.GetHandler(service, baseURL, logger.Log))
+func TestBatch(t *testing.T, client *resty.Client) {
 
 	cookie, _ := testutils.CreateSignedCookie()
 
-	// запускаем тестовый сервер, будет выбран первый свободный порт
-	srv := httptest.NewServer(r)
-	// останавливаем сервер после завершения теста
-	defer srv.Close()
 	tests := []struct {
 		cookie         *http.Cookie
 		name           string
@@ -109,11 +81,11 @@ func TestBatch(t *testing.T, st service.Repository) {
 			err = zb.Close()
 			assert.NoError(t, err)
 
-			resp, err := resty.New().R().
+			resp, err := client.R().
 				SetBody(buf).
 				SetHeader("Content-Encoding", "gzip").
 				SetHeader("Accept-Encoding", "gzip").
-				Post(srv.URL + "/api/shorten/batch")
+				Post("/api/shorten/batch")
 
 			assert.NoError(t, err)
 

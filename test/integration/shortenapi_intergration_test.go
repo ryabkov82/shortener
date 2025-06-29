@@ -1,10 +1,8 @@
 package integration
 
 import (
-	"os"
 	"testing"
 
-	"github.com/ryabkov82/shortener/internal/app/storage/postgres"
 	"github.com/ryabkov82/shortener/test/testhandlers"
 )
 
@@ -18,8 +16,6 @@ import (
 //   - Сохранение и чтение данных через PostgreSQL
 //
 // Особенности:
-//   - Требует переменную окружения TEST_DB_DSN с параметрами подключения
-//   - Автоматически пропускается при отсутствии TEST_DB_DSN
 //   - Использует тестовые сценарии из testhandlers.TestShortenAPI
 //   - Проверяет специфичное для PostgreSQL поведение:
 //   - Конкурентные запросы
@@ -36,16 +32,5 @@ import (
 //   - Пакет testhandlers с базовыми тестами API
 func TestShortenAPI_Postgres(t *testing.T) {
 
-	dsn := os.Getenv("TEST_DB_DSN")
-
-	if dsn == "" {
-		t.Skip("TEST_DB_DSN не установлен")
-	}
-	pg, err := postgres.NewPostgresStorage(dsn)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	testhandlers.TestShortenAPI(t, pg)
+	testhandlers.TestShortenAPI(t, client)
 }

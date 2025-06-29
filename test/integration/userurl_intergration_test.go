@@ -1,10 +1,8 @@
 package integration
 
 import (
-	"os"
 	"testing"
 
-	"github.com/ryabkov82/shortener/internal/app/storage/postgres"
 	"github.com/ryabkov82/shortener/test/testhandlers"
 )
 
@@ -21,8 +19,6 @@ import (
 //   - Изоляцию данных между пользователями
 //
 // Особенности:
-//   - Требует переменную окружения TEST_DB_DSN
-//   - Автоматически пропускается при отсутствии подключения к БД
 //   - Использует тестовые сценарии из testhandlers.TestUserUrls
 //   - Проверяет специфичное для PostgreSQL поведение:
 //   - Работу с индексами
@@ -38,17 +34,5 @@ import (
 //   - Применённые миграции БД
 //   - Пакет testhandlers с базовыми тестами
 func TestUserUrls_Postgres(t *testing.T) {
-
-	dsn := os.Getenv("TEST_DB_DSN")
-
-	if dsn == "" {
-		t.Skip("TEST_DB_DSN не установлен")
-	}
-	pg, err := postgres.NewPostgresStorage(dsn)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	testhandlers.TestUserUrls(t, pg)
+	testhandlers.TestUserUrls(t, serv, client)
 }

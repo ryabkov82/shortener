@@ -109,23 +109,25 @@
 				
 				<option value="file26">github.com/ryabkov82/shortener/test/testconfig/postgres.go (75.0%)</option>
 				
-				<option value="file27">github.com/ryabkov82/shortener/test/testhandlers/batch_tests.go (96.4%)</option>
+				<option value="file27">github.com/ryabkov82/shortener/test/testhandlers/batch_tests.go (100.0%)</option>
 				
-				<option value="file28">github.com/ryabkov82/shortener/test/testhandlers/deluserurls_tests.go (95.2%)</option>
+				<option value="file28">github.com/ryabkov82/shortener/test/testhandlers/deluserurls_tests.go (96.6%)</option>
 				
-				<option value="file29">github.com/ryabkov82/shortener/test/testhandlers/redirect_tests.go (96.9%)</option>
+				<option value="file29">github.com/ryabkov82/shortener/test/testhandlers/redirect_tests.go (100.0%)</option>
 				
-				<option value="file30">github.com/ryabkov82/shortener/test/testhandlers/shortenapi_tests.go (97.0%)</option>
+				<option value="file30">github.com/ryabkov82/shortener/test/testhandlers/shortenapi_tests.go (100.0%)</option>
 				
-				<option value="file31">github.com/ryabkov82/shortener/test/testhandlers/shorturl_tests.go (95.5%)</option>
+				<option value="file31">github.com/ryabkov82/shortener/test/testhandlers/shorturl_tests.go (100.0%)</option>
 				
-				<option value="file32">github.com/ryabkov82/shortener/test/testhandlers/userurls_tests.go (94.7%)</option>
+				<option value="file32">github.com/ryabkov82/shortener/test/testhandlers/userurls_tests.go (96.2%)</option>
 				
 				<option value="file33">github.com/ryabkov82/shortener/test/testutils/auth.go (75.0%)</option>
 				
-				<option value="file34">github.com/ryabkov82/shortener/test/testutils/inmemory.go (80.0%)</option>
+				<option value="file34">github.com/ryabkov82/shortener/test/testutils/client.go (100.0%)</option>
 				
-				<option value="file35">github.com/ryabkov82/shortener/test/testutils/paths.go (75.0%)</option>
+				<option value="file35">github.com/ryabkov82/shortener/test/testutils/inmemory.go (80.0%)</option>
+				
+				<option value="file36">github.com/ryabkov82/shortener/test/testutils/paths.go (75.0%)</option>
 				
 				</select>
 			</div>
@@ -1498,14 +1500,14 @@ import (
 
 // Пул gzip.Writer для повторного использования объектов
 var writerPool = sync.Pool{
-        New: func() interface{} <span class="cov10" title="105">{
+        New: func() interface{} <span class="cov10" title="103">{
                 return gzip.NewWriter(io.Discard)
         }</span>,
 }
 
 // Пул gzip.Reader для повторного использования объектов
 var readerPool = sync.Pool{
-        New: func() interface{} <span class="cov9" title="102">{
+        New: func() interface{} <span class="cov9" title="99">{
                 return new(gzip.Reader)
         }</span>,
 }
@@ -1560,7 +1562,7 @@ func NewCompressWriter(w http.ResponseWriter) *compressWriter <span class="cov8"
 }</span>
 
 // Header возвращает HTTP-заголовки ответа.
-func (c *compressWriter) Header() http.Header <span class="cov8" title="45">{
+func (c *compressWriter) Header() http.Header <span class="cov8" title="43">{
         return c.w.Header()
 }</span>
 
@@ -1657,7 +1659,7 @@ const UserIDContextKey ContextKey = "userID"
 // Пример использования:
 //
 //        token, userID, err := GenerateNewToken([]byte("secret"))
-func GenerateNewToken(jwtKey []byte) (string, string, error) <span class="cov10" title="27">{
+func GenerateNewToken(jwtKey []byte) (string, string, error) <span class="cov10" title="25">{
         userID := uuid.New().String() // Генерация уникального ID пользователя
 
         claims := &amp;Claims{
@@ -1701,7 +1703,7 @@ var Log *zap.Logger = zap.NewNop()
 //            // обработка ошибки инициализации
 //        }
 //        logger.Log.Info("Логер успешно инициализирован")
-func Initialize(level string) error <span class="cov10" title="14">{
+func Initialize(level string) error <span class="cov10" title="9">{
         // Преобразование строкового уровня в zap.AtomicLevel
         lvl, err := zap.ParseAtomicLevel(level)
         if err != nil </span><span class="cov0" title="0">{
@@ -1709,7 +1711,7 @@ func Initialize(level string) error <span class="cov10" title="14">{
         }</span>
 
         // Конфигурация логера в production-стиле (JSON-формат, stacktrace для ошибок)
-        <span class="cov10" title="14">cfg := zap.NewProductionConfig()
+        <span class="cov10" title="9">cfg := zap.NewProductionConfig()
 
         // Установка уровня логирования
         cfg.Level = lvl
@@ -1721,7 +1723,7 @@ func Initialize(level string) error <span class="cov10" title="14">{
         }</span>
 
         // Замена глобального логера
-        <span class="cov10" title="14">Log = zl
+        <span class="cov10" title="9">Log = zl
         return nil</span>
 }
 </pre>
@@ -1851,11 +1853,11 @@ import (
 // Возвращает:
 //
 //        func(next http.Handler) http.Handler - middleware функцию
-func JWTAutoIssue(jwtKey []byte) func(next http.Handler) http.Handler <span class="cov7" title="9">{
-        return func(next http.Handler) http.Handler </span><span class="cov7" title="9">{
-                fn := func(w http.ResponseWriter, r *http.Request) </span><span class="cov9" title="22">{
+func JWTAutoIssue(jwtKey []byte) func(next http.Handler) http.Handler <span class="cov5" title="6">{
+        return func(next http.Handler) http.Handler </span><span class="cov7" title="10">{
+                fn := func(w http.ResponseWriter, r *http.Request) </span><span class="cov10" title="27">{
                         cookie, err := r.Cookie("token")
-                        if err != nil || cookie == nil </span><span class="cov6" title="6">{
+                        if err != nil || cookie == nil </span><span class="cov4" title="4">{
                                 userID := issueNewToken(w, jwtKey)
                                 ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, userID)
                                 r = r.WithContext(ctx)
@@ -1863,17 +1865,17 @@ func JWTAutoIssue(jwtKey []byte) func(next http.Handler) http.Handler <span clas
                                 return
                         }</span>
 
-                        <span class="cov8" title="16">tokenStr := cookie.Value
+                        <span class="cov9" title="23">tokenStr := cookie.Value
                         claims := &amp;jwtauth.Claims{}
 
-                        token, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) </span><span class="cov8" title="16">{
+                        token, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) </span><span class="cov9" title="23">{
                                 if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok </span><span class="cov0" title="0">{
                                         return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
                                 }</span>
-                                <span class="cov8" title="16">return jwtKey, nil</span>
+                                <span class="cov9" title="23">return jwtKey, nil</span>
                         })
 
-                        <span class="cov8" title="16">if err != nil || !token.Valid </span><span class="cov0" title="0">{
+                        <span class="cov9" title="23">if err != nil || !token.Valid </span><span class="cov0" title="0">{
                                 userID := issueNewToken(w, jwtKey)
                                 ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, userID)
                                 r = r.WithContext(ctx)
@@ -1881,12 +1883,12 @@ func JWTAutoIssue(jwtKey []byte) func(next http.Handler) http.Handler <span clas
                                 return
                         }</span>
 
-                        <span class="cov8" title="16">ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, claims.UserID)
+                        <span class="cov9" title="23">ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, claims.UserID)
                         r = r.WithContext(ctx)
                         next.ServeHTTP(w, r)</span>
                 }
 
-                <span class="cov7" title="9">return http.HandlerFunc(fn)</span>
+                <span class="cov7" title="10">return http.HandlerFunc(fn)</span>
         }
 }
 
@@ -1903,9 +1905,9 @@ func JWTAutoIssue(jwtKey []byte) func(next http.Handler) http.Handler <span clas
 // Возвращает:
 //
 //        func(next http.Handler) http.Handler - middleware функцию
-func StrictJWTAutoIssue(jwtKey []byte) func(next http.Handler) http.Handler <span class="cov4" title="4">{
+func StrictJWTAutoIssue(jwtKey []byte) func(next http.Handler) http.Handler <span class="cov4" title="3">{
         return func(next http.Handler) http.Handler </span><span class="cov4" title="4">{
-                fn := func(w http.ResponseWriter, r *http.Request) </span><span class="cov10" title="24">{
+                fn := func(w http.ResponseWriter, r *http.Request) </span><span class="cov9" title="19">{
                         cookie, err := r.Cookie("token")
                         if err != nil || cookie == nil </span><span class="cov2" title="2">{
                                 _ = issueNewToken(w, jwtKey)
@@ -1913,23 +1915,23 @@ func StrictJWTAutoIssue(jwtKey []byte) func(next http.Handler) http.Handler <spa
                                 return
                         }</span>
 
-                        <span class="cov9" title="22">tokenStr := cookie.Value
+                        <span class="cov8" title="17">tokenStr := cookie.Value
                         claims := &amp;jwtauth.Claims{}
 
-                        token, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) </span><span class="cov9" title="22">{
+                        token, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) </span><span class="cov8" title="17">{
                                 if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok </span><span class="cov0" title="0">{
                                         return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
                                 }</span>
-                                <span class="cov9" title="22">return jwtKey, nil</span>
+                                <span class="cov8" title="17">return jwtKey, nil</span>
                         })
 
-                        <span class="cov9" title="22">if err != nil || !token.Valid </span><span class="cov0" title="0">{
+                        <span class="cov8" title="17">if err != nil || !token.Valid </span><span class="cov0" title="0">{
                                 _ = issueNewToken(w, jwtKey)
                                 http.Error(w, "Status unauthorized", http.StatusUnauthorized)
                                 return
                         }</span>
 
-                        <span class="cov9" title="22">ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, claims.UserID)
+                        <span class="cov8" title="17">ctx := context.WithValue(r.Context(), jwtauth.UserIDContextKey, claims.UserID)
                         r = r.WithContext(ctx)
                         next.ServeHTTP(w, r)</span>
                 }
@@ -1948,13 +1950,13 @@ func StrictJWTAutoIssue(jwtKey []byte) func(next http.Handler) http.Handler <spa
 // Возвращает:
 //
 //        string - идентификатор пользователя (userID)
-func issueNewToken(w http.ResponseWriter, jwtKey []byte) string <span class="cov6" title="8">{
+func issueNewToken(w http.ResponseWriter, jwtKey []byte) string <span class="cov5" title="6">{
         token, userID, err := jwtauth.GenerateNewToken(jwtKey)
         if err != nil </span><span class="cov0" title="0">{
                 http.Error(w, "Failed to generate token", http.StatusInternalServerError)
                 return ""
         }</span>
-        <span class="cov6" title="8">setTokenCookie(w, token)
+        <span class="cov5" title="6">setTokenCookie(w, token)
         return userID</span>
 }
 
@@ -1964,7 +1966,7 @@ func issueNewToken(w http.ResponseWriter, jwtKey []byte) string <span class="cov
 //
 //        w - http.ResponseWriter для установки cookie
 //        token - JWT токен для сохранения
-func setTokenCookie(w http.ResponseWriter, token string) <span class="cov6" title="8">{
+func setTokenCookie(w http.ResponseWriter, token string) <span class="cov5" title="6">{
         http.SetCookie(w, &amp;http.Cookie{
                 Name:     "token",
                 Value:    token,
@@ -2002,8 +2004,8 @@ import (
 // Возвращает:
 //
 //        func(next http.Handler) http.Handler - middleware функцию
-func RequestLogging(log *zap.Logger) func(next http.Handler) http.Handler <span class="cov7" title="14">{
-        return func(next http.Handler) http.Handler </span><span class="cov7" title="14">{
+func RequestLogging(log *zap.Logger) func(next http.Handler) http.Handler <span class="cov6" title="9">{
+        return func(next http.Handler) http.Handler </span><span class="cov6" title="9">{
                 fn := func(w http.ResponseWriter, r *http.Request) </span><span class="cov10" title="48">{
                         // Создаем обертку для ResponseWriter для получения метрик ответа
                         ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
@@ -2026,7 +2028,7 @@ func RequestLogging(log *zap.Logger) func(next http.Handler) http.Handler <span 
                         <span class="cov10" title="48">next.ServeHTTP(ww, r)</span>
                 }
 
-                <span class="cov7" title="14">return http.HandlerFunc(fn)</span>
+                <span class="cov6" title="9">return http.HandlerFunc(fn)</span>
         }
 }
 </pre>
@@ -2051,7 +2053,7 @@ import (
 // Возвращает:
 //
 //        func(next http.Handler) http.Handler - middleware функцию
-func Gzip(next http.Handler) http.Handler <span class="cov7" title="14">{
+func Gzip(next http.Handler) http.Handler <span class="cov6" title="9">{
         fn := func(w http.ResponseWriter, r *http.Request) </span><span class="cov10" title="48">{
                 // Используем оригинальный ResponseWriter по умолчанию
                 ow := w
@@ -2085,7 +2087,7 @@ func Gzip(next http.Handler) http.Handler <span class="cov7" title="14">{
                 <span class="cov10" title="48">next.ServeHTTP(ow, r)</span>
         }
 
-        <span class="cov7" title="14">return http.HandlerFunc(fn)</span>
+        <span class="cov6" title="9">return http.HandlerFunc(fn)</span>
 }
 </pre>
 		
@@ -2428,7 +2430,7 @@ type Service struct {
 // Возвращает:
 //
 //        *Service - инициализированный сервис
-func NewService(storage Repository) *Service <span class="cov5" title="14">{
+func NewService(storage Repository) *Service <span class="cov4" title="9">{
         // Инициализация воркера для удаления:
         // - 1 воркер
         // - Буфер на 10 задач
@@ -2692,26 +2694,26 @@ func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov6" 
         scanner := bufio.NewScanner(file)
         var countRecords uint64
 
-        for scanner.Scan() </span><span class="cov10" title="25">{
+        for scanner.Scan() </span><span class="cov10" title="24">{
                 line := scanner.Bytes()
                 if len(line) == 0 </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="25">var url models.UserURLMapping
+                <span class="cov10" title="24">var url models.UserURLMapping
                 if err := json.Unmarshal(line, &amp;url); err != nil </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="25">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
+                <span class="cov10" title="24">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="25">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov8" title="13">{
+                <span class="cov10" title="24">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov8" title="12">{
                         s.userURLIndex[url.UserID] = make(map[string]string)
                 }</span>
 
-                <span class="cov10" title="25">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
+                <span class="cov10" title="24">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
                 s.shortCodeMap[url.ShortURL] = url
                 countRecords++</span>
         }
@@ -2983,7 +2985,7 @@ import (
 //go:embed migrations/*.sql
 var fs embed.FS
 
-func applyMigrations(db *sql.DB) error <span class="cov10" title="6">{
+func applyMigrations(db *sql.DB) error <span class="cov8" title="1">{
         // 1. Создаем драйвер для источника миграций (из embed.FS)
         sourceDriver, err := iofs.New(fs, "migrations")
         if err != nil </span><span class="cov0" title="0">{
@@ -2991,7 +2993,7 @@ func applyMigrations(db *sql.DB) error <span class="cov10" title="6">{
         }</span>
 
         // 2. Создаем драйвер для базы данных
-        <span class="cov10" title="6">dbDriver, err := postgres.WithInstance(db, &amp;postgres.Config{
+        <span class="cov8" title="1">dbDriver, err := postgres.WithInstance(db, &amp;postgres.Config{
                 StatementTimeout: 5 * time.Minute, // Для операций миграции
         })
         if err != nil </span><span class="cov0" title="0">{
@@ -2999,7 +3001,7 @@ func applyMigrations(db *sql.DB) error <span class="cov10" title="6">{
         }</span>
 
         // 3. Инициализируем мигратор
-        <span class="cov10" title="6">m, err := migrate.NewWithInstance(
+        <span class="cov8" title="1">m, err := migrate.NewWithInstance(
                 "iofs",       // Имя драйвера источника
                 sourceDriver, // Экземпляр драйвера источника
                 "postgres",   // Имя драйвера БД
@@ -3009,10 +3011,10 @@ func applyMigrations(db *sql.DB) error <span class="cov10" title="6">{
         }</span>
 
         // 4. Применяем миграции
-        <span class="cov10" title="6">if err := m.Up(); err != nil &amp;&amp; err != migrate.ErrNoChange </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if err := m.Up(); err != nil &amp;&amp; err != migrate.ErrNoChange </span><span class="cov0" title="0">{
                 return err
         }</span>
-        <span class="cov10" title="6">return nil</span>
+        <span class="cov8" title="1">return nil</span>
 }
 </pre>
 		
@@ -3056,18 +3058,18 @@ type PostgresStorage struct {
 // Возвращает:
 //   - *PostgresStorage: инициализированное хранилище
 //   - error: ошибка при подключении или инициализации
-func NewPostgresStorage(storagePath string) (*PostgresStorage, error) <span class="cov7" title="6">{
+func NewPostgresStorage(storagePath string) (*PostgresStorage, error) <span class="cov1" title="1">{
         db, err := sql.Open("pgx", storagePath)
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
 
-        <span class="cov7" title="6">if err = applyMigrations(db); err != nil </span><span class="cov0" title="0">{
+        <span class="cov1" title="1">if err = applyMigrations(db); err != nil </span><span class="cov0" title="0">{
                 return nil, fmt.Errorf("migrations failed: %w", err)
         }</span>
 
         // Настройка пула соединений
-        <span class="cov7" title="6">db.SetMaxOpenConns(25)
+        <span class="cov1" title="1">db.SetMaxOpenConns(25)
         db.SetMaxIdleConns(25)
         db.SetConnMaxLifetime(5 * time.Minute)
 
@@ -3077,12 +3079,12 @@ func NewPostgresStorage(storagePath string) (*PostgresStorage, error) <span clas
                 return nil, err
         }</span>
 
-        <span class="cov7" title="6">getURLStmt, err := db.Prepare(`SELECT original_url, is_deleted FROM short_urls WHERE short_code = $1`)
+        <span class="cov1" title="1">getURLStmt, err := db.Prepare(`SELECT original_url, is_deleted FROM short_urls WHERE short_code = $1`)
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
 
-        <span class="cov7" title="6">insertURLStmt, err := db.Prepare(`
+        <span class="cov1" title="1">insertURLStmt, err := db.Prepare(`
         INSERT INTO short_urls (original_url, short_code, user_id)
         VALUES ($1, $2, $3)
         ON CONFLICT (user_id, original_url) DO UPDATE SET
@@ -3093,7 +3095,7 @@ func NewPostgresStorage(storagePath string) (*PostgresStorage, error) <span clas
                 return nil, err
         }</span>
 
-        <span class="cov7" title="6">return &amp;PostgresStorage{db, getShortURLStmt, getURLStmt, insertURLStmt}, nil</span>
+        <span class="cov1" title="1">return &amp;PostgresStorage{db, getShortURLStmt, getURLStmt, insertURLStmt}, nil</span>
 }
 
 // Ping проверяет соединение с базой данных.
@@ -3396,7 +3398,7 @@ type DeleteWorker struct {
 //   - batchSize: максимальный размер пакета перед обработкой
 //   - batchWindow: максимальное время ожидания формирования пакета
 //   - storage: реализация интерфейса Repository
-func NewDeleteWorker(workerCount, batchSize int, batchWindow time.Duration, storage Repository) *DeleteWorker <span class="cov7" title="14">{
+func NewDeleteWorker(workerCount, batchSize int, batchWindow time.Duration, storage Repository) *DeleteWorker <span class="cov7" title="9">{
         return &amp;DeleteWorker{
                 taskChan:    make(chan DeleteTask, 10000),
                 batchChan:   make(chan map[string][]string, 100),
@@ -3409,12 +3411,12 @@ func NewDeleteWorker(workerCount, batchSize int, batchWindow time.Duration, stor
 }</span>
 
 // Start запускает воркеры и сборщик пакетов.
-func (w *DeleteWorker) Start() <span class="cov7" title="14">{
+func (w *DeleteWorker) Start() <span class="cov7" title="9">{
         w.wg.Add(w.workerCount + 1) // +1 для сборщика пакетов
 
         go w.batchCollector() // Запускаем сборщик пакетов
 
-        for i := 0; i &lt; w.workerCount; i++ </span><span class="cov7" title="14">{
+        for i := 0; i &lt; w.workerCount; i++ </span><span class="cov7" title="9">{
                 go w.batchProcessor() // Запускаем воркеры
         }</span>
 }
@@ -3432,14 +3434,14 @@ func (w *DeleteWorker) Submit(task DeleteTask) error <span class="cov6" title="8
 
 // batchCollector собирает задачи в пакеты по пользователям.
 // Отправляет пакеты на обработку при достижении batchSize или по истечении batchWindow.
-func (w *DeleteWorker) batchCollector() <span class="cov7" title="14">{
+func (w *DeleteWorker) batchCollector() <span class="cov7" title="9">{
         defer w.wg.Done()
 
         batch := make(map[string][]string)
         ticker := time.NewTicker(w.batchWindow)
         defer ticker.Stop()
 
-        for </span><span class="cov10" title="37">{
+        for </span><span class="cov10" title="27">{
                 select </span>{
                 case &lt;-w.stopChan:<span class="cov0" title="0">
                         if len(batch) &gt; 0 </span><span class="cov0" title="0">{
@@ -3469,7 +3471,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="14">{
                                 ticker.Reset(w.batchWindow)
                         }</span>
 
-                case &lt;-ticker.C:<span class="cov7" title="15">
+                case &lt;-ticker.C:<span class="cov7" title="10">
                         if len(batch) &gt; 0 </span><span class="cov6" title="8">{
                                 w.batchChan &lt;- batch
                                 batch = make(map[string][]string)
@@ -3479,7 +3481,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="14">{
 }
 
 // batchProcessor обрабатывает пакеты задач, используя пул воркеров.
-func (w *DeleteWorker) batchProcessor() <span class="cov7" title="14">{
+func (w *DeleteWorker) batchProcessor() <span class="cov7" title="9">{
         defer w.wg.Done()
 
         for batch := range w.batchChan </span><span class="cov6" title="8">{
@@ -3587,6 +3589,29 @@ var (
         pgOnce      sync.Once
 )
 
+// PGConfig содержит конфигурационные параметры для настройки контейнера PostgreSQL.
+//
+// Поля структуры:
+//   - Image:    Docker-образ PostgreSQL (например, "postgres:13-alpine")
+//   - User:     Имя пользователя для подключения к БД
+//   - Password: Пароль пользователя БД
+//   - DBName:   Название создаваемой базы данных
+//   - Port:     Порт для подключения к PostgreSQL (формат "5432")
+//
+// Пример использования:
+//
+//        cfg := PGConfig{
+//            Image:    "postgres:13-alpine",
+//            User:     "testuser",
+//            Password: "testpass",
+//            DBName:   "testdb",
+//            Port:     "5432",
+//        }
+//
+// Примечания:
+//   - Все поля обязательные
+//   - Для тестов рекомендуется использовать образы с alpine
+//   - Порт должен соответствовать порту, используемому в выбранном образе
 type PGConfig struct {
         Image    string
         User     string
@@ -3698,22 +3723,12 @@ import (
         "compress/gzip"
         "encoding/json"
         "net/http"
-        "net/http/httptest"
         "testing"
 
-        "github.com/ryabkov82/shortener/internal/app/service"
-
-        "github.com/ryabkov82/shortener/internal/app/logger"
-
-        "github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
-        mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
-        "github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
         "github.com/ryabkov82/shortener/test/testutils"
 
-        "github.com/ryabkov82/shortener/internal/app/handlers/batch"
         "github.com/ryabkov82/shortener/internal/app/models"
 
-        "github.com/go-chi/chi/v5"
         "github.com/go-resty/resty/v2"
         "github.com/stretchr/testify/assert"
 )
@@ -3742,28 +3757,10 @@ import (
 //   - logger: система логирования
 //   - testutils: утилиты для генерации тестовых данных
 //   - resty: HTTP-клиент для тестирования
-func TestBatch(t *testing.T, st service.Repository) <span class="cov1" title="1">{
-
-        service := service.NewService(st)
-
-        if err := logger.Initialize("debug"); err != nil </span><span class="cov0" title="0">{
-                panic(err)</span>
-        }
-
-        <span class="cov1" title="1">r := chi.NewRouter()
-        r.Use(mwlogger.RequestLogging(logger.Log))
-        r.Use(mwgzip.Gzip)
-        r.Use(auth.JWTAutoIssue(testutils.TestSecretKey))
-
-        baseURL := "http://localhost:8080/"
-        r.Post("/api/shorten/batch", batch.GetHandler(service, baseURL, logger.Log))
+func TestBatch(t *testing.T, client *resty.Client) <span class="cov6" title="3">{
 
         cookie, _ := testutils.CreateSignedCookie()
 
-        // запускаем тестовый сервер, будет выбран первый свободный порт
-        srv := httptest.NewServer(r)
-        // останавливаем сервер после завершения теста
-        defer srv.Close()
         tests := []struct {
                 cookie         *http.Cookie
                 name           string
@@ -3792,8 +3789,8 @@ func TestBatch(t *testing.T, st service.Repository) <span class="cov1" title="1"
                         wantStatusCode: 400,
                 },
         }
-        for _, tt := range tests </span><span class="cov10" title="2">{
-                t.Run(tt.name, func(t *testing.T) </span><span class="cov10" title="2">{
+        for _, tt := range tests </span><span class="cov10" title="6">{
+                t.Run(tt.name, func(t *testing.T) </span><span class="cov10" title="6">{
 
                         buf := bytes.NewBuffer(nil)
                         zb := gzip.NewWriter(buf)
@@ -3802,17 +3799,17 @@ func TestBatch(t *testing.T, st service.Repository) <span class="cov1" title="1"
                         err = zb.Close()
                         assert.NoError(t, err)
 
-                        resp, err := resty.New().R().
+                        resp, err := client.R().
                                 SetBody(buf).
                                 SetHeader("Content-Encoding", "gzip").
                                 SetHeader("Accept-Encoding", "gzip").
-                                Post(srv.URL + "/api/shorten/batch")
+                                Post("/api/shorten/batch")
 
                         assert.NoError(t, err)
 
                         // Проверяем статус ответа
                         assert.Equal(t, tt.wantStatusCode, resp.StatusCode())
-                        if tt.wantStatusCode == 201 </span><span class="cov1" title="1">{
+                        if tt.wantStatusCode == 201 </span><span class="cov6" title="3">{
                                 // проверим, что получили данные в нужном формате
                                 var response []models.BatchResponse
                                 err = json.Unmarshal(resp.Body(), &amp;response)
@@ -3833,7 +3830,6 @@ import (
         "context"
         "encoding/json"
         "net/http"
-        "net/http/httptest"
         "testing"
         "time"
 
@@ -3841,17 +3837,10 @@ import (
 
         "github.com/ryabkov82/shortener/internal/app/models"
 
-        "github.com/ryabkov82/shortener/internal/app/handlers/deluserurls"
-        "github.com/ryabkov82/shortener/internal/app/handlers/redirect"
         "github.com/ryabkov82/shortener/internal/app/jwtauth"
-        "github.com/ryabkov82/shortener/internal/app/logger"
-        "github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
-        mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
-        "github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
         "github.com/ryabkov82/shortener/internal/app/service"
         "github.com/ryabkov82/shortener/test/testutils"
 
-        "github.com/go-chi/chi/v5"
         "github.com/go-resty/resty/v2"
 )
 
@@ -3884,30 +3873,7 @@ import (
 //   - Использует асинхронную модель удаления
 //   - Проверяет реальное изменение статуса через последующий GET-запрос
 //   - Поддерживает сжатие gzip в запросах
-func TestDelUserUrls(t *testing.T, st service.Repository) <span class="cov1" title="1">{
-
-        service := service.NewService(st)
-
-        if err := logger.Initialize("debug"); err != nil </span><span class="cov0" title="0">{
-                panic(err)</span>
-        }
-
-        <span class="cov1" title="1">r := chi.NewRouter()
-        r.Use(mwlogger.RequestLogging(logger.Log))
-        r.Use(mwgzip.Gzip)
-        r.Use(auth.StrictJWTAutoIssue(testutils.TestSecretKey))
-
-        baseURL := "http://localhost:8080/"
-        r.Delete("/api/user/urls", deluserurls.GetHandler(service, baseURL, logger.Log))
-        r.Get("/{id}", redirect.GetHandler(service, logger.Log))
-
-        // запускаем тестовый сервер, будет выбран первый свободный порт
-        srv := httptest.NewServer(r)
-        // останавливаем сервер после завершения теста
-        defer srv.Close()
-
-        // Клиент resty
-        client := resty.New().SetBaseURL(srv.URL)
+func TestDelUserUrls(t *testing.T, serv *service.Service, client *resty.Client) <span class="cov3" title="2">{
 
         // Тестовые данные
         cookie1, user1 := testutils.CreateSignedCookie()
@@ -3921,16 +3887,16 @@ func TestDelUserUrls(t *testing.T, st service.Repository) <span class="cov1" tit
         }
 
         // Заполняем хранилище
-        for i, url := range testURLs </span><span class="cov10" title="5">{
+        for i, url := range testURLs </span><span class="cov10" title="10">{
                 ctx := context.WithValue(context.Background(), jwtauth.UserIDContextKey, url.UserID)
-                shortURL, err := service.GetShortKey(ctx, url.OriginalURL)
+                shortURL, err := serv.GetShortKey(ctx, url.OriginalURL)
                 if err != nil </span><span class="cov0" title="0">{
                         panic(err)</span>
                 }
-                <span class="cov10" title="5">testURLs[i].ShortURL = shortURL</span>
+                <span class="cov10" title="10">testURLs[i].ShortURL = shortURL</span>
         }
 
-        <span class="cov1" title="1">tests := []struct {
+        <span class="cov3" title="2">tests := []struct {
                 cookie         *http.Cookie
                 name           string
                 userID         string
@@ -3971,8 +3937,8 @@ func TestDelUserUrls(t *testing.T, st service.Repository) <span class="cov1" tit
                         shouldBeMarked: []string{}, // Не должно пометить как удаленный
                 },
         }
-        for _, tt := range tests </span><span class="cov8" title="4">{
-                t.Run(tt.name, func(t *testing.T) </span><span class="cov8" title="4">{
+        for _, tt := range tests </span><span class="cov9" title="8">{
+                t.Run(tt.name, func(t *testing.T) </span><span class="cov9" title="8">{
 
                         // Подготовка запроса
                         body, _ := json.Marshal(tt.codesToDelete)
@@ -3997,7 +3963,7 @@ func TestDelUserUrls(t *testing.T, st service.Repository) <span class="cov1" tit
 
                         time.Sleep(500 * time.Millisecond)
                         // Проверка что URL помечены как удаленные
-                        for _, code := range tt.codesToDelete </span><span class="cov10" title="5">{
+                        for _, code := range tt.codesToDelete </span><span class="cov10" title="10">{
 
                                 resp, err := client.R().
                                         SetCookie(tt.cookie).
@@ -4005,9 +3971,9 @@ func TestDelUserUrls(t *testing.T, st service.Repository) <span class="cov1" tit
 
                                 // Проверки
                                 assert.NoError(t, err)
-                                if resp.StatusCode() == http.StatusGone </span><span class="cov7" title="3">{
+                                if resp.StatusCode() == http.StatusGone </span><span class="cov8" title="6">{
                                         assert.Contains(t, tt.shouldBeMarked, code)
-                                }</span> else<span class="cov4" title="2"> {
+                                }</span> else<span class="cov6" title="4"> {
                                         assert.NotContains(t, tt.shouldBeMarked, code)
                                 }</span>
 
@@ -4024,21 +3990,14 @@ import (
         "context"
         "errors"
         "net/http"
-        "net/http/httptest"
         "testing"
 
         "github.com/ryabkov82/shortener/internal/app/jwtauth"
-        "github.com/ryabkov82/shortener/internal/app/logger"
 
-        "github.com/ryabkov82/shortener/internal/app/handlers/redirect"
         "github.com/ryabkov82/shortener/internal/app/models"
-        "github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
-        mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
-        "github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
         "github.com/ryabkov82/shortener/internal/app/service"
         "github.com/ryabkov82/shortener/test/testutils"
 
-        "github.com/go-chi/chi/v5"
         "github.com/go-resty/resty/v2"
         "github.com/stretchr/testify/assert"
 )
@@ -4068,39 +4027,22 @@ import (
 //   - Использует кастомную политику редиректов для проверки Location
 //   - Сохраняет тестовые данные перед выполнением тестов
 //   - Проверяет как положительные, так и отрицательные сценарии
-func TestRedirect(t *testing.T, st service.Repository) <span class="cov1" title="1">{
-        service := service.NewService(st)
+func TestRedirect(t *testing.T, repo service.Repository, client *resty.Client) <span class="cov5" title="2">{
 
-        if err := logger.Initialize("debug"); err != nil </span><span class="cov0" title="0">{
-                panic(err)</span>
-        }
-
-        <span class="cov1" title="1">mapping := models.URLMapping{
+        mapping := models.URLMapping{
                 ShortURL:    "EYm7J2zF",
                 OriginalURL: "https://practicum.yandex.ru/",
         }
 
-        r := chi.NewRouter()
-        r.Use(mwlogger.RequestLogging(logger.Log))
-        r.Use(mwgzip.Gzip)
-        r.Use(auth.JWTAutoIssue(testutils.TestSecretKey))
-
-        r.Get("/{id}", redirect.GetHandler(service, logger.Log))
-
-        // запускаем тестовый сервер, будет выбран первый свободный порт
-        srv := httptest.NewServer(r)
-        // останавливаем сервер после завершения теста
-        defer srv.Close()
-
         var redirectAttemptedError = errors.New("redirect")
-        redirectPolicy := resty.RedirectPolicyFunc(func(req *http.Request, via []*http.Request) error </span><span class="cov1" title="1">{
+        redirectPolicy := resty.RedirectPolicyFunc(func(req *http.Request, via []*http.Request) error </span><span class="cov5" title="2">{
                 // return nil for continue redirect otherwise return error to stop/prevent redirect
                 return redirectAttemptedError
         }</span>)
 
-        <span class="cov1" title="1">cookie, userID := testutils.CreateSignedCookie()
+        <span class="cov5" title="2">cookie, userID := testutils.CreateSignedCookie()
         ctx := context.WithValue(context.Background(), jwtauth.UserIDContextKey, userID)
-        st.SaveURL(ctx, &amp;mapping)
+        repo.SaveURL(ctx, &amp;mapping)
 
         tests := []struct {
                 cookie         *http.Cookie
@@ -4123,27 +4065,26 @@ func TestRedirect(t *testing.T, st service.Repository) <span class="cov1" title=
                         wantStatusCode: 404,
                 },
         }
-        for _, tt := range tests </span><span class="cov10" title="2">{
-                t.Run(tt.name, func(t *testing.T) </span><span class="cov10" title="2">{
+        for _, tt := range tests </span><span class="cov10" title="4">{
+                t.Run(tt.name, func(t *testing.T) </span><span class="cov10" title="4">{
 
-                        client := resty.New()
                         client.SetRedirectPolicy(redirectPolicy)
                         req := client.R().SetCookie(tt.cookie)
                         req.Method = http.MethodGet
-                        req.URL = srv.URL + "/" + tt.shortKey
+                        req.URL = "/" + tt.shortKey
 
                         resp, err := req.Send()
 
-                        if errors.Is(err, redirectAttemptedError) </span><span class="cov1" title="1">{
+                        if errors.Is(err, redirectAttemptedError) </span><span class="cov5" title="2">{
                                 // эту ошибку игнорируем
                                 err = nil
                         }</span>
 
-                        <span class="cov10" title="2">assert.NoError(t, err)
+                        <span class="cov10" title="4">assert.NoError(t, err)
 
                         // Проверяем статус ответа
                         assert.Equal(t, tt.wantStatusCode, resp.StatusCode())
-                        if tt.wantStatusCode == 307 </span><span class="cov1" title="1">{
+                        if tt.wantStatusCode == 307 </span><span class="cov5" title="2">{
                                 assert.Equal(t, tt.originalURL, resp.Header().Get("Location"))
                         }</span>
                 })
@@ -4159,21 +4100,12 @@ import (
         "compress/gzip"
         "encoding/json"
         "net/http"
-        "net/http/httptest"
         "net/url"
         "testing"
 
-        "github.com/ryabkov82/shortener/internal/app/logger"
-
-        "github.com/ryabkov82/shortener/internal/app/service"
-
         "github.com/ryabkov82/shortener/internal/app/handlers/shortenapi"
-        "github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
-        mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
-        "github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
         "github.com/ryabkov82/shortener/test/testutils"
 
-        "github.com/go-chi/chi/v5"
         "github.com/go-resty/resty/v2"
         "github.com/stretchr/testify/assert"
 )
@@ -4204,29 +4136,9 @@ import (
 //   - Проверяет валидность возвращаемого короткого URL
 //   - Использует gzip сжатие для запросов
 //   - Поддерживает авторизацию через JWT cookie
-func TestShortenAPI(t *testing.T, st service.Repository) <span class="cov1" title="1">{
-
-        service := service.NewService(st)
-
-        if err := logger.Initialize("debug"); err != nil </span><span class="cov0" title="0">{
-                panic(err)</span>
-        }
-
-        <span class="cov1" title="1">r := chi.NewRouter()
-        r.Use(mwlogger.RequestLogging(logger.Log))
-        r.Use(mwgzip.Gzip)
-        r.Use(auth.JWTAutoIssue(testutils.TestSecretKey))
+func TestShortenAPI(t *testing.T, client *resty.Client) <span class="cov1" title="1">{
 
         cookie, _ := testutils.CreateSignedCookie()
-
-        baseURL := "http://localhost:8080/"
-        r.Post("/api/shorten", shortenapi.GetHandler(service, baseURL, logger.Log))
-
-        // запускаем тестовый сервер, будет выбран первый свободный порт
-        srv := httptest.NewServer(r)
-        // останавливаем сервер после завершения теста
-        defer srv.Close()
-
         tests := []struct {
                 cookie         *http.Cookie
                 name           string
@@ -4266,12 +4178,12 @@ func TestShortenAPI(t *testing.T, st service.Repository) <span class="cov1" titl
                         err = zb.Close()
                         assert.NoError(t, err)
 
-                        resp, err := resty.New().R().
+                        resp, err := client.R().
                                 SetCookie(tt.cookie).
                                 SetBody(buf).
                                 SetHeader("Content-Encoding", "gzip").
                                 SetHeader("Accept-Encoding", "gzip").
-                                Post(srv.URL + "/api/shorten")
+                                Post("/api/shorten")
 
                         assert.NoError(t, err)
 
@@ -4296,24 +4208,21 @@ func TestShortenAPI(t *testing.T, st service.Repository) <span class="cov1" titl
 
 import (
         "net/http"
-        "net/http/httptest"
         "net/url"
         "testing"
 
-        "github.com/ryabkov82/shortener/internal/app/handlers/shorturl"
-        "github.com/ryabkov82/shortener/internal/app/logger"
-        "github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
-        mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
-        "github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
-        "github.com/ryabkov82/shortener/internal/app/service"
         "github.com/ryabkov82/shortener/test/testutils"
 
-        "github.com/go-chi/chi/v5"
         "github.com/go-resty/resty/v2"
         "github.com/stretchr/testify/assert"
 )
 
 // TestShortenURL тестирует текстовый обработчик сокращения URL (POST /).
+//
+// Принимает:
+//
+//        t *testing.T - инстанс тестинга
+//        client *resty.Client - предварительно настроенный HTTP клиент (с базовым URL)
 //
 // Проверяет следующие сценарии:
 //   - Успешное создание короткой ссылки (StatusCreated)
@@ -4339,26 +4248,7 @@ import (
 //   - Проверяет валидность возвращаемого короткого URL
 //   - Работает с текстовым форматом запроса/ответа (в отличие от JSON API)
 //   - Поддерживает авторизацию через JWT cookie
-func TestShortenURL(t *testing.T, st service.Repository) <span class="cov1" title="1">{
-
-        service := service.NewService(st)
-
-        if err := logger.Initialize("debug"); err != nil </span><span class="cov0" title="0">{
-                panic(err)</span>
-        }
-
-        <span class="cov1" title="1">r := chi.NewRouter()
-        r.Use(mwlogger.RequestLogging(logger.Log))
-        r.Use(mwgzip.Gzip)
-        r.Use(auth.JWTAutoIssue(testutils.TestSecretKey))
-
-        baseURL := "http://localhost:8080/"
-        r.Post("/", shorturl.GetHandler(service, baseURL, logger.Log))
-
-        // запускаем тестовый сервер, будет выбран первый свободный порт
-        srv := httptest.NewServer(r)
-        // останавливаем сервер после завершения теста
-        defer srv.Close()
+func TestShortenURL(t *testing.T, client *resty.Client) <span class="cov4" title="2">{
 
         cookie, _ := testutils.CreateSignedCookie()
 
@@ -4388,19 +4278,19 @@ func TestShortenURL(t *testing.T, st service.Repository) <span class="cov1" titl
                 },
         }
 
-        for _, tt := range tests </span><span class="cov10" title="3">{
-                t.Run(tt.name, func(t *testing.T) </span><span class="cov10" title="3">{
+        for _, tt := range tests </span><span class="cov10" title="6">{
+                t.Run(tt.name, func(t *testing.T) </span><span class="cov10" title="6">{
 
-                        resp, err := resty.New().R().
+                        resp, err := client.R().
                                 SetCookie(tt.cookie).
                                 SetBody(tt.originalURL).
-                                Post(srv.URL)
+                                Post("/")
 
                         assert.NoError(t, err)
 
                         // Проверяем статус ответа
                         assert.Equal(t, tt.wantStatusCode, resp.StatusCode())
-                        if tt.wantStatusCode == 201 </span><span class="cov1" title="1">{
+                        if tt.wantStatusCode == 201 </span><span class="cov4" title="2">{
                                 shortURL := resp.Body()
                                 // Проверяем, что получен URL
                                 _, err = url.Parse(string(shortURL))
@@ -4418,21 +4308,14 @@ import (
         "context"
         "encoding/json"
         "net/http"
-        "net/http/httptest"
         "testing"
 
         "github.com/ryabkov82/shortener/internal/app/models"
 
-        "github.com/ryabkov82/shortener/internal/app/handlers/userurls"
         "github.com/ryabkov82/shortener/internal/app/jwtauth"
-        "github.com/ryabkov82/shortener/internal/app/logger"
-        "github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
-        mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
-        "github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
         "github.com/ryabkov82/shortener/internal/app/service"
         "github.com/ryabkov82/shortener/test/testutils"
 
-        "github.com/go-chi/chi/v5"
         "github.com/go-resty/resty/v2"
         "github.com/stretchr/testify/assert"
 )
@@ -4464,29 +4347,7 @@ import (
 //   - Проверяет строгую авторизацию через StrictJWTAutoIssue
 //   - Тестирует автоматическую выдачу cookie при неавторизованном доступе
 //   - Поддерживает проверку структуры JSON ответа
-func TestUserUrls(t *testing.T, st service.Repository) <span class="cov1" title="1">{
-
-        service := service.NewService(st)
-
-        if err := logger.Initialize("debug"); err != nil </span><span class="cov0" title="0">{
-                panic(err)</span>
-        }
-
-        <span class="cov1" title="1">r := chi.NewRouter()
-        r.Use(mwlogger.RequestLogging(logger.Log))
-        r.Use(mwgzip.Gzip)
-        r.Use(auth.StrictJWTAutoIssue(testutils.TestSecretKey))
-
-        baseURL := "http://localhost:8080/"
-        r.Get("/api/user/urls", userurls.GetHandler(service, baseURL, logger.Log))
-
-        // запускаем тестовый сервер, будет выбран первый свободный порт
-        srv := httptest.NewServer(r)
-        // останавливаем сервер после завершения теста
-        defer srv.Close()
-
-        // Клиент resty
-        client := resty.New().SetBaseURL(srv.URL)
+func TestUserUrls(t *testing.T, serv *service.Service, client *resty.Client) <span class="cov4" title="2">{
 
         // Тестовые данные
         cookie1, user1 := testutils.CreateSignedCookie()
@@ -4498,16 +4359,16 @@ func TestUserUrls(t *testing.T, st service.Repository) <span class="cov1" title=
         }
 
         // Заполняем хранилище
-        for _, url := range testURLs </span><span class="cov10" title="3">{
+        for _, url := range testURLs </span><span class="cov10" title="6">{
                 ctx := context.WithValue(context.Background(), jwtauth.UserIDContextKey, url.UserID)
-                _, err := service.GetShortKey(ctx, url.OriginalURL)
+                _, err := serv.GetShortKey(ctx, url.OriginalURL)
                 if err != nil </span><span class="cov0" title="0">{
                         panic(err)</span>
                 }
                 // url.ShortURL = shortURL
         }
 
-        <span class="cov1" title="1">t.Run("Успешное получение ссылок пользователя", func(t *testing.T) </span><span class="cov1" title="1">{
+        <span class="cov4" title="2">t.Run("Успешное получение ссылок пользователя", func(t *testing.T) </span><span class="cov4" title="2">{
 
                 // Запрос
                 resp, err := client.R().
@@ -4524,7 +4385,7 @@ func TestUserUrls(t *testing.T, st service.Repository) <span class="cov1" title=
                 assert.Len(t, urls, 2) // user1 имеет 2 ссылки
 
         }</span>)
-        <span class="cov1" title="1">t.Run("Пустой результат для нового пользователя", func(t *testing.T) </span><span class="cov1" title="1">{
+        <span class="cov4" title="2">t.Run("Пустой результат для нового пользователя", func(t *testing.T) </span><span class="cov4" title="2">{
                 cookie, _ := testutils.CreateSignedCookie()
 
                 resp, err := client.R().
@@ -4536,7 +4397,7 @@ func TestUserUrls(t *testing.T, st service.Repository) <span class="cov1" title=
 
         }</span>)
 
-        <span class="cov1" title="1">t.Run("Ошибка без куки", func(t *testing.T) </span><span class="cov1" title="1">{
+        <span class="cov4" title="2">t.Run("Ошибка без куки", func(t *testing.T) </span><span class="cov4" title="2">{
                 resp, err := client.R().
                         Get("/api/user/urls")
 
@@ -4581,6 +4442,81 @@ func CreateSignedCookie() (*http.Cookie, string) <span class="cov10" title="19">
 </pre>
 		
 		<pre class="file" id="file34" style="display: none">package testutils
+
+import (
+        "net/http/httptest"
+
+        "github.com/go-chi/chi/v5"
+        "github.com/go-resty/resty/v2"
+)
+
+// TestClient представляет тестовый HTTP клиент с ассоциированным сервером.
+// Используется для тестирования HTTP обработчиков с полным жизненным циклом.
+//
+// Поля:
+//
+//        Client *resty.Client - предварительно настроенный HTTP клиент
+//        Server *httptest.Server - тестовый HTTP сервер
+type TestClient struct {
+        Client *resty.Client
+        Server *httptest.Server
+}
+
+// NewTestClient создает новое тестовое окружение для HTTP тестов.
+//
+// Параметры:
+//
+//        handlers ...func(r chi.Router) - обработчики для настройки роутера.
+//          Каждая функция получает возможность зарегистрировать свои эндпоинты.
+//          Можно передавать несколько обработчиков - они будут применены по порядку.
+//
+// Возвращает:
+//
+//        *TestClient - готовый к использованию тестовый клиент с сервером.
+//
+// Примеры:
+//
+//  1. Простое создание:
+//     tc := NewTestClient(
+//     func(r chi.Router) {
+//     r.Get("/ping", PingHandler)
+//     },
+//     )
+//     defer tc.Close()
+//
+//  2. С middleware:
+//     tc := NewTestClient(
+//     func(r chi.Router) {
+//     r.Use(LoggerMiddleware)
+//     r.Post("/data", DataHandler)
+//     },
+//     )
+func NewTestClient(handlers ...func(r chi.Router)) *TestClient <span class="cov10" title="8">{
+        r := chi.NewRouter()
+        for _, h := range handlers </span><span class="cov10" title="8">{
+                h(r)
+        }</span>
+        <span class="cov10" title="8">srv := httptest.NewServer(r)
+
+        return &amp;TestClient{
+                Client: resty.New().SetBaseURL(srv.URL),
+                Server: srv,
+        }</span>
+}
+
+// Close освобождает ресурсы тестового клиента.
+// Должен вызываться при завершении работы (обычно через defer).
+//
+// Выполняет:
+//   - Остановку тестового сервера
+//   - Закрытие всех idle-соединений клиента
+func (tc *TestClient) Close() <span class="cov9" title="7">{
+        tc.Server.Close()
+        tc.Client.GetClient().CloseIdleConnections()
+}</span>
+</pre>
+		
+		<pre class="file" id="file35" style="display: none">package testutils
 
 import (
         "os"
@@ -4636,7 +4572,7 @@ func InitializeInMemoryStorage() (*storage.InMemoryStorage, error) <span class="
 }
 </pre>
 		
-		<pre class="file" id="file35" style="display: none">package testutils
+		<pre class="file" id="file36" style="display: none">package testutils
 
 import (
         "os/exec"
