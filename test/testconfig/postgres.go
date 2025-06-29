@@ -3,6 +3,8 @@ package testconfig
 import (
 	"context"
 	"fmt"
+	"log"
+	"os"
 	"sync"
 	"time"
 
@@ -62,13 +64,35 @@ func StartPGContainer(ctx context.Context, cfg PGConfig) (testcontainers.Contain
 			).WithDeadline(1 * time.Minute),
 		}
 
+		logger := log.New(os.Stdout, "[POSTGRES] ", log.LstdFlags)
+
 		pgContainer, startErr = testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
 			ContainerRequest: req,
 			Started:          true,
+			Logger:           logger,
 		})
 		if startErr != nil {
 			return
 		}
+
+		// Получаем логи в реальном времени
+		go func() {
+			reader, err := pgContainer.Logs(ctx)
+			if err != nil {
+				logger.Println("Failed to get logs:", err)
+				return
+			}
+			defer reader.Close()
+
+			buf := make([]byte, 1024)
+			for {
+				n, err := reader.Read(buf)
+				if err != nil {
+					return
+				}
+				logger.Print(string(buf[:n]))
+			}
+		}()
 
 		mappedPort, err := pgContainer.MappedPort(ctx, pgPort)
 		if err != nil {
