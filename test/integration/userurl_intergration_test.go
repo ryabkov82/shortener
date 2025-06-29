@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/ryabkov82/shortener/internal/app/storage/postgres"
-	"github.com/ryabkov82/shortener/test/testutils/handlers"
+	"github.com/ryabkov82/shortener/test/testhandlers"
 )
 
 func TestUserUrls_Postgres(t *testing.T) {
@@ -21,5 +21,5 @@ func TestUserUrls_Postgres(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	handlers.TestUserUrls(t, pg)
+	testhandlers.TestUserUrls(t, pg)
 }

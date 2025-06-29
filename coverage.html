@@ -107,21 +107,21 @@
 				
 				<option value="file25">github.com/ryabkov82/shortener/internal/app/workers/deleteurls/deleteworker.go (63.1%)</option>
 				
-				<option value="file26">github.com/ryabkov82/shortener/test/testconfig/postgres.go (79.3%)</option>
+				<option value="file26">github.com/ryabkov82/shortener/test/testconfig/postgres.go (75.0%)</option>
 				
-				<option value="file27">github.com/ryabkov82/shortener/test/testutils/auth.go (75.0%)</option>
+				<option value="file27">github.com/ryabkov82/shortener/test/testhandlers/batch_tests.go (96.4%)</option>
 				
-				<option value="file28">github.com/ryabkov82/shortener/test/testutils/handlers/batch_tests.go (96.4%)</option>
+				<option value="file28">github.com/ryabkov82/shortener/test/testhandlers/deluserurls_tests.go (95.2%)</option>
 				
-				<option value="file29">github.com/ryabkov82/shortener/test/testutils/handlers/deluserurls_tests.go (95.2%)</option>
+				<option value="file29">github.com/ryabkov82/shortener/test/testhandlers/redirect_tests.go (96.9%)</option>
 				
-				<option value="file30">github.com/ryabkov82/shortener/test/testutils/handlers/redirect_tests.go (96.9%)</option>
+				<option value="file30">github.com/ryabkov82/shortener/test/testhandlers/shortenapi_tests.go (97.0%)</option>
 				
-				<option value="file31">github.com/ryabkov82/shortener/test/testutils/handlers/shortenapi_tests.go (97.0%)</option>
+				<option value="file31">github.com/ryabkov82/shortener/test/testhandlers/shorturl_tests.go (95.5%)</option>
 				
-				<option value="file32">github.com/ryabkov82/shortener/test/testutils/handlers/shorturl_tests.go (95.5%)</option>
+				<option value="file32">github.com/ryabkov82/shortener/test/testhandlers/userurls_tests.go (94.7%)</option>
 				
-				<option value="file33">github.com/ryabkov82/shortener/test/testutils/handlers/userurls_tests.go (94.7%)</option>
+				<option value="file33">github.com/ryabkov82/shortener/test/testutils/auth.go (75.0%)</option>
 				
 				<option value="file34">github.com/ryabkov82/shortener/test/testutils/inmemory.go (80.0%)</option>
 				
@@ -1498,14 +1498,14 @@ import (
 
 // Пул gzip.Writer для повторного использования объектов
 var writerPool = sync.Pool{
-        New: func() interface{} <span class="cov10" title="102">{
+        New: func() interface{} <span class="cov10" title="109">{
                 return gzip.NewWriter(io.Discard)
         }</span>,
 }
 
 // Пул gzip.Reader для повторного использования объектов
 var readerPool = sync.Pool{
-        New: func() interface{} <span class="cov10" title="102">{
+        New: func() interface{} <span class="cov9" title="100">{
                 return new(gzip.Reader)
         }</span>,
 }
@@ -2655,13 +2655,13 @@ type InMemoryStorage struct {
 // Пример:
 //
 //        storage, err := NewInMemoryStorage("data/storage.json")
-func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span class="cov6" title="6">{
+func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span class="cov5" title="6">{
         file, err := os.OpenFile(fileStoragePath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
 
-        <span class="cov6" title="6">return &amp;InMemoryStorage{
+        <span class="cov5" title="6">return &amp;InMemoryStorage{
                 userURLIndex: make(map[string]map[string]string),
                 shortCodeMap: make(map[string]models.UserURLMapping),
                 countRecords: 0,
@@ -2682,41 +2682,41 @@ func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span 
 // Возвращает:
 //
 //        error - ошибка чтения файла
-func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov6" title="6">{
+func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov5" title="6">{
         file, err := os.OpenFile(fileStoragePath, os.O_RDONLY|os.O_CREATE, 0666)
         if err != nil </span><span class="cov0" title="0">{
                 return err
         }</span>
-        <span class="cov6" title="6">defer file.Close()
+        <span class="cov5" title="6">defer file.Close()
 
         scanner := bufio.NewScanner(file)
         var countRecords uint64
 
-        for scanner.Scan() </span><span class="cov10" title="16">{
+        for scanner.Scan() </span><span class="cov10" title="26">{
                 line := scanner.Bytes()
                 if len(line) == 0 </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="16">var url models.UserURLMapping
+                <span class="cov10" title="26">var url models.UserURLMapping
                 if err := json.Unmarshal(line, &amp;url); err != nil </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="16">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
+                <span class="cov10" title="26">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="16">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov8" title="9">{
+                <span class="cov10" title="26">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov8" title="14">{
                         s.userURLIndex[url.UserID] = make(map[string]string)
                 }</span>
 
-                <span class="cov10" title="16">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
+                <span class="cov10" title="26">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
                 s.shortCodeMap[url.ShortURL] = url
                 countRecords++</span>
         }
 
-        <span class="cov6" title="6">s.countRecords = countRecords
+        <span class="cov5" title="6">s.countRecords = countRecords
         return scanner.Err()</span>
 }
 
@@ -2731,7 +2731,7 @@ func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov6" 
 //
 //        models.URLMapping - найденное соответствие
 //        error - ошибка поиска (storage.ErrURLNotFound если не найден)
-func (s *InMemoryStorage) GetShortKey(ctx context.Context, originalURL string) (models.URLMapping, error) <span class="cov3" title="2">{
+func (s *InMemoryStorage) GetShortKey(ctx context.Context, originalURL string) (models.URLMapping, error) <span class="cov2" title="2">{
         s.mu.RLock()
         defer s.mu.RUnlock()
 
@@ -2740,8 +2740,8 @@ func (s *InMemoryStorage) GetShortKey(ctx context.Context, originalURL string) (
                 return models.URLMapping{}, errors.New("userID is not set")
         }</span>
 
-        <span class="cov3" title="2">shortKey, found := s.userURLIndex[userID.(string)][originalURL]
-        if !found </span><span class="cov3" title="2">{
+        <span class="cov2" title="2">shortKey, found := s.userURLIndex[userID.(string)][originalURL]
+        if !found </span><span class="cov2" title="2">{
                 return models.URLMapping{}, storage.ErrURLNotFound
         }</span>
 
@@ -2764,20 +2764,20 @@ func (s *InMemoryStorage) GetShortKey(ctx context.Context, originalURL string) (
 //        error:
 //          - storage.ErrURLNotFound если URL не существует
 //          - storage.ErrURLDeleted если URL помечен как удаленный
-func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (models.URLMapping, error) <span class="cov7" title="7">{
+func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (models.URLMapping, error) <span class="cov6" title="7">{
         s.mu.RLock()
         defer s.mu.RUnlock()
 
         url, found := s.shortCodeMap[shortKey]
-        if !found </span><span class="cov3" title="2">{
+        if !found </span><span class="cov2" title="2">{
                 return models.URLMapping{}, storage.ErrURLNotFound
         }</span>
 
-        <span class="cov6" title="5">if url.DeletedFlag </span><span class="cov4" title="3">{
+        <span class="cov5" title="5">if url.DeletedFlag </span><span class="cov4" title="3">{
                 return models.URLMapping{}, storage.ErrURLDeleted
         }</span>
 
-        <span class="cov3" title="2">return models.URLMapping{
+        <span class="cov2" title="2">return models.URLMapping{
                 ShortURL:    url.ShortURL,
                 OriginalURL: url.OriginalURL,
         }, nil</span>
@@ -2795,7 +2795,7 @@ func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (
 //        error:
 //          - storage.ErrShortURLExists если shortURL уже существует
 //          - storage.ErrURLExists если originalURL уже существует
-func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping *models.URLMapping) error <span class="cov9" title="15">{
+func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping *models.URLMapping) error <span class="cov8" title="15">{
         s.mu.Lock()
         defer s.mu.Unlock()
 
@@ -2803,21 +2803,21 @@ func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping *models.URLMappin
                 return storage.ErrShortURLExists
         }</span>
 
-        <span class="cov9" title="15">userID := ctx.Value(jwtauth.UserIDContextKey)
+        <span class="cov8" title="15">userID := ctx.Value(jwtauth.UserIDContextKey)
         if userID == nil </span><span class="cov0" title="0">{
                 return errors.New("userID is not set")
         }</span>
 
-        <span class="cov9" title="15">if _, ok := s.userURLIndex[userID.(string)]; !ok </span><span class="cov7" title="8">{
+        <span class="cov8" title="15">if _, ok := s.userURLIndex[userID.(string)]; !ok </span><span class="cov6" title="8">{
                 s.userURLIndex[userID.(string)] = make(map[string]string)
         }</span>
 
-        <span class="cov9" title="15">if shortURL, exists := s.userURLIndex[userID.(string)][mapping.OriginalURL]; exists </span><span class="cov3" title="2">{
+        <span class="cov8" title="15">if shortURL, exists := s.userURLIndex[userID.(string)][mapping.OriginalURL]; exists </span><span class="cov2" title="2">{
                 mapping.ShortURL = shortURL
                 return storage.ErrURLExists
         }</span>
 
-        <span class="cov9" title="13">s.userURLIndex[userID.(string)][mapping.OriginalURL] = mapping.ShortURL
+        <span class="cov8" title="13">s.userURLIndex[userID.(string)][mapping.OriginalURL] = mapping.ShortURL
         s.countRecords++
 
         userURLMapping := models.UserURLMapping{
@@ -2855,12 +2855,12 @@ func (s *InMemoryStorage) GetExistingURLs(ctx context.Context, originalURLs []st
                 return existing, nil
         }</span>
 
-        <span class="cov1" title="1">for _, originalURL := range originalURLs </span><span class="cov3" title="2">{
+        <span class="cov1" title="1">for _, originalURL := range originalURLs </span><span class="cov2" title="2">{
                 mapping, err := s.GetShortKey(ctx, originalURL)
                 if err != nil &amp;&amp; !errors.Is(err, storage.ErrURLNotFound) </span><span class="cov0" title="0">{
                         return nil, err
                 }</span>
-                <span class="cov3" title="2">if err == nil </span><span class="cov0" title="0">{
+                <span class="cov2" title="2">if err == nil </span><span class="cov0" title="0">{
                         existing[mapping.OriginalURL] = mapping.ShortURL
                 }</span>
         }
@@ -2879,7 +2879,7 @@ func (s *InMemoryStorage) GetExistingURLs(ctx context.Context, originalURLs []st
 //
 //        error - первая ошибка при сохранении
 func (s *InMemoryStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapping) error <span class="cov1" title="1">{
-        for _, url := range urls </span><span class="cov3" title="2">{
+        for _, url := range urls </span><span class="cov2" title="2">{
                 if err := s.SaveURL(ctx, &amp;url); err != nil &amp;&amp; !errors.Is(err, storage.ErrURLExists) </span><span class="cov0" title="0">{
                         return err
                 }</span>
@@ -2898,7 +2898,7 @@ func (s *InMemoryStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapp
 //
 //        []models.URLMapping - список URL пользователя
 //        error - ошибка операции
-func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error) <span class="cov3" title="2">{
+func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error) <span class="cov2" title="2">{
         s.mu.RLock()
         defer s.mu.RUnlock()
 
@@ -2907,13 +2907,13 @@ func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]mo
                 return nil, errors.New("userID is not set")
         }</span>
 
-        <span class="cov3" title="2">userURLs, exists := s.userURLIndex[userID.(string)]
+        <span class="cov2" title="2">userURLs, exists := s.userURLIndex[userID.(string)]
         if !exists </span><span class="cov1" title="1">{
                 return nil, nil
         }</span>
 
         <span class="cov1" title="1">var result []models.URLMapping
-        for originalURL, shortCode := range userURLs </span><span class="cov3" title="2">{
+        for originalURL, shortCode := range userURLs </span><span class="cov2" title="2">{
                 result = append(result, models.URLMapping{
                         OriginalURL: originalURL,
                         ShortURL:    baseURL + "/" + shortCode,
@@ -2932,11 +2932,11 @@ func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]mo
 // Возвращает:
 //
 //        error - ошибка операции
-func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error <span class="cov5" title="4">{
+func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error <span class="cov4" title="4">{
         s.mu.Lock()
         defer s.mu.Unlock()
 
-        for _, code := range urls </span><span class="cov6" title="5">{
+        for _, code := range urls </span><span class="cov5" title="5">{
                 if mapping, exists := s.shortCodeMap[code]; exists &amp;&amp; mapping.UserID == userID </span><span class="cov4" title="3">{
                         mapping.DeletedFlag = true
                         s.shortCodeMap[code] = mapping
@@ -2945,7 +2945,7 @@ func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error
                         }</span>
                 }
         }
-        <span class="cov5" title="4">return nil</span>
+        <span class="cov4" title="4">return nil</span>
 }
 
 // FilePath возвращает путь к файлу, используемому хранилищем.
@@ -2960,8 +2960,8 @@ func (s *InMemoryStorage) FilePath() string <span class="cov1" title="1">{
 }
 
 // Close освобождает ресурсы
-func (s *InMemoryStorage) Close() error <span class="cov6" title="6">{
-        if s.file != nil </span><span class="cov6" title="6">{
+func (s *InMemoryStorage) Close() error <span class="cov5" title="6">{
+        if s.file != nil </span><span class="cov5" title="6">{
                 return s.file.Close()
         }</span>
         <span class="cov0" title="0">return nil</span>
@@ -3439,7 +3439,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="14">{
         ticker := time.NewTicker(w.batchWindow)
         defer ticker.Stop()
 
-        for </span><span class="cov10" title="37">{
+        for </span><span class="cov10" title="38">{
                 select </span>{
                 case &lt;-w.stopChan:<span class="cov0" title="0">
                         if len(batch) &gt; 0 </span><span class="cov0" title="0">{
@@ -3469,7 +3469,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="14">{
                                 ticker.Reset(w.batchWindow)
                         }</span>
 
-                case &lt;-ticker.C:<span class="cov7" title="15">
+                case &lt;-ticker.C:<span class="cov7" title="16">
                         if len(batch) &gt; 0 </span><span class="cov6" title="8">{
                                 w.batchChan &lt;- batch
                                 batch = make(map[string][]string)
@@ -3600,17 +3600,10 @@ func StartPGContainer(ctx context.Context, cfg PGConfig) (testcontainers.Contain
                         WaitingFor: wait.ForAll(
                                 wait.ForLog("database system is ready"),
                                 wait.ForListeningPort(pgPort),
-                                wait.ForSQL(
-                                        pgPort,
-                                        "postgres",
-                                        func(host string, port nat.Port) string </span><span class="cov1" title="1">{
-                                                return fmt.Sprintf("host=%s port=%s user=test password=test dbname=test sslmode=disable",
-                                                        host, port.Port())
-                                        }</span>).WithStartupTimeout(1*time.Minute).WithPollInterval(1*time.Second),
                         ).WithDeadline(1 * time.Minute),
                 }
 
-                <span class="cov1" title="1">logger := log.New(os.Stdout, "[POSTGRES] ", log.LstdFlags)
+                logger := log.New(os.Stdout, "[POSTGRES] ", log.LstdFlags)
 
                 pgContainer, startErr = testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
                         ContainerRequest: req,
@@ -3640,14 +3633,20 @@ func StartPGContainer(ctx context.Context, cfg PGConfig) (testcontainers.Contain
                         }
                 }()
 
+                <span class="cov1" title="1">host, err := pgContainer.Host(ctx)
+                if err != nil </span><span class="cov0" title="0">{
+                        startErr = err
+                        return
+                }</span>
+
                 <span class="cov1" title="1">mappedPort, err := pgContainer.MappedPort(ctx, pgPort)
                 if err != nil </span><span class="cov0" title="0">{
                         startErr = err
                         return
                 }</span>
 
-                <span class="cov1" title="1">pgDSN = fmt.Sprintf("postgres://%s:%s@localhost:%s/%s?sslmode=disable",
-                        cfg.User, cfg.Password, mappedPort.Port(), cfg.DBName)</span>
+                <span class="cov1" title="1">pgDSN = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+                        cfg.User, cfg.Password, host, mappedPort.Port(), cfg.DBName)</span>
         })
 
         <span class="cov1" title="1">return pgContainer, pgDSN, startErr</span>
@@ -3658,37 +3657,7 @@ func GetTestPGDSN() string <span class="cov0" title="0">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file27" style="display: none">package testutils
-
-import (
-        "net/http"
-
-        "github.com/ryabkov82/shortener/internal/app/jwtauth"
-)
-
-// TestSecretKey содержит тестовый ключ для подписи JWT.
-// Используется только в тестовой среде.
-var TestSecretKey = []byte("test-secret-key")
-
-// CreateSignedCookie создает тестовую HTTP-куку с подписанным JWT-токеном.
-// Используется для симуляции аутентифицированных запросов в тестах.
-func CreateSignedCookie() (*http.Cookie, string) <span class="cov10" title="19">{
-        tokenString, userID, err := jwtauth.GenerateNewToken(TestSecretKey)
-        if err != nil </span><span class="cov0" title="0">{
-                panic(err)</span> // В тестах допустим panic
-        }
-
-        <span class="cov10" title="19">return &amp;http.Cookie{
-                Name:     "token",
-                Value:    tokenString,
-                HttpOnly: true,
-                Path:     "/",
-                SameSite: http.SameSiteStrictMode,
-        }, userID</span>
-}
-</pre>
-		
-		<pre class="file" id="file28" style="display: none">package handlers
+		<pre class="file" id="file27" style="display: none">package testhandlers
 
 import (
         "bytes"
@@ -3798,7 +3767,7 @@ func TestBatch(t *testing.T, st service.Repository) <span class="cov1" title="1"
 }
 </pre>
 		
-		<pre class="file" id="file29" style="display: none">package handlers
+		<pre class="file" id="file28" style="display: none">package testhandlers
 
 import (
         "bytes"
@@ -3962,7 +3931,7 @@ func TestDelUserUrls(t *testing.T, st service.Repository) <span class="cov1" tit
 }
 </pre>
 		
-		<pre class="file" id="file30" style="display: none">package handlers
+		<pre class="file" id="file29" style="display: none">package testhandlers
 
 import (
         "context"
@@ -4071,7 +4040,7 @@ func TestRedirect(t *testing.T, st service.Repository) <span class="cov1" title=
 }
 </pre>
 		
-		<pre class="file" id="file31" style="display: none">package handlers
+		<pre class="file" id="file30" style="display: none">package testhandlers
 
 import (
         "bytes"
@@ -4185,7 +4154,7 @@ func TestShortenAPI(t *testing.T, st service.Repository) <span class="cov1" titl
 }
 </pre>
 		
-		<pre class="file" id="file32" style="display: none">package handlers
+		<pre class="file" id="file31" style="display: none">package testhandlers
 
 import (
         "net/http"
@@ -4279,7 +4248,7 @@ func TestShortenURL(t *testing.T, st service.Repository) <span class="cov1" titl
 }
 </pre>
 		
-		<pre class="file" id="file33" style="display: none">package handlers
+		<pre class="file" id="file32" style="display: none">package testhandlers
 
 import (
         "context"
@@ -4387,6 +4356,36 @@ func TestUserUrls(t *testing.T, st service.Repository) <span class="cov1" title=
                 assert.NotEmpty(t, resp.Cookies())
         }</span>)
 
+}
+</pre>
+		
+		<pre class="file" id="file33" style="display: none">package testutils
+
+import (
+        "net/http"
+
+        "github.com/ryabkov82/shortener/internal/app/jwtauth"
+)
+
+// TestSecretKey содержит тестовый ключ для подписи JWT.
+// Используется только в тестовой среде.
+var TestSecretKey = []byte("test-secret-key")
+
+// CreateSignedCookie создает тестовую HTTP-куку с подписанным JWT-токеном.
+// Используется для симуляции аутентифицированных запросов в тестах.
+func CreateSignedCookie() (*http.Cookie, string) <span class="cov10" title="19">{
+        tokenString, userID, err := jwtauth.GenerateNewToken(TestSecretKey)
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span> // В тестах допустим panic
+        }
+
+        <span class="cov10" title="19">return &amp;http.Cookie{
+                Name:     "token",
+                Value:    tokenString,
+                HttpOnly: true,
+                Path:     "/",
+                SameSite: http.SameSiteStrictMode,
+        }, userID</span>
 }
 </pre>
 		

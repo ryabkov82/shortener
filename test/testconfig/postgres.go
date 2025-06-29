@@ -54,13 +54,6 @@ func StartPGContainer(ctx context.Context, cfg PGConfig) (testcontainers.Contain
 			WaitingFor: wait.ForAll(
 				wait.ForLog("database system is ready"),
 				wait.ForListeningPort(pgPort),
-				wait.ForSQL(
-					pgPort,
-					"postgres",
-					func(host string, port nat.Port) string {
-						return fmt.Sprintf("host=%s port=%s user=test password=test dbname=test sslmode=disable",
-							host, port.Port())
-					}).WithStartupTimeout(1*time.Minute).WithPollInterval(1*time.Second),
 			).WithDeadline(1 * time.Minute),
 		}
 
@@ -94,14 +87,20 @@ func StartPGContainer(ctx context.Context, cfg PGConfig) (testcontainers.Contain
 			}
 		}()
 
+		host, err := pgContainer.Host(ctx)
+		if err != nil {
+			startErr = err
+			return
+		}
+
 		mappedPort, err := pgContainer.MappedPort(ctx, pgPort)
 		if err != nil {
 			startErr = err
 			return
 		}
 
-		pgDSN = fmt.Sprintf("postgres://%s:%s@localhost:%s/%s?sslmode=disable",
-			cfg.User, cfg.Password, mappedPort.Port(), cfg.DBName)
+		pgDSN = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+			cfg.User, cfg.Password, host, mappedPort.Port(), cfg.DBName)
 	})
 
 	return pgContainer, pgDSN, startErr

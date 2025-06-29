@@ -1,17 +1,13 @@
-package handlers
+package testhandlers
 
 import (
-	"context"
-	"errors"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
-	"github.com/ryabkov82/shortener/internal/app/jwtauth"
+	"github.com/ryabkov82/shortener/internal/app/handlers/shorturl"
 	"github.com/ryabkov82/shortener/internal/app/logger"
-
-	"github.com/ryabkov82/shortener/internal/app/handlers/redirect"
-	"github.com/ryabkov82/shortener/internal/app/models"
 	"github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
 	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
 	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
@@ -23,16 +19,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRedirect(t *testing.T, st service.Repository) {
+func TestShortenURL(t *testing.T, st service.Repository) {
+
 	service := service.NewService(st)
 
 	if err := logger.Initialize("debug"); err != nil {
 		panic(err)
-	}
-
-	mapping := models.URLMapping{
-		ShortURL:    "EYm7J2zF",
-		OriginalURL: "https://practicum.yandex.ru/",
 	}
 
 	r := chi.NewRouter()
@@ -40,66 +32,59 @@ func TestRedirect(t *testing.T, st service.Repository) {
 	r.Use(mwgzip.Gzip)
 	r.Use(auth.JWTAutoIssue(testutils.TestSecretKey))
 
-	r.Get("/{id}", redirect.GetHandler(service, logger.Log))
+	baseURL := "http://localhost:8080/"
+	r.Post("/", shorturl.GetHandler(service, baseURL, logger.Log))
 
 	// запускаем тестовый сервер, будет выбран первый свободный порт
 	srv := httptest.NewServer(r)
 	// останавливаем сервер после завершения теста
 	defer srv.Close()
 
-	var redirectAttemptedError = errors.New("redirect")
-	redirectPolicy := resty.RedirectPolicyFunc(func(req *http.Request, via []*http.Request) error {
-		// return nil for continue redirect otherwise return error to stop/prevent redirect
-		return redirectAttemptedError
-	})
-
-	cookie, userID := testutils.CreateSignedCookie()
-	ctx := context.WithValue(context.Background(), jwtauth.UserIDContextKey, userID)
-	st.SaveURL(ctx, &mapping)
+	cookie, _ := testutils.CreateSignedCookie()
 
 	tests := []struct {
 		cookie         *http.Cookie
 		name           string
 		originalURL    string
-		shortKey       string
 		wantStatusCode int
 	}{
 		{
 			name:           "positive test #1",
 			originalURL:    "https://practicum.yandex.ru/",
-			shortKey:       "EYm7J2zF",
 			cookie:         cookie,
-			wantStatusCode: 307,
+			wantStatusCode: 201,
+		},
+		{
+			name:           "positive test #1",
+			originalURL:    "https://practicum.yandex.ru/",
+			cookie:         cookie,
+			wantStatusCode: 409,
 		},
 		{
 			name:           "negative test #2",
-			shortKey:       "RrixjW0q",
+			originalURL:    "not url",
 			cookie:         cookie,
-			wantStatusCode: 404,
+			wantStatusCode: 400,
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			client := resty.New()
-			client.SetRedirectPolicy(redirectPolicy)
-			req := client.R().SetCookie(tt.cookie)
-			req.Method = http.MethodGet
-			req.URL = srv.URL + "/" + tt.shortKey
-
-			resp, err := req.Send()
-
-			if errors.Is(err, redirectAttemptedError) {
-				// эту ошибку игнорируем
-				err = nil
-			}
+			resp, err := resty.New().R().
+				SetCookie(tt.cookie).
+				SetBody(tt.originalURL).
+				Post(srv.URL)
 
 			assert.NoError(t, err)
 
 			// Проверяем статус ответа
 			assert.Equal(t, tt.wantStatusCode, resp.StatusCode())
-			if tt.wantStatusCode == 307 {
-				assert.Equal(t, tt.originalURL, resp.Header().Get("Location"))
+			if tt.wantStatusCode == 201 {
+				shortURL := resp.Body()
+				// Проверяем, что получен URL
+				_, err = url.Parse(string(shortURL))
+				assert.NoError(t, err)
 			}
 		})
 	}

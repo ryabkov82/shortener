@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/ryabkov82/shortener/internal/app/storage/postgres"
-	"github.com/ryabkov82/shortener/test/testutils/handlers"
+	"github.com/ryabkov82/shortener/test/testhandlers"
 )
 
 func TestBatch_Postgres(t *testing.T) {
@@ -21,5 +21,5 @@ func TestBatch_Postgres(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	handlers.TestBatch(t, pg)
+	testhandlers.TestBatch(t, pg)
 }

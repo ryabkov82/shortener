@@ -4,8 +4,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/ryabkov82/shortener/test/testhandlers"
 	"github.com/ryabkov82/shortener/test/testutils"
-	"github.com/ryabkov82/shortener/test/testutils/handlers"
 )
 
 func TestGetHandler_InMemory(t *testing.T) {
@@ -17,5 +17,5 @@ func TestGetHandler_InMemory(t *testing.T) {
 	defer st.Close()
 	defer os.Remove(st.FilePath())
 
-	handlers.TestBatch(t, st)
+	testhandlers.TestBatch(t, st)
 }

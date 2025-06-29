@@ -3,8 +3,8 @@ package userurls_test
 import (
 	"testing"
 
+	"github.com/ryabkov82/shortener/test/testhandlers"
 	"github.com/ryabkov82/shortener/test/testutils"
-	"github.com/ryabkov82/shortener/test/testutils/handlers"
 )
 
 func TestGetHandler_InMemory(t *testing.T) {
@@ -16,5 +16,5 @@ func TestGetHandler_InMemory(t *testing.T) {
 	}
 	defer st.Close()
 
-	handlers.TestUserUrls(t, st)
+	testhandlers.TestUserUrls(t, st)
 }

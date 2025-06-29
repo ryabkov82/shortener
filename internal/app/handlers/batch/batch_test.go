@@ -5,7 +5,7 @@ import (
 
 	"github.com/ryabkov82/shortener/internal/app/service/mocks"
 
-	"github.com/ryabkov82/shortener/test/testutils/handlers"
+	"github.com/ryabkov82/shortener/test/testhandlers"
 
 	"github.com/golang/mock/gomock"
 )
@@ -22,5 +22,5 @@ func TestGetHandler(t *testing.T) {
 	m.EXPECT().GetExistingURLs(gomock.Any(), gomock.Any()).Return(nil, nil)
 	m.EXPECT().SaveNewURLs(gomock.Any(), gomock.Any()).Return(nil)
 
-	handlers.TestBatch(t, m)
+	testhandlers.TestBatch(t, m)
 }

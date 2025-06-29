@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/ryabkov82/shortener/internal/app/storage/postgres"
-	"github.com/ryabkov82/shortener/test/testutils/handlers"
+	"github.com/ryabkov82/shortener/test/testhandlers"
 )
 
 func TestRedirect_Postgres(t *testing.T) {
@@ -21,5 +21,5 @@ func TestRedirect_Postgres(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	handlers.TestRedirect(t, pg)
+	testhandlers.TestRedirect(t, pg)
 }
