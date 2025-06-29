@@ -41,6 +41,29 @@ var (
 	pgOnce      sync.Once
 )
 
+// PGConfig содержит конфигурационные параметры для настройки контейнера PostgreSQL.
+//
+// Поля структуры:
+//   - Image:    Docker-образ PostgreSQL (например, "postgres:13-alpine")
+//   - User:     Имя пользователя для подключения к БД
+//   - Password: Пароль пользователя БД
+//   - DBName:   Название создаваемой базы данных
+//   - Port:     Порт для подключения к PostgreSQL (формат "5432")
+//
+// Пример использования:
+//
+//	cfg := PGConfig{
+//	    Image:    "postgres:13-alpine",
+//	    User:     "testuser",
+//	    Password: "testpass",
+//	    DBName:   "testdb",
+//	    Port:     "5432",
+//	}
+//
+// Примечания:
+//   - Все поля обязательные
+//   - Для тестов рекомендуется использовать образы с alpine
+//   - Порт должен соответствовать порту, используемому в выбранном образе
 type PGConfig struct {
 	Image    string
 	User     string
