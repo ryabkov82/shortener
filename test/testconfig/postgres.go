@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/docker/go-connections/nat"
 	"github.com/testcontainers/testcontainers-go"
@@ -51,7 +52,14 @@ func StartPGContainer(ctx context.Context, cfg PGConfig) (testcontainers.Contain
 			WaitingFor: wait.ForAll(
 				wait.ForLog("database system is ready"),
 				wait.ForListeningPort(pgPort),
-			),
+				wait.ForSQL(
+					pgPort,
+					"postgres",
+					func(host string, port nat.Port) string {
+						return fmt.Sprintf("host=%s port=%s user=test password=test dbname=test sslmode=disable",
+							host, port.Port())
+					}).WithStartupTimeout(1*time.Minute).WithPollInterval(1*time.Second),
+			).WithDeadline(1 * time.Minute),
 		}
 
 		pgContainer, startErr = testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
