@@ -1500,14 +1500,14 @@ import (
 
 // Пул gzip.Writer для повторного использования объектов
 var writerPool = sync.Pool{
-        New: func() interface{} <span class="cov10" title="103">{
+        New: func() interface{} <span class="cov10" title="105">{
                 return gzip.NewWriter(io.Discard)
         }</span>,
 }
 
 // Пул gzip.Reader для повторного использования объектов
 var readerPool = sync.Pool{
-        New: func() interface{} <span class="cov9" title="99">{
+        New: func() interface{} <span class="cov9" title="100">{
                 return new(gzip.Reader)
         }</span>,
 }
@@ -2657,13 +2657,13 @@ type InMemoryStorage struct {
 // Пример:
 //
 //        storage, err := NewInMemoryStorage("data/storage.json")
-func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span class="cov6" title="6">{
+func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span class="cov5" title="6">{
         file, err := os.OpenFile(fileStoragePath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
 
-        <span class="cov6" title="6">return &amp;InMemoryStorage{
+        <span class="cov5" title="6">return &amp;InMemoryStorage{
                 userURLIndex: make(map[string]map[string]string),
                 shortCodeMap: make(map[string]models.UserURLMapping),
                 countRecords: 0,
@@ -2684,41 +2684,41 @@ func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span 
 // Возвращает:
 //
 //        error - ошибка чтения файла
-func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov6" title="6">{
+func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov5" title="6">{
         file, err := os.OpenFile(fileStoragePath, os.O_RDONLY|os.O_CREATE, 0666)
         if err != nil </span><span class="cov0" title="0">{
                 return err
         }</span>
-        <span class="cov6" title="6">defer file.Close()
+        <span class="cov5" title="6">defer file.Close()
 
         scanner := bufio.NewScanner(file)
         var countRecords uint64
 
-        for scanner.Scan() </span><span class="cov10" title="24">{
+        for scanner.Scan() </span><span class="cov10" title="31">{
                 line := scanner.Bytes()
                 if len(line) == 0 </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="24">var url models.UserURLMapping
+                <span class="cov10" title="31">var url models.UserURLMapping
                 if err := json.Unmarshal(line, &amp;url); err != nil </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="24">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
+                <span class="cov10" title="31">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="24">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov8" title="12">{
+                <span class="cov10" title="31">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov8" title="15">{
                         s.userURLIndex[url.UserID] = make(map[string]string)
                 }</span>
 
-                <span class="cov10" title="24">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
+                <span class="cov10" title="31">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
                 s.shortCodeMap[url.ShortURL] = url
                 countRecords++</span>
         }
 
-        <span class="cov6" title="6">s.countRecords = countRecords
+        <span class="cov5" title="6">s.countRecords = countRecords
         return scanner.Err()</span>
 }
 
@@ -2775,7 +2775,7 @@ func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (
                 return models.URLMapping{}, storage.ErrURLNotFound
         }</span>
 
-        <span class="cov5" title="5">if url.DeletedFlag </span><span class="cov4" title="3">{
+        <span class="cov5" title="5">if url.DeletedFlag </span><span class="cov3" title="3">{
                 return models.URLMapping{}, storage.ErrURLDeleted
         }</span>
 
@@ -2819,7 +2819,7 @@ func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping *models.URLMappin
                 return storage.ErrURLExists
         }</span>
 
-        <span class="cov8" title="13">s.userURLIndex[userID.(string)][mapping.OriginalURL] = mapping.ShortURL
+        <span class="cov7" title="13">s.userURLIndex[userID.(string)][mapping.OriginalURL] = mapping.ShortURL
         s.countRecords++
 
         userURLMapping := models.UserURLMapping{
@@ -2939,7 +2939,7 @@ func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error
         defer s.mu.Unlock()
 
         for _, code := range urls </span><span class="cov5" title="5">{
-                if mapping, exists := s.shortCodeMap[code]; exists &amp;&amp; mapping.UserID == userID </span><span class="cov4" title="3">{
+                if mapping, exists := s.shortCodeMap[code]; exists &amp;&amp; mapping.UserID == userID </span><span class="cov3" title="3">{
                         mapping.DeletedFlag = true
                         s.shortCodeMap[code] = mapping
                         if err := s.encoder.Encode(mapping); err != nil </span><span class="cov0" title="0">{
@@ -2962,8 +2962,8 @@ func (s *InMemoryStorage) FilePath() string <span class="cov1" title="1">{
 }
 
 // Close освобождает ресурсы
-func (s *InMemoryStorage) Close() error <span class="cov6" title="6">{
-        if s.file != nil </span><span class="cov6" title="6">{
+func (s *InMemoryStorage) Close() error <span class="cov5" title="6">{
+        if s.file != nil </span><span class="cov5" title="6">{
                 return s.file.Close()
         }</span>
         <span class="cov0" title="0">return nil</span>
@@ -3441,7 +3441,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="9">{
         ticker := time.NewTicker(w.batchWindow)
         defer ticker.Stop()
 
-        for </span><span class="cov10" title="27">{
+        for </span><span class="cov10" title="26">{
                 select </span>{
                 case &lt;-w.stopChan:<span class="cov0" title="0">
                         if len(batch) &gt; 0 </span><span class="cov0" title="0">{
@@ -3471,7 +3471,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="9">{
                                 ticker.Reset(w.batchWindow)
                         }</span>
 
-                case &lt;-ticker.C:<span class="cov7" title="10">
+                case &lt;-ticker.C:<span class="cov7" title="9">
                         if len(batch) &gt; 0 </span><span class="cov6" title="8">{
                                 w.batchChan &lt;- batch
                                 batch = make(map[string][]string)
