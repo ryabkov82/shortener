@@ -30,6 +30,9 @@ type Config struct {
 	DBConnect      string      // Строка подключения к БД
 	JwtKey         string      // Секретный ключ для JWT
 	ConfigPProf    PProfConfig // Настройки pprof
+	EnableHTTPS    bool        // Включение HTTPS
+	SSLCertFile    string      // Путь к SSL сертификату
+	SSLKeyFile     string      // Путь к SSL ключу
 }
 
 // PProfConfig содержит настройки профилирования pprof.
@@ -85,6 +88,20 @@ func validateBaseURL(baseURL string) error {
 	return nil
 }
 
+// validateCertFiles проверяет существование файлов сертификатов.
+// Возвращает:
+//
+//	error - ошибка или nil
+func validateCertFiles(certFile, keyFile string) error {
+	if _, err := os.Stat(certFile); os.IsNotExist(err) {
+		return errors.New("SSL certificate file not found")
+	}
+	if _, err := os.Stat(keyFile); os.IsNotExist(err) {
+		return errors.New("SSL key file not found")
+	}
+	return nil
+}
+
 // Load загружает конфигурацию из разных источников.
 //
 // Порядок загрузки:
@@ -102,6 +119,9 @@ func Load() *Config {
 		LogLevel:       "info",
 		FileStorage:    "storage.dat",
 		JwtKey:         "your_strong_secret_here",
+		EnableHTTPS:    false,
+		SSLCertFile:    "cert.pem",
+		SSLKeyFile:     "key.pem",
 		ConfigPProf: PProfConfig{
 			Enabled:  true,
 			AuthUser: "admin",
@@ -131,6 +151,7 @@ func Load() *Config {
 	flag.StringVar(&cfg.LogLevel, "l", cfg.LogLevel, "Log level (debug, info, warn, error)")
 	flag.StringVar(&cfg.FileStorage, "f", cfg.FileStorage, "Path to file storage")
 	flag.StringVar(&cfg.DBConnect, "d", cfg.DBConnect, "Database connection string")
+	flag.BoolVar(&cfg.EnableHTTPS, "s", cfg.EnableHTTPS, "Enable HTTPS server")
 	flag.Parse()
 
 	// Переопределение переменными окружения
@@ -138,6 +159,13 @@ func Load() *Config {
 
 	// Дополнительная обработка
 	cfg.BaseURL = strings.TrimSuffix(cfg.BaseURL, "/")
+
+	// Валидация SSL файлов если HTTPS включен
+	if cfg.EnableHTTPS {
+		if err := validateCertFiles(cfg.SSLCertFile, cfg.SSLKeyFile); err != nil {
+			log.Fatalf("HTTPS configuration error: %v", err)
+		}
+	}
 
 	return cfg
 }
@@ -171,6 +199,21 @@ func loadFromEnv(cfg *Config) {
 			log.Fatal("JWT_SECRET must be at least 32 characters long")
 		}
 		cfg.JwtKey = envJWT
+	}
+
+	// Обработка HTTPS настроек
+	if envEnableHTTPS := os.Getenv("SSL_ENABLE"); envEnableHTTPS != "" {
+		if v, err := strconv.ParseBool(envEnableHTTPS); err == nil {
+			cfg.EnableHTTPS = v
+		}
+	}
+
+	if envCert := os.Getenv("SSL_CERT_FILE"); envCert != "" {
+		cfg.SSLCertFile = envCert
+	}
+
+	if envKey := os.Getenv("SSL_KEY_FILE"); envKey != "" {
+		cfg.SSLKeyFile = envKey
 	}
 
 	// Обработка pprof настроек
