@@ -1,4 +1,4 @@
-// Пакет inmemory реализует in-memory хранилище для сервиса сокращения URL с персистентностью в файл.
+// Package inmemory реализует in-memory хранилище для сервиса сокращения URL с персистентностью в файл.
 //
 // Основные особенности:
 // - Хранение данных в памяти с синхронизацией через RWMutex
@@ -29,12 +29,12 @@ import (
 // - file/encoder: для персистентного хранения
 // - mu: RWMutex для синхронизации доступа
 type InMemoryStorage struct {
-	userURLIndex map[string]map[string]string     // userID -> originalURL -> shortCode
-	shortCodeMap map[string]models.UserURLMapping // shortCode -> UserURLMapping
-	countRecords uint64                           // Счетчик записей
-	file         *os.File                         // Файл для персистентности
-	encoder      *json.Encoder                    // JSON-энкодер для записи
-	mu           sync.RWMutex                     // Блокировка для конкурентного доступа
+	userURLIndex map[string]map[string]string
+	shortCodeMap map[string]models.UserURLMapping
+	file         *os.File
+	encoder      *json.Encoder
+	countRecords uint64
+	mu           sync.RWMutex
 }
 
 // NewInMemoryStorage создает новое in-memory хранилище с файловой персистентностью.
@@ -340,6 +340,25 @@ func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error
 				return err
 			}
 		}
+	}
+	return nil
+}
+
+// FilePath возвращает путь к файлу, используемому хранилищем.
+// Если файл не открыт, возвращает пустую строку.
+func (s *InMemoryStorage) FilePath() string {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	if s.file == nil {
+		return ""
+	}
+	return s.file.Name()
+}
+
+// Close освобождает ресурсы
+func (s *InMemoryStorage) Close() error {
+	if s.file != nil {
+		return s.file.Close()
 	}
 	return nil
 }

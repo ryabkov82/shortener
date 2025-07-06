@@ -1,4 +1,4 @@
-// Пакет middleware предоставляет набор HTTP-middleware для обработки запросов.
+// Package middleware предоставляет набор HTTP-middleware для обработки запросов.
 //
 // Включает следующие middleware:
 //

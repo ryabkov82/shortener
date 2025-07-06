@@ -133,7 +133,7 @@ func benchmarkHandleShorten(b *testing.B, serv *httptest.Server) {
 	var urlBuilder strings.Builder
 	for i := 0; i < b.N; i++ {
 
-		//originalURL := "https://example.com/" + strconv.Itoa(i)
+		// originalURL := "https://example.com/" + strconv.Itoa(i)
 		urlBuilder.Reset()
 		urlBuilder.WriteString("https://example.com/")
 		urlBuilder.WriteString(strconv.Itoa(i))

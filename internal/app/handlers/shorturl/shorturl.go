@@ -1,4 +1,4 @@
-// Пакет shorturl предоставляет обработчик для создания сокращённых URL через текстовый интерфейс.
+// Package shorturl предоставляет обработчик для создания сокращённых URL через текстовый интерфейс.
 //
 // Пакет реализует:
 // - Приём оригинального URL в текстовом формате
@@ -91,7 +91,7 @@ func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.Han
 		}
 
 		// Валидация URL
-		if _, err := url.ParseRequestURI(originalURL); err != nil {
+		if _, err = url.ParseRequestURI(originalURL); err != nil {
 			http.Error(res, "Invalid URL format", http.StatusBadRequest)
 			log.Error("Invalid URL in request",
 				zap.String("url", originalURL),

@@ -47,8 +47,8 @@ func TestGetHandler(t *testing.T) {
 	defer srv.Close()
 
 	tests := []struct {
-		name           string
 		error          error
+		name           string
 		wantStatusCode int
 	}{
 		{

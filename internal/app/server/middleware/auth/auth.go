@@ -1,4 +1,4 @@
-// Пакет auth предоставляет middleware для аутентификации через JWT.
+// Package auth предоставляет middleware для аутентификации через JWT.
 package auth
 
 import (

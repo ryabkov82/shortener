@@ -1,4 +1,4 @@
-// Пакет httpgzip предоставляет инструменты для сжатия и распаковки HTTP-трафика в формате gzip.
+// Package httpgzip предоставляет инструменты для сжатия и распаковки HTTP-трафика в формате gzip.
 // Реализует пул объектов gzip.Writer и gzip.Reader для оптимизации производительности.
 package httpgzip
 
@@ -28,7 +28,7 @@ var readerPool = sync.Pool{
 // Опционально вызывается при старте приложения для уменьшения
 // накладных расходов на создание объектов при первой нагрузке.
 func init() {
-	for i := 0; i < 32; i++ {
+	for i := 0; i < 10; i++ {
 		writerPool.Put(writerPool.New())
 		readerPool.Put(readerPool.New())
 	}
