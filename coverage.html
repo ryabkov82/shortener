@@ -63,7 +63,7 @@
 				
 				<option value="file3">github.com/ryabkov82/shortener/cmd/staticlint/noosexit/analyzer.go (0.0%)</option>
 				
-				<option value="file4">github.com/ryabkov82/shortener/internal/app/config/config.go (0.0%)</option>
+				<option value="file4">github.com/ryabkov82/shortener/internal/app/config/config.go (79.2%)</option>
 				
 				<option value="file5">github.com/ryabkov82/shortener/internal/app/handlers/batch/batch.go (71.4%)</option>
 				
@@ -493,20 +493,45 @@ func isCmdPackage(pkgPath string) bool <span class="cov0" title="0">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file4" style="display: none">// Package config предоставляет загрузку и валидацию конфигурации приложения.
-//
-// Поддерживает несколько источников конфигурации:
-// - Аргументы командной строки
-// - Переменные окружения
-// - Значения по умолчанию
-//
-// Приоритет настроек:
-// 1. Переменные окружения
-// 2. Аргументы командной строки
-// 3. Значения по умолчанию
+		<pre class="file" id="file4" style="display: none">/*
+Package config предоставляет загрузку и валидацию конфигурации приложения.
+
+Поддерживает несколько источников конфигурации:
+- Аргументы командной строки
+- Переменные окружения
+- JSON-файлы конфигурации
+- Значения по умолчанию
+
+Приоритет настроек (от высшего к низшему):
+1. Аргументы командной строки
+2. Переменные окружения
+3. JSON-файл конфигурации (если указан)
+4. Значения по умолчанию
+
+Формат JSON-конфигурации:
+
+        {
+            "server_address": "localhost:8080",
+            "base_url": "http://localhost",
+            "file_storage_path": "/path/to/file.db",
+            "database_dsn": "",
+            "enable_https": true,
+            "jwt_secret": "secret_key",
+            "pprof": {
+                "enabled": true,
+                "auth_user": "admin",
+                "auth_pass": "password"
+            }
+        }
+
+Путь к JSON-файлу конфигурации можно указать:
+- Через флаг -c или --config
+- Через переменную окружения CONFIG
+*/
 package config
 
 import (
+        "encoding/json"
         "errors"
         "flag"
         "log"
@@ -518,22 +543,25 @@ import (
 
 // Config содержит все параметры конфигурации приложения.
 type Config struct {
-        HTTPServerAddr string      // Адрес HTTP-сервера в формате host:port
-        BaseURL        string      // Базовый URL для сокращённых ссылок
-        LogLevel       string      // Уровень логирования (debug, info, warn, error)
-        FileStorage    string      // Путь к файлу хранилища
-        DBConnect      string      // Строка подключения к БД
-        JwtKey         string      // Секретный ключ для JWT
-        ConfigPProf    PProfConfig // Настройки pprof
+        HTTPServerAddr string      `json:"server_address"`    // Адрес HTTP-сервера в формате host:port
+        BaseURL        string      `json:"base_url"`          // Базовый URL для сокращённых ссылок
+        LogLevel       string      `json:"log_level"`         // Уровень логирования (debug, info, warn, error)
+        FileStorage    string      `json:"file_storage_path"` // Путь к файлу хранилища
+        DBConnect      string      `json:"database_dsn"`      // Строка подключения к БД
+        JwtKey         string      `json:"jwt_secret"`        // Секретный ключ для JWT
+        ConfigPProf    PProfConfig `json:"pprof"`             // Настройки pprof
+        EnableHTTPS    bool        `json:"enable_https"`      // Включение HTTPS
+        SSLCertFile    string      `json:"ssl_cert_file"`     // Путь к SSL сертификату
+        SSLKeyFile     string      `json:"ssl_key_file"`      // Путь к SSL ключу
 }
 
 // PProfConfig содержит настройки профилирования pprof.
 type PProfConfig struct {
-        AuthUser string
-        AuthPass string
-        Endpoint string
-        BindAddr string
-        Enabled  bool
+        AuthUser string `json:"auth_user"`
+        AuthPass string `json:"auth_pass"`
+        Endpoint string `json:"endpoint"`
+        BindAddr string `json:"bind_addr"`
+        Enabled  bool   `json:"enabled"`
 }
 
 // validateHTTPServerAddr проверяет корректность адреса сервера.
@@ -544,18 +572,18 @@ type PProfConfig struct {
 // Возвращает:
 //
 //        error - ошибка валидации или nil
-func validateHTTPServerAddr(addr string) error <span class="cov0" title="0">{
+func validateHTTPServerAddr(addr string) error <span class="cov10" title="7">{
         hp := strings.Split(addr, ":")
-        if len(hp) != 2 </span><span class="cov0" title="0">{
+        if len(hp) != 2 </span><span class="cov1" title="1">{
                 return errors.New("address must be in host:port format")
         }</span>
 
-        <span class="cov0" title="0">port, err := strconv.Atoi(hp[1])
-        if err != nil || port &lt; 1 || port &gt; 65535 </span><span class="cov0" title="0">{
+        <span class="cov9" title="6">port, err := strconv.Atoi(hp[1])
+        if err != nil || port &lt; 1 || port &gt; 65535 </span><span class="cov1" title="1">{
                 return errors.New("port must be a number between 1 and 65535")
         }</span>
 
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov8" title="5">return nil</span>
 }
 
 // validateBaseURL проверяет корректность базового URL.
@@ -567,36 +595,53 @@ func validateHTTPServerAddr(addr string) error <span class="cov0" title="0">{
 // Возвращает:
 //
 //        error - ошибка валидации или nil
-func validateBaseURL(baseURL string) error <span class="cov0" title="0">{
+func validateBaseURL(baseURL string) error <span class="cov6" title="3">{
         u, err := url.Parse(baseURL)
         if err != nil </span><span class="cov0" title="0">{
                 return err
         }</span>
 
-        <span class="cov0" title="0">if u.Scheme == "" || u.Host == "" </span><span class="cov0" title="0">{
+        <span class="cov6" title="3">if u.Scheme == "" || u.Host == "" </span><span class="cov1" title="1">{
                 return errors.New("URL must be absolute with scheme and host")
         }</span>
 
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov4" title="2">return nil</span>
+}
+
+// validateCertFiles проверяет существование файлов сертификатов.
+// Возвращает:
+//
+//        error - ошибка или nil
+func validateCertFiles(certFile, keyFile string) error <span class="cov8" title="5">{
+        if _, err := os.Stat(certFile); os.IsNotExist(err) </span><span class="cov1" title="1">{
+                return errors.New("SSL certificate file not found")
+        }</span>
+        <span class="cov7" title="4">if _, err := os.Stat(keyFile); os.IsNotExist(err) </span><span class="cov1" title="1">{
+                return errors.New("SSL key file not found")
+        }</span>
+        <span class="cov6" title="3">return nil</span>
 }
 
 // Load загружает конфигурацию из разных источников.
 //
 // Порядок загрузки:
 // 1. Устанавливает значения по умолчанию
-// 2. Читает аргументы командной строки
-// 3. Перезаписывает переменными окружения
+// 2. Читает JSON-конфиг (если указан)
+// 3. Читает аргументы командной строки
+// 4. Перезаписывает переменными окружения
 //
 // Возвращает:
-//
-//        *Config - загруженную конфигурацию
-func Load() *Config <span class="cov0" title="0">{
+// *Config - загруженную конфигурацию
+func Load() *Config <span class="cov10" title="7">{
         cfg := &amp;Config{
                 HTTPServerAddr: "localhost:8080",
                 BaseURL:        "http://localhost:8080",
                 LogLevel:       "info",
                 FileStorage:    "storage.dat",
                 JwtKey:         "your_strong_secret_here",
+                EnableHTTPS:    false,
+                SSLCertFile:    "cert.pem",
+                SSLKeyFile:     "key.pem",
                 ConfigPProf: PProfConfig{
                         Enabled:  true,
                         AuthUser: "admin",
@@ -606,27 +651,20 @@ func Load() *Config <span class="cov0" title="0">{
                 },
         }
 
+        // Загрузка из JSON-файла если указан
+        configFile := getConfigFilePath()
+        if configFile != "" </span><span class="cov6" title="3">{
+                fileCfg, err := loadFromJSON(configFile)
+                if err != nil </span><span class="cov1" title="1">{
+                        log.Printf("Ошибка загрузки JSON-конфига: %v", err)
+                }</span> else<span class="cov4" title="2"> {
+                        // Объединяем конфиги, сохраняя значения по умолчанию для незаполненных полей
+                        mergeConfigs(cfg, fileCfg)
+                }</span>
+        }
+
         // Загрузка из аргументов командной строки
-        flag.Func("a", "Server address in host:port format", func(flagValue string) error </span><span class="cov0" title="0">{
-                if err := validateHTTPServerAddr(flagValue); err != nil </span><span class="cov0" title="0">{
-                        return err
-                }</span>
-                <span class="cov0" title="0">cfg.HTTPServerAddr = flagValue
-                return nil</span>
-        })
-
-        <span class="cov0" title="0">flag.Func("b", "Base URL for shortened links (e.g. http://example.com)", func(flagValue string) error </span><span class="cov0" title="0">{
-                if err := validateBaseURL(flagValue); err != nil </span><span class="cov0" title="0">{
-                        return err
-                }</span>
-                <span class="cov0" title="0">cfg.BaseURL = strings.TrimSuffix(flagValue, "/")
-                return nil</span>
-        })
-
-        <span class="cov0" title="0">flag.StringVar(&amp;cfg.LogLevel, "l", cfg.LogLevel, "Log level (debug, info, warn, error)")
-        flag.StringVar(&amp;cfg.FileStorage, "f", cfg.FileStorage, "Path to file storage")
-        flag.StringVar(&amp;cfg.DBConnect, "d", cfg.DBConnect, "Database connection string")
-        flag.Parse()
+        <span class="cov10" title="7">loadFromFlags(cfg)
 
         // Переопределение переменными окружения
         loadFromEnv(cfg)
@@ -634,49 +672,186 @@ func Load() *Config <span class="cov0" title="0">{
         // Дополнительная обработка
         cfg.BaseURL = strings.TrimSuffix(cfg.BaseURL, "/")
 
-        return cfg</span>
+        // Валидация SSL файлов если HTTPS включен
+        if cfg.EnableHTTPS </span><span class="cov4" title="2">{
+                if err := validateCertFiles(cfg.SSLCertFile, cfg.SSLKeyFile); err != nil </span><span class="cov0" title="0">{
+                        log.Fatalf("HTTPS configuration error: %v", err)
+                }</span>
+        }
+
+        <span class="cov10" title="7">return cfg</span>
+}
+
+// getConfigFilePath возвращает путь к файлу конфигурации из флагов или переменных окружения
+func getConfigFilePath() string <span class="cov10" title="7">{
+
+        for i, arg := range os.Args[1:] </span><span class="cov9" title="6">{
+                if arg == "-c" || arg == "--config" </span><span class="cov0" title="0">{
+                        if i+1 &lt; len(os.Args) </span><span class="cov0" title="0">{
+                                return os.Args[i+2]
+                        }</span>
+                }
+                <span class="cov9" title="6">if strings.HasPrefix(arg, "-c=") </span><span class="cov0" title="0">{
+                        return strings.TrimPrefix(arg, "-c=")
+                }</span>
+                <span class="cov9" title="6">if strings.HasPrefix(arg, "--config=") </span><span class="cov0" title="0">{
+                        return strings.TrimPrefix(arg, "--config=")
+                }</span>
+        }
+
+        <span class="cov10" title="7">if envConfig := os.Getenv("CONFIG"); envConfig != "" </span><span class="cov6" title="3">{
+                return envConfig
+        }</span>
+        <span class="cov7" title="4">return ""</span>
+}
+
+// loadFromJSON загружает конфигурацию из JSON-файла
+func loadFromJSON(path string) (*Config, error) <span class="cov6" title="3">{
+        file, err := os.ReadFile(path)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov6" title="3">var cfg Config
+        if err := json.Unmarshal(file, &amp;cfg); err != nil </span><span class="cov1" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov4" title="2">return &amp;cfg, nil</span>
+}
+
+// mergeConfigs объединяет две конфигурации, сохраняя оригинальные значения для пустых полей
+func mergeConfigs(original, new *Config) <span class="cov6" title="3">{
+        if new.HTTPServerAddr != "" </span><span class="cov6" title="3">{
+                original.HTTPServerAddr = new.HTTPServerAddr
+        }</span>
+        <span class="cov6" title="3">if new.BaseURL != "" </span><span class="cov4" title="2">{
+                original.BaseURL = new.BaseURL
+        }</span>
+        <span class="cov6" title="3">if new.LogLevel != "" </span><span class="cov6" title="3">{
+                original.LogLevel = new.LogLevel
+        }</span>
+        <span class="cov6" title="3">if new.FileStorage != "" </span><span class="cov4" title="2">{
+                original.FileStorage = new.FileStorage
+        }</span>
+        <span class="cov6" title="3">if new.DBConnect != "" </span><span class="cov0" title="0">{
+                original.DBConnect = new.DBConnect
+        }</span>
+        <span class="cov6" title="3">if new.JwtKey != "" </span><span class="cov4" title="2">{
+                original.JwtKey = new.JwtKey
+        }</span>
+        <span class="cov6" title="3">if new.EnableHTTPS </span><span class="cov4" title="2">{
+                original.EnableHTTPS = new.EnableHTTPS
+        }</span>
+        <span class="cov6" title="3">if new.SSLCertFile != "" </span><span class="cov0" title="0">{
+                original.SSLCertFile = new.SSLCertFile
+        }</span>
+        <span class="cov6" title="3">if new.SSLKeyFile != "" </span><span class="cov0" title="0">{
+                original.SSLKeyFile = new.SSLKeyFile
+        }</span>
+
+        // Объединение PProfConfig
+        <span class="cov6" title="3">if new.ConfigPProf.AuthUser != "" </span><span class="cov4" title="2">{
+                original.ConfigPProf.AuthUser = new.ConfigPProf.AuthUser
+        }</span>
+        <span class="cov6" title="3">if new.ConfigPProf.AuthPass != "" </span><span class="cov0" title="0">{
+                original.ConfigPProf.AuthPass = new.ConfigPProf.AuthPass
+        }</span>
+        <span class="cov6" title="3">if new.ConfigPProf.Endpoint != "" </span><span class="cov0" title="0">{
+                original.ConfigPProf.Endpoint = new.ConfigPProf.Endpoint
+        }</span>
+        <span class="cov6" title="3">if new.ConfigPProf.BindAddr != "" </span><span class="cov0" title="0">{
+                original.ConfigPProf.BindAddr = new.ConfigPProf.BindAddr
+        }</span>
+        <span class="cov6" title="3">if new.ConfigPProf.Enabled </span><span class="cov4" title="2">{
+                original.ConfigPProf.Enabled = new.ConfigPProf.Enabled
+        }</span>
+}
+
+// loadFromFlags загружает значения из флагов командной строки
+func loadFromFlags(cfg *Config) <span class="cov10" title="7">{
+        flag.Func("a", "Server address in host:port format", func(flagValue string) error </span><span class="cov4" title="2">{
+                if err := validateHTTPServerAddr(flagValue); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov4" title="2">cfg.HTTPServerAddr = flagValue
+                return nil</span>
+        })
+
+        <span class="cov10" title="7">flag.Func("b", "Base URL for shortened links (e.g. http://example.com)", func(flagValue string) error </span><span class="cov0" title="0">{
+                if err := validateBaseURL(flagValue); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov0" title="0">cfg.BaseURL = strings.TrimSuffix(flagValue, "/")
+                return nil</span>
+        })
+
+        <span class="cov10" title="7">flag.StringVar(&amp;cfg.LogLevel, "l", cfg.LogLevel, "Log level (debug, info, warn, error)")
+        flag.StringVar(&amp;cfg.FileStorage, "f", cfg.FileStorage, "Path to file storage")
+        flag.StringVar(&amp;cfg.DBConnect, "d", cfg.DBConnect, "Database connection string")
+        flag.BoolVar(&amp;cfg.EnableHTTPS, "s", cfg.EnableHTTPS, "Enable HTTPS server")
+        flag.Parse()</span>
 }
 
 // loadFromEnv загружает значения из переменных окружения.
-func loadFromEnv(cfg *Config) <span class="cov0" title="0">{
-        if envAddr := os.Getenv("SERVER_ADDRESS"); envAddr != "" </span><span class="cov0" title="0">{
+func loadFromEnv(cfg *Config) <span class="cov10" title="7">{
+        if envAddr := os.Getenv("SERVER_ADDRESS"); envAddr != "" </span><span class="cov4" title="2">{
                 if err := validateHTTPServerAddr(envAddr); err != nil </span><span class="cov0" title="0">{
                         log.Fatalf("invalid SERVER_ADDRESS: %v", err)
                 }</span>
-                <span class="cov0" title="0">cfg.HTTPServerAddr = envAddr</span>
+                <span class="cov4" title="2">cfg.HTTPServerAddr = envAddr</span>
         }
 
-        <span class="cov0" title="0">if envURL := os.Getenv("BASE_URL"); envURL != "" </span><span class="cov0" title="0">{
+        <span class="cov10" title="7">if envURL := os.Getenv("BASE_URL"); envURL != "" </span><span class="cov0" title="0">{
                 if err := validateBaseURL(envURL); err != nil </span><span class="cov0" title="0">{
                         log.Fatalf("invalid BASE_URL: %v", err)
                 }</span>
                 <span class="cov0" title="0">cfg.BaseURL = envURL</span>
         }
 
-        <span class="cov0" title="0">if envFile := os.Getenv("FILE_STORAGE_PATH"); envFile != "" </span><span class="cov0" title="0">{
+        <span class="cov10" title="7">if envFile := os.Getenv("FILE_STORAGE_PATH"); envFile != "" </span><span class="cov0" title="0">{
                 cfg.FileStorage = envFile
         }</span>
 
-        <span class="cov0" title="0">if envDB := os.Getenv("DATABASE_DSN"); envDB != "" </span><span class="cov0" title="0">{
+        <span class="cov10" title="7">if envDB := os.Getenv("DATABASE_DSN"); envDB != "" </span><span class="cov10" title="7">{
                 cfg.DBConnect = envDB
         }</span>
 
-        <span class="cov0" title="0">if envJWT := os.Getenv("JWT_SECRET"); envJWT != "" </span><span class="cov0" title="0">{
+        <span class="cov10" title="7">if envJWT := os.Getenv("JWT_SECRET"); envJWT != "" </span><span class="cov1" title="1">{
                 if len(envJWT) &lt; 32 </span><span class="cov0" title="0">{
                         log.Fatal("JWT_SECRET must be at least 32 characters long")
                 }</span>
-                <span class="cov0" title="0">cfg.JwtKey = envJWT</span>
+                <span class="cov1" title="1">cfg.JwtKey = envJWT</span>
         }
 
+        <span class="cov10" title="7">if envLogLevel := os.Getenv("LOG_LEVEL"); envLogLevel != "" </span><span class="cov1" title="1">{
+                cfg.LogLevel = envLogLevel
+        }</span>
+
+        // Обработка HTTPS настроек
+        <span class="cov10" title="7">if envEnableHTTPS := os.Getenv("SSL_ENABLE"); envEnableHTTPS != "" </span><span class="cov0" title="0">{
+                if v, err := strconv.ParseBool(envEnableHTTPS); err == nil </span><span class="cov0" title="0">{
+                        cfg.EnableHTTPS = v
+                }</span>
+        }
+
+        <span class="cov10" title="7">if envCert := os.Getenv("SSL_CERT_FILE"); envCert != "" </span><span class="cov10" title="7">{
+                cfg.SSLCertFile = envCert
+        }</span>
+
+        <span class="cov10" title="7">if envKey := os.Getenv("SSL_KEY_FILE"); envKey != "" </span><span class="cov10" title="7">{
+                cfg.SSLKeyFile = envKey
+        }</span>
+
         // Обработка pprof настроек
-        <span class="cov0" title="0">if user := os.Getenv("PPROF_USER"); user != "" </span><span class="cov0" title="0">{
+        <span class="cov10" title="7">if user := os.Getenv("PPROF_USER"); user != "" </span><span class="cov1" title="1">{
                 cfg.ConfigPProf.AuthUser = user
         }</span>
-        <span class="cov0" title="0">if pass := os.Getenv("PPROF_PASS"); pass != "" </span><span class="cov0" title="0">{
+        <span class="cov10" title="7">if pass := os.Getenv("PPROF_PASS"); pass != "" </span><span class="cov1" title="1">{
                 cfg.ConfigPProf.AuthPass = pass
         }</span>
-        <span class="cov0" title="0">if enabled := os.Getenv("PPROF_ENABLED"); enabled != "" </span><span class="cov0" title="0">{
-                if v, err := strconv.ParseBool(enabled); err == nil </span><span class="cov0" title="0">{
+        <span class="cov10" title="7">if enabled := os.Getenv("PPROF_ENABLED"); enabled != "" </span><span class="cov1" title="1">{
+                if v, err := strconv.ParseBool(enabled); err == nil </span><span class="cov1" title="1">{
                         cfg.ConfigPProf.Enabled = v
                 }</span>
         }
@@ -1500,14 +1675,14 @@ import (
 
 // Пул gzip.Writer для повторного использования объектов
 var writerPool = sync.Pool{
-        New: func() interface{} <span class="cov10" title="105">{
+        New: func() interface{} <span class="cov10" title="107">{
                 return gzip.NewWriter(io.Discard)
         }</span>,
 }
 
 // Пул gzip.Reader для повторного использования объектов
 var readerPool = sync.Pool{
-        New: func() interface{} <span class="cov9" title="100">{
+        New: func() interface{} <span class="cov9" title="103">{
                 return new(gzip.Reader)
         }</span>,
 }
@@ -2157,27 +2332,6 @@ func StartServer(log *zap.Logger, cfg *config.Config) <span class="cov0" title="
         router.Use(mwlogger.RequestLogging(log))
         router.Use(mwgzip.Gzip)
 
-        /*
-                // Группа с автоматической аутентификацией
-                router.Group(func(router chi.Router) {
-                        router.Use(auth.JWTAutoIssue([]byte(cfg.JwtKey)))
-
-                        router.Post("/", shorturl.GetHandler(srv, cfg.BaseURL, log))
-                        router.Get("/{id}", redirect.GetHandler(srv, log))
-
-                        router.Post("/api/shorten", shortenapi.GetHandler(srv, cfg.BaseURL, log))
-
-                        router.Get("/ping", ping.GetHandler(srv, log))
-                        router.Post("/api/shorten/batch", batch.GetHandler(srv, cfg.BaseURL, log))
-                })
-
-                // Группа со строгой аутентификацией
-                router.Group(func(router chi.Router) {
-                        router.Use(auth.StrictJWTAutoIssue([]byte(cfg.JwtKey)))
-                        router.Get("/api/user/urls", userurls.GetHandler(srv, cfg.BaseURL, log))
-                })
-        */
-
         router.Use(auth.JWTAutoIssue([]byte(cfg.JwtKey)))
 
         router.Post("/", shorturl.GetHandler(srv, cfg.BaseURL, log))
@@ -2199,11 +2353,20 @@ func StartServer(log *zap.Logger, cfg *config.Config) <span class="cov0" title="
                 Handler: router, // Ваш роутер
         }
 
-        go func() </span><span class="cov0" title="0">{
-                if err := server.ListenAndServe(); err != nil &amp;&amp; err != http.ErrServerClosed </span><span class="cov0" title="0">{
-                        log.Error("failed to serve server", zap.Error(err))
-                }</span>
-        }()
+        if cfg.EnableHTTPS </span><span class="cov0" title="0">{
+                // Запуск сервера с HTTPS
+                go func() </span><span class="cov0" title="0">{
+                        if err := server.ListenAndServeTLS(cfg.SSLCertFile, cfg.SSLKeyFile); err != nil &amp;&amp; err != http.ErrServerClosed </span><span class="cov0" title="0">{
+                                log.Error("failed to serve server", zap.Error(err))
+                        }</span>
+                }()
+        } else<span class="cov0" title="0"> {
+                go func() </span><span class="cov0" title="0">{
+                        if err := server.ListenAndServe(); err != nil &amp;&amp; err != http.ErrServerClosed </span><span class="cov0" title="0">{
+                                log.Error("failed to serve server", zap.Error(err))
+                        }</span>
+                }()
+        }
 
         // Обработка сигналов завершения
         <span class="cov0" title="0">quit := make(chan os.Signal, 1)
@@ -2694,26 +2857,26 @@ func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov5" 
         scanner := bufio.NewScanner(file)
         var countRecords uint64
 
-        for scanner.Scan() </span><span class="cov10" title="31">{
+        for scanner.Scan() </span><span class="cov10" title="30">{
                 line := scanner.Bytes()
                 if len(line) == 0 </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="31">var url models.UserURLMapping
+                <span class="cov10" title="30">var url models.UserURLMapping
                 if err := json.Unmarshal(line, &amp;url); err != nil </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="31">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
+                <span class="cov10" title="30">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="31">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov8" title="15">{
+                <span class="cov10" title="30">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov8" title="16">{
                         s.userURLIndex[url.UserID] = make(map[string]string)
                 }</span>
 
-                <span class="cov10" title="31">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
+                <span class="cov10" title="30">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
                 s.shortCodeMap[url.ShortURL] = url
                 countRecords++</span>
         }
@@ -3441,7 +3604,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="9">{
         ticker := time.NewTicker(w.batchWindow)
         defer ticker.Stop()
 
-        for </span><span class="cov10" title="26">{
+        for </span><span class="cov10" title="27">{
                 select </span>{
                 case &lt;-w.stopChan:<span class="cov0" title="0">
                         if len(batch) &gt; 0 </span><span class="cov0" title="0">{
@@ -3471,7 +3634,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="9">{
                                 ticker.Reset(w.batchWindow)
                         }</span>
 
-                case &lt;-ticker.C:<span class="cov7" title="9">
+                case &lt;-ticker.C:<span class="cov7" title="10">
                         if len(batch) &gt; 0 </span><span class="cov6" title="8">{
                                 w.batchChan &lt;- batch
                                 batch = make(map[string][]string)
