@@ -1,0 +1,5 @@
+{
+    "server_address": "invalid",
+    "base_url": 123,
+    "enable_https": "not-a-boolean"
+}

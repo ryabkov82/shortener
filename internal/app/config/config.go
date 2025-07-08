@@ -1,17 +1,42 @@
-// Package config предоставляет загрузку и валидацию конфигурации приложения.
-//
-// Поддерживает несколько источников конфигурации:
-// - Аргументы командной строки
-// - Переменные окружения
-// - Значения по умолчанию
-//
-// Приоритет настроек:
-// 1. Переменные окружения
-// 2. Аргументы командной строки
-// 3. Значения по умолчанию
+/*
+Package config предоставляет загрузку и валидацию конфигурации приложения.
+
+Поддерживает несколько источников конфигурации:
+- Аргументы командной строки
+- Переменные окружения
+- JSON-файлы конфигурации
+- Значения по умолчанию
+
+Приоритет настроек (от высшего к низшему):
+1. Аргументы командной строки
+2. Переменные окружения
+3. JSON-файл конфигурации (если указан)
+4. Значения по умолчанию
+
+Формат JSON-конфигурации:
+
+	{
+	    "server_address": "localhost:8080",
+	    "base_url": "http://localhost",
+	    "file_storage_path": "/path/to/file.db",
+	    "database_dsn": "",
+	    "enable_https": true,
+	    "jwt_secret": "secret_key",
+	    "pprof": {
+	        "enabled": true,
+	        "auth_user": "admin",
+	        "auth_pass": "password"
+	    }
+	}
+
+Путь к JSON-файлу конфигурации можно указать:
+- Через флаг -c или --config
+- Через переменную окружения CONFIG
+*/
 package config
 
 import (
+	"encoding/json"
 	"errors"
 	"flag"
 	"log"
@@ -23,25 +48,25 @@ import (
 
 // Config содержит все параметры конфигурации приложения.
 type Config struct {
-	HTTPServerAddr string      // Адрес HTTP-сервера в формате host:port
-	BaseURL        string      // Базовый URL для сокращённых ссылок
-	LogLevel       string      // Уровень логирования (debug, info, warn, error)
-	FileStorage    string      // Путь к файлу хранилища
-	DBConnect      string      // Строка подключения к БД
-	JwtKey         string      // Секретный ключ для JWT
-	ConfigPProf    PProfConfig // Настройки pprof
-	EnableHTTPS    bool        // Включение HTTPS
-	SSLCertFile    string      // Путь к SSL сертификату
-	SSLKeyFile     string      // Путь к SSL ключу
+	HTTPServerAddr string      `json:"server_address"`    // Адрес HTTP-сервера в формате host:port
+	BaseURL        string      `json:"base_url"`          // Базовый URL для сокращённых ссылок
+	LogLevel       string      `json:"log_level"`         // Уровень логирования (debug, info, warn, error)
+	FileStorage    string      `json:"file_storage_path"` // Путь к файлу хранилища
+	DBConnect      string      `json:"database_dsn"`      // Строка подключения к БД
+	JwtKey         string      `json:"jwt_secret"`        // Секретный ключ для JWT
+	ConfigPProf    PProfConfig `json:"pprof"`             // Настройки pprof
+	EnableHTTPS    bool        `json:"enable_https"`      // Включение HTTPS
+	SSLCertFile    string      `json:"ssl_cert_file"`     // Путь к SSL сертификату
+	SSLKeyFile     string      `json:"ssl_key_file"`      // Путь к SSL ключу
 }
 
 // PProfConfig содержит настройки профилирования pprof.
 type PProfConfig struct {
-	AuthUser string
-	AuthPass string
-	Endpoint string
-	BindAddr string
-	Enabled  bool
+	AuthUser string `json:"auth_user"`
+	AuthPass string `json:"auth_pass"`
+	Endpoint string `json:"endpoint"`
+	BindAddr string `json:"bind_addr"`
+	Enabled  bool   `json:"enabled"`
 }
 
 // validateHTTPServerAddr проверяет корректность адреса сервера.
@@ -106,12 +131,12 @@ func validateCertFiles(certFile, keyFile string) error {
 //
 // Порядок загрузки:
 // 1. Устанавливает значения по умолчанию
-// 2. Читает аргументы командной строки
-// 3. Перезаписывает переменными окружения
+// 2. Читает JSON-конфиг (если указан)
+// 3. Читает аргументы командной строки
+// 4. Перезаписывает переменными окружения
 //
 // Возвращает:
-//
-//	*Config - загруженную конфигурацию
+// *Config - загруженную конфигурацию
 func Load() *Config {
 	cfg := &Config{
 		HTTPServerAddr: "localhost:8080",
@@ -131,7 +156,125 @@ func Load() *Config {
 		},
 	}
 
+	// Загрузка из JSON-файла если указан
+	configFile := getConfigFilePath()
+	if configFile != "" {
+		fileCfg, err := loadFromJSON(configFile)
+		if err != nil {
+			log.Printf("Ошибка загрузки JSON-конфига: %v", err)
+		} else {
+			// Объединяем конфиги, сохраняя значения по умолчанию для незаполненных полей
+			mergeConfigs(cfg, fileCfg)
+		}
+	}
+
 	// Загрузка из аргументов командной строки
+	loadFromFlags(cfg)
+
+	// Переопределение переменными окружения
+	loadFromEnv(cfg)
+
+	// Дополнительная обработка
+	cfg.BaseURL = strings.TrimSuffix(cfg.BaseURL, "/")
+
+	// Валидация SSL файлов если HTTPS включен
+	if cfg.EnableHTTPS {
+		if err := validateCertFiles(cfg.SSLCertFile, cfg.SSLKeyFile); err != nil {
+			log.Fatalf("HTTPS configuration error: %v", err)
+		}
+	}
+
+	return cfg
+}
+
+// getConfigFilePath возвращает путь к файлу конфигурации из флагов или переменных окружения
+func getConfigFilePath() string {
+
+	for i, arg := range os.Args[1:] {
+		if arg == "-c" || arg == "--config" {
+			if i+1 < len(os.Args) {
+				return os.Args[i+2]
+			}
+		}
+		if strings.HasPrefix(arg, "-c=") {
+			return strings.TrimPrefix(arg, "-c=")
+		}
+		if strings.HasPrefix(arg, "--config=") {
+			return strings.TrimPrefix(arg, "--config=")
+		}
+	}
+
+	if envConfig := os.Getenv("CONFIG"); envConfig != "" {
+		return envConfig
+	}
+	return ""
+}
+
+// loadFromJSON загружает конфигурацию из JSON-файла
+func loadFromJSON(path string) (*Config, error) {
+	file, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var cfg Config
+	if err := json.Unmarshal(file, &cfg); err != nil {
+		return nil, err
+	}
+
+	return &cfg, nil
+}
+
+// mergeConfigs объединяет две конфигурации, сохраняя оригинальные значения для пустых полей
+func mergeConfigs(original, new *Config) {
+	if new.HTTPServerAddr != "" {
+		original.HTTPServerAddr = new.HTTPServerAddr
+	}
+	if new.BaseURL != "" {
+		original.BaseURL = new.BaseURL
+	}
+	if new.LogLevel != "" {
+		original.LogLevel = new.LogLevel
+	}
+	if new.FileStorage != "" {
+		original.FileStorage = new.FileStorage
+	}
+	if new.DBConnect != "" {
+		original.DBConnect = new.DBConnect
+	}
+	if new.JwtKey != "" {
+		original.JwtKey = new.JwtKey
+	}
+	if new.EnableHTTPS {
+		original.EnableHTTPS = new.EnableHTTPS
+	}
+	if new.SSLCertFile != "" {
+		original.SSLCertFile = new.SSLCertFile
+	}
+	if new.SSLKeyFile != "" {
+		original.SSLKeyFile = new.SSLKeyFile
+	}
+
+	// Объединение PProfConfig
+	if new.ConfigPProf.AuthUser != "" {
+		original.ConfigPProf.AuthUser = new.ConfigPProf.AuthUser
+	}
+	if new.ConfigPProf.AuthPass != "" {
+		original.ConfigPProf.AuthPass = new.ConfigPProf.AuthPass
+	}
+	if new.ConfigPProf.Endpoint != "" {
+		original.ConfigPProf.Endpoint = new.ConfigPProf.Endpoint
+	}
+	if new.ConfigPProf.BindAddr != "" {
+		original.ConfigPProf.BindAddr = new.ConfigPProf.BindAddr
+	}
+	if new.ConfigPProf.Enabled {
+		original.ConfigPProf.Enabled = new.ConfigPProf.Enabled
+	}
+}
+
+// loadFromFlags загружает значения из флагов командной строки
+func loadFromFlags(cfg *Config) {
 	flag.Func("a", "Server address in host:port format", func(flagValue string) error {
 		if err := validateHTTPServerAddr(flagValue); err != nil {
 			return err
@@ -153,21 +296,6 @@ func Load() *Config {
 	flag.StringVar(&cfg.DBConnect, "d", cfg.DBConnect, "Database connection string")
 	flag.BoolVar(&cfg.EnableHTTPS, "s", cfg.EnableHTTPS, "Enable HTTPS server")
 	flag.Parse()
-
-	// Переопределение переменными окружения
-	loadFromEnv(cfg)
-
-	// Дополнительная обработка
-	cfg.BaseURL = strings.TrimSuffix(cfg.BaseURL, "/")
-
-	// Валидация SSL файлов если HTTPS включен
-	if cfg.EnableHTTPS {
-		if err := validateCertFiles(cfg.SSLCertFile, cfg.SSLKeyFile); err != nil {
-			log.Fatalf("HTTPS configuration error: %v", err)
-		}
-	}
-
-	return cfg
 }
 
 // loadFromEnv загружает значения из переменных окружения.
@@ -199,6 +327,10 @@ func loadFromEnv(cfg *Config) {
 			log.Fatal("JWT_SECRET must be at least 32 characters long")
 		}
 		cfg.JwtKey = envJWT
+	}
+
+	if envLogLevel := os.Getenv("LOG_LEVEL"); envLogLevel != "" {
+		cfg.LogLevel = envLogLevel
 	}
 
 	// Обработка HTTPS настроек
