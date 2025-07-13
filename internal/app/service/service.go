@@ -27,6 +27,7 @@ type Repository interface {
 	GetExistingURLs(context.Context, []string) (map[string]string, error)
 	GetUserUrls(context.Context, string) ([]models.URLMapping, error)
 	BatchMarkAsDeleted(userID string, urls []string) error
+	Close() error
 }
 
 // Service реализует основной сервис приложения.
@@ -198,6 +199,11 @@ func (s *Service) DeleteUserUrls(ctx context.Context, shortURLs []string) error 
 //	timeout - максимальное время ожидания завершения операций
 func (s *Service) GracefulStop(timeout time.Duration) {
 	s.deleteworker.GracefulStop(timeout)
+}
+
+// Close освобождает ресурсы
+func (s *Service) Close() error {
+	return s.repo.Close()
 }
 
 // generateShortKey генерирует случайный короткий ключ.

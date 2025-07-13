@@ -102,7 +102,7 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 
 	// Обработка сигналов завершения
 	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	<-quit
 
 	log.Info("Shutting down server...")
@@ -118,6 +118,10 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 
 	// корректное завершение работы воркеров сервиса
 	srv.GracefulStop(5 * time.Second)
+
+	if err := srv.Close(); err != nil {
+		log.Info("DB close error", zap.Error(err))
+	}
 
 	log.Info("Server shutdown complete")
 

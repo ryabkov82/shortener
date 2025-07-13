@@ -327,3 +327,8 @@ func (s *PostgresStorage) BatchMarkAsDeleted(userID string, urls []string) error
 
 	return nil
 }
+
+// Close освобождает ресурсы
+func (s *PostgresStorage) Close() error {
+	return s.db.Close()
+}

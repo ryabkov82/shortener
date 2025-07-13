@@ -57,6 +57,12 @@ import (
 )
 
 func main() {
+	analyzers := setupAnalyzers()
+	multichecker.Main(analyzers...)
+}
+
+func setupAnalyzers() []*analysis.Analyzer {
+
 	// Стандартные анализаторы из golang.org/x/tools/go/analysis/passes
 	standardAnalyzers := []*analysis.Analyzer{
 		asmdecl.Analyzer,          // проверяет корректность объявлений ассемблерного кода
@@ -142,5 +148,5 @@ func main() {
 	analyzers = append(analyzers, externalAnalyzers...)
 	analyzers = append(analyzers, customAnalyzers...)
 
-	multichecker.Main(analyzers...)
+	return analyzers
 }

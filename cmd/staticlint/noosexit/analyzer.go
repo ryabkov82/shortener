@@ -69,6 +69,6 @@ func run(pass *analysis.Pass) (interface{}, error) {
 }
 
 // isCmdPackage проверяет, находится ли пакет в директории cmd
-func isCmdPackage(pkgPath string) bool {
+var isCmdPackage = func(pkgPath string) bool {
 	return strings.Contains(filepath.ToSlash(pkgPath), "/cmd/")
 }
