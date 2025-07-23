@@ -318,6 +318,38 @@ func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]mo
 	return result, nil
 }
 
+// CountURLs возвращает количество сокращённых URL в сервисе.
+//
+// Параметры:
+//
+//	ctx - контекст
+//
+// Возвращает:
+//
+//	 int - количество сокращённых URL в сервисе
+//		error - ошибка операции
+func (s *InMemoryStorage) CountURLs(ctx context.Context) (int, error) {
+	var count int
+	count = len(s.shortCodeMap)
+	return count, nil
+}
+
+// CountUsers возвращает количество пользователей в сервисе.
+//
+// Параметры:
+//
+//	ctx - контекст
+//
+// Возвращает:
+//
+//	 int - количество пользователей в сервисе
+//		error - ошибка операции
+func (s *InMemoryStorage) CountUsers(ctx context.Context) (int, error) {
+	var count int
+	count = len(s.userURLIndex)
+	return count, nil
+}
+
 // BatchMarkAsDeleted помечает URL пользователя как удаленные.
 //
 // Параметры:

@@ -28,6 +28,8 @@ type Repository interface {
 	GetUserUrls(context.Context, string) ([]models.URLMapping, error)
 	BatchMarkAsDeleted(userID string, urls []string) error
 	Close() error
+	CountURLs(ctx context.Context) (int, error)
+	CountUsers(ctx context.Context) (int, error)
 }
 
 // Service реализует основной сервис приложения.
@@ -172,6 +174,22 @@ func (s *Service) Batch(ctx context.Context, batchRequest []models.BatchRequest,
 //	error - ошибка при получении
 func (s *Service) GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error) {
 	return s.repo.GetUserUrls(ctx, baseURL)
+}
+
+func (s *Service) GetStats(ctx context.Context) (models.StatsResponse, error) {
+
+	urlCount, err := s.repo.CountURLs(ctx)
+	if err != nil {
+		return models.StatsResponse{}, err
+	}
+
+	userCount, err := s.repo.CountUsers(ctx)
+	if err != nil {
+		return models.StatsResponse{}, err
+	}
+
+	return models.StatsResponse{URLs: urlCount, Users: userCount}, nil
+
 }
 
 // DeleteUserUrls помечает URL пользователя как удаленные (асинхронно).

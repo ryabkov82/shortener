@@ -63,6 +63,36 @@ func (mr *MockRepositoryMockRecorder) Close() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockRepository)(nil).Close))
 }
 
+// CountURLs mocks base method.
+func (m *MockRepository) CountURLs(arg0 context.Context) (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountURLs", arg0)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountURLs indicates an expected call of CountURLs.
+func (mr *MockRepositoryMockRecorder) CountURLs(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountURLs", reflect.TypeOf((*MockRepository)(nil).CountURLs), arg0)
+}
+
+// CountUsers mocks base method.
+func (m *MockRepository) CountUsers(arg0 context.Context) (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountUsers", arg0)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountUsers indicates an expected call of CountUsers.
+func (mr *MockRepositoryMockRecorder) CountUsers(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountUsers", reflect.TypeOf((*MockRepository)(nil).CountUsers), arg0)
+}
+
 // GetExistingURLs mocks base method.
 func (m *MockRepository) GetExistingURLs(arg0 context.Context, arg1 []string) (map[string]string, error) {
 	m.ctrl.T.Helper()

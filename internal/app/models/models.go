@@ -74,3 +74,8 @@ type BatchResponse struct {
 	CorrelationID string `json:"correlation_id"` // Соответствует ID из запроса
 	ShortURL      string `json:"short_url"`      // Полный сокращённый URL
 }
+
+type StatsResponse struct {
+	URLs  int `json:"urls"`  // количество сокращённых URL в сервисе
+	Users int `json:"users"` // количество пользователей в сервисе
+}
