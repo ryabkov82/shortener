@@ -329,8 +329,7 @@ func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]mo
 //	 int - количество сокращённых URL в сервисе
 //		error - ошибка операции
 func (s *InMemoryStorage) CountURLs(ctx context.Context) (int, error) {
-	var count int
-	count = len(s.shortCodeMap)
+	count := len(s.shortCodeMap)
 	return count, nil
 }
 
@@ -345,8 +344,7 @@ func (s *InMemoryStorage) CountURLs(ctx context.Context) (int, error) {
 //	 int - количество пользователей в сервисе
 //		error - ошибка операции
 func (s *InMemoryStorage) CountUsers(ctx context.Context) (int, error) {
-	var count int
-	count = len(s.userURLIndex)
+	count := len(s.userURLIndex)
 	return count, nil
 }
 
