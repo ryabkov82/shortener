@@ -328,6 +328,38 @@ func (s *PostgresStorage) BatchMarkAsDeleted(userID string, urls []string) error
 	return nil
 }
 
+// CountURLs возвращает количество сокращённых URL в сервисе.
+//
+// Параметры:
+//
+//	ctx - контекст
+//
+// Возвращает:
+//
+//	 int - количество сокращённых URL в сервисе
+//		error - ошибка операции
+func (s *PostgresStorage) CountURLs(ctx context.Context) (int, error) {
+	var count int
+	err := s.db.QueryRowContext(ctx, "SELECT COUNT(*) FROM short_urls").Scan(&count)
+	return count, err
+}
+
+// CountUsers возвращает количество пользователей в сервисе.
+//
+// Параметры:
+//
+//	ctx - контекст
+//
+// Возвращает:
+//
+//	 int - количество пользователей в сервисе
+//		error - ошибка операции
+func (s *PostgresStorage) CountUsers(ctx context.Context) (int, error) {
+	var count int
+	err := s.db.QueryRowContext(ctx, "SELECT COUNT(DISTINCT user_id) FROM short_urls").Scan(&count)
+	return count, err
+}
+
 // Close освобождает ресурсы
 func (s *PostgresStorage) Close() error {
 	return s.db.Close()

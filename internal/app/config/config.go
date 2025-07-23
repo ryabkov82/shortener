@@ -58,6 +58,7 @@ type Config struct {
 	EnableHTTPS    bool        `json:"enable_https"`      // Включение HTTPS
 	SSLCertFile    string      `json:"ssl_cert_file"`     // Путь к SSL сертификату
 	SSLKeyFile     string      `json:"ssl_key_file"`      // Путь к SSL ключу
+	TrustedSubnet  string      `json:"trusted_subnet"`    // Доверенная подсеть
 }
 
 // PProfConfig содержит настройки профилирования pprof.
@@ -254,6 +255,9 @@ func mergeConfigs(original, new *Config) {
 	if new.SSLKeyFile != "" {
 		original.SSLKeyFile = new.SSLKeyFile
 	}
+	if new.TrustedSubnet != "" {
+		original.TrustedSubnet = new.TrustedSubnet
+	}
 
 	// Объединение PProfConfig
 	if new.ConfigPProf.AuthUser != "" {
@@ -295,6 +299,7 @@ func loadFromFlags(cfg *Config) {
 	flag.StringVar(&cfg.FileStorage, "f", cfg.FileStorage, "Path to file storage")
 	flag.StringVar(&cfg.DBConnect, "d", cfg.DBConnect, "Database connection string")
 	flag.BoolVar(&cfg.EnableHTTPS, "s", cfg.EnableHTTPS, "Enable HTTPS server")
+	flag.StringVar(&cfg.TrustedSubnet, "t", "", "trusted subnet in CIDR notation")
 	flag.Parse()
 }
 
@@ -346,6 +351,10 @@ func loadFromEnv(cfg *Config) {
 
 	if envKey := os.Getenv("SSL_KEY_FILE"); envKey != "" {
 		cfg.SSLKeyFile = envKey
+	}
+
+	if envSubnet := os.Getenv("TRUSTED_SUBNET"); envSubnet != "" {
+		cfg.TrustedSubnet = envSubnet
 	}
 
 	// Обработка pprof настроек

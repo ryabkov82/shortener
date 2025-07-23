@@ -18,10 +18,12 @@ import (
 	"github.com/ryabkov82/shortener/internal/app/handlers/redirect"
 	"github.com/ryabkov82/shortener/internal/app/handlers/shortenapi"
 	"github.com/ryabkov82/shortener/internal/app/handlers/shorturl"
+	"github.com/ryabkov82/shortener/internal/app/handlers/stats"
 	"github.com/ryabkov82/shortener/internal/app/handlers/userurls"
 	"github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
 	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
 	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
+	"github.com/ryabkov82/shortener/internal/app/server/middleware/trustednet"
 	"github.com/ryabkov82/shortener/internal/app/service"
 	"github.com/ryabkov82/shortener/internal/app/storage/inmemory"
 	"github.com/ryabkov82/shortener/internal/app/storage/postgres"
@@ -75,6 +77,11 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 	router.Post("/api/shorten/batch", batch.GetHandler(srv, cfg.BaseURL, log))
 	router.Get("/api/user/urls", userurls.GetHandler(srv, cfg.BaseURL, log))
 	router.Delete("/api/user/urls", deluserurls.GetHandler(srv, cfg.BaseURL, log))
+
+	router.Group(func(router chi.Router) {
+		router.Use(trustednet.CheckTrustedSubnet(cfg.TrustedSubnet))
+		router.Get("/api/internal/stats", stats.GetHandler(srv, log))
+	})
 
 	log.Info("Server started", zap.String("address", cfg.HTTPServerAddr))
 

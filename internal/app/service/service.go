@@ -28,6 +28,8 @@ type Repository interface {
 	GetUserUrls(context.Context, string) ([]models.URLMapping, error)
 	BatchMarkAsDeleted(userID string, urls []string) error
 	Close() error
+	CountURLs(ctx context.Context) (int, error)
+	CountUsers(ctx context.Context) (int, error)
 }
 
 // Service реализует основной сервис приложения.
@@ -172,6 +174,58 @@ func (s *Service) Batch(ctx context.Context, batchRequest []models.BatchRequest,
 //	error - ошибка при получении
 func (s *Service) GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error) {
 	return s.repo.GetUserUrls(ctx, baseURL)
+}
+
+// GetStats возвращает статистику сервиса по количеству URL и пользователей.
+//
+// Параметры:
+//   - ctx: контекст выполнения, может использоваться для передачи таймаутов
+//
+// Возвращает:
+//   - models.StatsResponse: структура с полями:
+//   - URLs: общее количество сокращенных URL в сервисе
+//   - Users: количество уникальных пользователей в сервисе
+//   - error: ошибка, если не удалось получить статистику:
+//   - Ошибка базы данных при запросе CountURLs
+//   - Ошибка базы данных при запросе CountUsers
+//
+// Логика работы:
+//  1. Запрашивает общее количество URL через s.repo.CountURLs
+//  2. При ошибке на этом шаге сразу возвращает ошибку
+//  3. Запрашивает количество пользователей через s.repo.CountUsers
+//  4. При ошибке на этом шаге возвращает ошибку
+//  5. Формирует и возвращает структуру StatsResponse с полученными данными
+//
+// Пример использования:
+//
+//	stats, err := service.GetStats(context.Background())
+//	if err != nil {
+//	    // обработка ошибки
+//	}
+//	fmt.Printf("Stats: %d URLs, %d Users\n", stats.URLs, stats.Users)
+//
+// Особенности:
+//   - Метод атомарен - при ошибке любого из запросов статистика не возвращается
+//   - Для работы требует корректной инициализации s.repo
+//   - Контекст передается в нижележащие репозитории
+//
+// Взаимодействие с другими компонентами:
+//   - Используется в stats.GetHandler для обработки HTTP-запросов
+//   - Получает данные через интерфейс Repository
+func (s *Service) GetStats(ctx context.Context) (models.StatsResponse, error) {
+
+	urlCount, err := s.repo.CountURLs(ctx)
+	if err != nil {
+		return models.StatsResponse{}, err
+	}
+
+	userCount, err := s.repo.CountUsers(ctx)
+	if err != nil {
+		return models.StatsResponse{}, err
+	}
+
+	return models.StatsResponse{URLs: urlCount, Users: userCount}, nil
+
 }
 
 // DeleteUserUrls помечает URL пользователя как удаленные (асинхронно).
