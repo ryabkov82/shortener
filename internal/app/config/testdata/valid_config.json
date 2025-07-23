@@ -1,0 +1,12 @@
+{
+    "server_address": "testhost:9090",
+    "base_url": "http://test.local",
+    "log_level": "debug",
+    "file_storage_path": "/tmp/test_storage.db",
+    "enable_https": false,
+    "jwt_secret": "test_secret_12345678901234567890",
+    "pprof": {
+        "enabled": true,
+        "auth_user": "test"
+    }
+}

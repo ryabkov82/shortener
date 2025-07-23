@@ -40,26 +40,7 @@ func StartPProf(log *zap.Logger, config config.PProfConfig) {
 	}
 	r := chi.NewRouter()
 
-	// Регистрируем стандартные обработчики pprof
-	r.Route(config.Endpoint, func(r chi.Router) {
-		// Применяем аутентификацию ко всем под-роутам
-		r.Use(basicAuthMiddleware(config.AuthUser, config.AuthPass))
-
-		// Регистрируем стандартные обработчики pprof
-		r.Get("/", http.HandlerFunc(pprof.Index))
-		r.Get("/cmdline", http.HandlerFunc(pprof.Cmdline))
-		r.Get("/profile", http.HandlerFunc(pprof.Profile))
-		r.Get("/symbol", http.HandlerFunc(pprof.Symbol))
-		r.Get("/trace", http.HandlerFunc(pprof.Trace))
-
-		// Регистрируем обработчики профилей
-		r.Handle("/goroutine", pprof.Handler("goroutine"))
-		r.Handle("/heap", pprof.Handler("heap"))
-		r.Handle("/allocs", pprof.Handler("allocs"))
-		r.Handle("/threadcreate", pprof.Handler("threadcreate"))
-		r.Handle("/block", pprof.Handler("block"))
-		r.Handle("/mutex", pprof.Handler("mutex"))
-	})
+	registerPProfRoutes(r, config)
 
 	server := &http.Server{
 		Addr:    config.BindAddr,
@@ -95,4 +76,31 @@ func basicAuthMiddleware(expectedUser, expectedPass string) func(http.Handler) h
 			next.ServeHTTP(w, r)
 		})
 	}
+}
+
+// Регистрируем стандартные обработчики pprof
+func registerPProfRoutes(r *chi.Mux, config config.PProfConfig) {
+	if !config.Enabled {
+		return
+	}
+
+	r.Route(config.Endpoint, func(r chi.Router) {
+		// Применяем аутентификацию ко всем под-роутам
+		r.Use(basicAuthMiddleware(config.AuthUser, config.AuthPass))
+
+		// Регистрируем стандартные обработчики pprof
+		r.Get("/", http.HandlerFunc(pprof.Index))
+		r.Get("/cmdline", http.HandlerFunc(pprof.Cmdline))
+		r.Get("/profile", http.HandlerFunc(pprof.Profile))
+		r.Get("/symbol", http.HandlerFunc(pprof.Symbol))
+		r.Get("/trace", http.HandlerFunc(pprof.Trace))
+
+		// Регистрируем обработчики профилей
+		r.Handle("/goroutine", pprof.Handler("goroutine"))
+		r.Handle("/heap", pprof.Handler("heap"))
+		r.Handle("/allocs", pprof.Handler("allocs"))
+		r.Handle("/threadcreate", pprof.Handler("threadcreate"))
+		r.Handle("/block", pprof.Handler("block"))
+		r.Handle("/mutex", pprof.Handler("mutex"))
+	})
 }

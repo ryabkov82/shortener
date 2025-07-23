@@ -64,27 +64,6 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 	router.Use(mwlogger.RequestLogging(log))
 	router.Use(mwgzip.Gzip)
 
-	/*
-		// Группа с автоматической аутентификацией
-		router.Group(func(router chi.Router) {
-			router.Use(auth.JWTAutoIssue([]byte(cfg.JwtKey)))
-
-			router.Post("/", shorturl.GetHandler(srv, cfg.BaseURL, log))
-			router.Get("/{id}", redirect.GetHandler(srv, log))
-
-			router.Post("/api/shorten", shortenapi.GetHandler(srv, cfg.BaseURL, log))
-
-			router.Get("/ping", ping.GetHandler(srv, log))
-			router.Post("/api/shorten/batch", batch.GetHandler(srv, cfg.BaseURL, log))
-		})
-
-		// Группа со строгой аутентификацией
-		router.Group(func(router chi.Router) {
-			router.Use(auth.StrictJWTAutoIssue([]byte(cfg.JwtKey)))
-			router.Get("/api/user/urls", userurls.GetHandler(srv, cfg.BaseURL, log))
-		})
-	*/
-
 	router.Use(auth.JWTAutoIssue([]byte(cfg.JwtKey)))
 
 	router.Post("/", shorturl.GetHandler(srv, cfg.BaseURL, log))
@@ -106,15 +85,24 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 		Handler: router, // Ваш роутер
 	}
 
-	go func() {
-		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Error("failed to serve server", zap.Error(err))
-		}
-	}()
+	if cfg.EnableHTTPS {
+		// Запуск сервера с HTTPS
+		go func() {
+			if err := server.ListenAndServeTLS(cfg.SSLCertFile, cfg.SSLKeyFile); err != nil && err != http.ErrServerClosed {
+				log.Error("failed to serve server", zap.Error(err))
+			}
+		}()
+	} else {
+		go func() {
+			if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				log.Error("failed to serve server", zap.Error(err))
+			}
+		}()
+	}
 
 	// Обработка сигналов завершения
 	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	<-quit
 
 	log.Info("Shutting down server...")
@@ -130,6 +118,10 @@ func StartServer(log *zap.Logger, cfg *config.Config) {
 
 	// корректное завершение работы воркеров сервиса
 	srv.GracefulStop(5 * time.Second)
+
+	if err := srv.Close(); err != nil {
+		log.Info("DB close error", zap.Error(err))
+	}
 
 	log.Info("Server shutdown complete")
 

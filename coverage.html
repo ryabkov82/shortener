@@ -59,11 +59,11 @@
 				
 				<option value="file1">github.com/ryabkov82/shortener/cmd/shortener/main.go (0.0%)</option>
 				
-				<option value="file2">github.com/ryabkov82/shortener/cmd/staticlint/main.go (0.0%)</option>
+				<option value="file2">github.com/ryabkov82/shortener/cmd/staticlint/main.go (93.1%)</option>
 				
-				<option value="file3">github.com/ryabkov82/shortener/cmd/staticlint/noosexit/analyzer.go (0.0%)</option>
+				<option value="file3">github.com/ryabkov82/shortener/cmd/staticlint/noosexit/analyzer.go (83.3%)</option>
 				
-				<option value="file4">github.com/ryabkov82/shortener/internal/app/config/config.go (0.0%)</option>
+				<option value="file4">github.com/ryabkov82/shortener/internal/app/config/config.go (77.6%)</option>
 				
 				<option value="file5">github.com/ryabkov82/shortener/internal/app/handlers/batch/batch.go (71.4%)</option>
 				
@@ -85,7 +85,7 @@
 				
 				<option value="file14">github.com/ryabkov82/shortener/internal/app/logger/logger.go (80.0%)</option>
 				
-				<option value="file15">github.com/ryabkov82/shortener/internal/app/pprof/routes.go (0.0%)</option>
+				<option value="file15">github.com/ryabkov82/shortener/internal/app/pprof/routes.go (77.4%)</option>
 				
 				<option value="file16">github.com/ryabkov82/shortener/internal/app/server/middleware/auth/auth.go (77.4%)</option>
 				
@@ -95,15 +95,15 @@
 				
 				<option value="file19">github.com/ryabkov82/shortener/internal/app/server/server.go (0.0%)</option>
 				
-				<option value="file20">github.com/ryabkov82/shortener/internal/app/service/mocks/Repository.go (41.1%)</option>
+				<option value="file20">github.com/ryabkov82/shortener/internal/app/service/mocks/Repository.go (37.1%)</option>
 				
-				<option value="file21">github.com/ryabkov82/shortener/internal/app/service/service.go (87.2%)</option>
+				<option value="file21">github.com/ryabkov82/shortener/internal/app/service/service.go (85.0%)</option>
 				
 				<option value="file22">github.com/ryabkov82/shortener/internal/app/storage/inmemory/inmemory.go (82.7%)</option>
 				
 				<option value="file23">github.com/ryabkov82/shortener/internal/app/storage/postgres/migrate.go (66.7%)</option>
 				
-				<option value="file24">github.com/ryabkov82/shortener/internal/app/storage/postgres/postgres.go (68.9%)</option>
+				<option value="file24">github.com/ryabkov82/shortener/internal/app/storage/postgres/postgres.go (68.2%)</option>
 				
 				<option value="file25">github.com/ryabkov82/shortener/internal/app/workers/deleteurls/deleteworker.go (63.1%)</option>
 				
@@ -328,6 +328,12 @@ import (
 )
 
 func main() <span class="cov0" title="0">{
+        analyzers := setupAnalyzers()
+        multichecker.Main(analyzers...)
+}</span>
+
+func setupAnalyzers() []*analysis.Analyzer <span class="cov1" title="1">{
+
         // Стандартные анализаторы из golang.org/x/tools/go/analysis/passes
         standardAnalyzers := []*analysis.Analyzer{
                 asmdecl.Analyzer,          // проверяет корректность объявлений ассемблерного кода
@@ -361,41 +367,41 @@ func main() <span class="cov0" title="0">{
 
         // Анализаторы класса SA из staticcheck.io (Static Analysis)
         var saAnalyzers []*analysis.Analyzer
-        for _, v := range staticcheck.Analyzers </span><span class="cov0" title="0">{
-                if v.Analyzer.Name[:2] == "SA" </span><span class="cov0" title="0">{
+        for _, v := range staticcheck.Analyzers </span><span class="cov10" title="95">{
+                if v.Analyzer.Name[:2] == "SA" </span><span class="cov10" title="95">{
                         saAnalyzers = append(saAnalyzers, v.Analyzer)
                 }</span>
         }
 
         // Дополнительные анализаторы из других классов staticcheck
-        <span class="cov0" title="0">var otherStaticcheckAnalyzers []*analysis.Analyzer
+        <span class="cov1" title="1">var otherStaticcheckAnalyzers []*analysis.Analyzer
 
         // Добавляем анализаторы из stylecheck
-        for _, a := range stylecheck.Analyzers </span><span class="cov0" title="0">{
-                if a.Analyzer.Name == "ST1000" </span><span class="cov0" title="0">{ // проверка документации пакета
+        for _, a := range stylecheck.Analyzers </span><span class="cov1" title="1">{
+                if a.Analyzer.Name == "ST1000" </span><span class="cov1" title="1">{ // проверка документации пакета
                         otherStaticcheckAnalyzers = append(otherStaticcheckAnalyzers, a.Analyzer)
                         break</span>
                 }
         }
 
         // Добавляем анализаторы из simple
-        <span class="cov0" title="0">for _, a := range simple.Analyzers </span><span class="cov0" title="0">{
-                if a.Analyzer.Name == "S1002" </span><span class="cov0" title="0">{ // предлагает упрощение булевых выражений
+        <span class="cov1" title="1">for _, a := range simple.Analyzers </span><span class="cov3" title="3">{
+                if a.Analyzer.Name == "S1002" </span><span class="cov1" title="1">{ // предлагает упрощение булевых выражений
                         otherStaticcheckAnalyzers = append(otherStaticcheckAnalyzers, a.Analyzer)
                         break</span>
                 }
         }
 
         // Добавляем анализаторы из quickfix
-        <span class="cov0" title="0">for _, a := range quickfix.Analyzers </span><span class="cov0" title="0">{
-                if a.Analyzer.Name == "QF1001" </span><span class="cov0" title="0">{ // применяет законы Де Моргана
+        <span class="cov1" title="1">for _, a := range quickfix.Analyzers </span><span class="cov1" title="1">{
+                if a.Analyzer.Name == "QF1001" </span><span class="cov1" title="1">{ // применяет законы Де Моргана
                         otherStaticcheckAnalyzers = append(otherStaticcheckAnalyzers, a.Analyzer)
                         break</span>
                 }
         }
 
         // Сторонние анализаторы
-        <span class="cov0" title="0">externalAnalyzers := []*analysis.Analyzer{
+        <span class="cov1" title="1">externalAnalyzers := []*analysis.Analyzer{
                 bodyclose.Analyzer, // проверяет закрытие response.Body
                 analyzer.Analyzer,  // go-critic, выявляет потенциальные ошибки, неэффективности и плохие практики программирования
         }
@@ -413,7 +419,7 @@ func main() <span class="cov0" title="0">{
         analyzers = append(analyzers, externalAnalyzers...)
         analyzers = append(analyzers, customAnalyzers...)
 
-        multichecker.Main(analyzers...)</span>
+        return analyzers</span>
 }
 </pre>
 		
@@ -443,7 +449,7 @@ var NoOsExitAnalyzer = &amp;analysis.Analyzer{
         Run:      run,
 }
 
-func run(pass *analysis.Pass) (interface{}, error) <span class="cov0" title="0">{
+func run(pass *analysis.Pass) (interface{}, error) <span class="cov10" title="2">{
 
         // Проверяем, что пакет находится в директории cmd
         if !isCmdPackage(pass.Pkg.Path()) </span><span class="cov0" title="0">{
@@ -451,7 +457,7 @@ func run(pass *analysis.Pass) (interface{}, error) <span class="cov0" title="0">
         }</span>
 
         // Используем inspector для более эффективного обхода AST
-        <span class="cov0" title="0">inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
+        <span class="cov10" title="2">inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
 
         // Фильтруем только вызовы функций
         nodeFilter := []ast.Node{
@@ -459,7 +465,7 @@ func run(pass *analysis.Pass) (interface{}, error) <span class="cov0" title="0">
         }
 
         // Проверяем, находимся ли мы в пакете main и функции main
-        inspect.Preorder(nodeFilter, func(n ast.Node) </span><span class="cov0" title="0">{
+        inspect.Preorder(nodeFilter, func(n ast.Node) </span><span class="cov10" title="2">{
                 call := n.(*ast.CallExpr)
                 fun, ok := call.Fun.(*ast.SelectorExpr)
                 if !ok </span><span class="cov0" title="0">{
@@ -467,14 +473,14 @@ func run(pass *analysis.Pass) (interface{}, error) <span class="cov0" title="0">
                 }</span>
 
                 // Проверяем что это вызов os.Exit
-                <span class="cov0" title="0">if ident, ok := fun.X.(*ast.Ident); ok </span><span class="cov0" title="0">{
-                        if ident.Name == "os" &amp;&amp; fun.Sel.Name == "Exit" </span><span class="cov0" title="0">{
+                <span class="cov10" title="2">if ident, ok := fun.X.(*ast.Ident); ok </span><span class="cov10" title="2">{
+                        if ident.Name == "os" &amp;&amp; fun.Sel.Name == "Exit" </span><span class="cov1" title="1">{
                                 // Проверяем что находимся в функции main пакета main
-                                if pass.Pkg.Name() == "main" </span><span class="cov0" title="0">{
+                                if pass.Pkg.Name() == "main" </span><span class="cov1" title="1">{
                                         // Проверяем что находимся внутри функции main
-                                        for _, f := range pass.Files </span><span class="cov0" title="0">{
-                                                for _, decl := range f.Decls </span><span class="cov0" title="0">{
-                                                        if fd, ok := decl.(*ast.FuncDecl); ok &amp;&amp; fd.Name.Name == "main" </span><span class="cov0" title="0">{
+                                        for _, f := range pass.Files </span><span class="cov1" title="1">{
+                                                for _, decl := range f.Decls </span><span class="cov10" title="2">{
+                                                        if fd, ok := decl.(*ast.FuncDecl); ok &amp;&amp; fd.Name.Name == "main" </span><span class="cov1" title="1">{
                                                                 pass.Reportf(call.Pos(), "прямой вызов os.Exit в функции main запрещен, используйте log.Fatal() или возврат ошибки")
                                                         }</span>
                                                 }
@@ -484,29 +490,54 @@ func run(pass *analysis.Pass) (interface{}, error) <span class="cov0" title="0">
                 }
         })
 
-        <span class="cov0" title="0">return nil, nil</span>
+        <span class="cov10" title="2">return nil, nil</span>
 }
 
 // isCmdPackage проверяет, находится ли пакет в директории cmd
-func isCmdPackage(pkgPath string) bool <span class="cov0" title="0">{
+var isCmdPackage = func(pkgPath string) bool <span class="cov0" title="0">{
         return strings.Contains(filepath.ToSlash(pkgPath), "/cmd/")
 }</span>
 </pre>
 		
-		<pre class="file" id="file4" style="display: none">// Package config предоставляет загрузку и валидацию конфигурации приложения.
-//
-// Поддерживает несколько источников конфигурации:
-// - Аргументы командной строки
-// - Переменные окружения
-// - Значения по умолчанию
-//
-// Приоритет настроек:
-// 1. Переменные окружения
-// 2. Аргументы командной строки
-// 3. Значения по умолчанию
+		<pre class="file" id="file4" style="display: none">/*
+Package config предоставляет загрузку и валидацию конфигурации приложения.
+
+Поддерживает несколько источников конфигурации:
+- Аргументы командной строки
+- Переменные окружения
+- JSON-файлы конфигурации
+- Значения по умолчанию
+
+Приоритет настроек (от высшего к низшему):
+1. Аргументы командной строки
+2. Переменные окружения
+3. JSON-файл конфигурации (если указан)
+4. Значения по умолчанию
+
+Формат JSON-конфигурации:
+
+        {
+            "server_address": "localhost:8080",
+            "base_url": "http://localhost",
+            "file_storage_path": "/path/to/file.db",
+            "database_dsn": "",
+            "enable_https": true,
+            "jwt_secret": "secret_key",
+            "pprof": {
+                "enabled": true,
+                "auth_user": "admin",
+                "auth_pass": "password"
+            }
+        }
+
+Путь к JSON-файлу конфигурации можно указать:
+- Через флаг -c или --config
+- Через переменную окружения CONFIG
+*/
 package config
 
 import (
+        "encoding/json"
         "errors"
         "flag"
         "log"
@@ -518,22 +549,25 @@ import (
 
 // Config содержит все параметры конфигурации приложения.
 type Config struct {
-        HTTPServerAddr string      // Адрес HTTP-сервера в формате host:port
-        BaseURL        string      // Базовый URL для сокращённых ссылок
-        LogLevel       string      // Уровень логирования (debug, info, warn, error)
-        FileStorage    string      // Путь к файлу хранилища
-        DBConnect      string      // Строка подключения к БД
-        JwtKey         string      // Секретный ключ для JWT
-        ConfigPProf    PProfConfig // Настройки pprof
+        HTTPServerAddr string      `json:"server_address"`    // Адрес HTTP-сервера в формате host:port
+        BaseURL        string      `json:"base_url"`          // Базовый URL для сокращённых ссылок
+        LogLevel       string      `json:"log_level"`         // Уровень логирования (debug, info, warn, error)
+        FileStorage    string      `json:"file_storage_path"` // Путь к файлу хранилища
+        DBConnect      string      `json:"database_dsn"`      // Строка подключения к БД
+        JwtKey         string      `json:"jwt_secret"`        // Секретный ключ для JWT
+        ConfigPProf    PProfConfig `json:"pprof"`             // Настройки pprof
+        EnableHTTPS    bool        `json:"enable_https"`      // Включение HTTPS
+        SSLCertFile    string      `json:"ssl_cert_file"`     // Путь к SSL сертификату
+        SSLKeyFile     string      `json:"ssl_key_file"`      // Путь к SSL ключу
 }
 
 // PProfConfig содержит настройки профилирования pprof.
 type PProfConfig struct {
-        AuthUser string
-        AuthPass string
-        Endpoint string
-        BindAddr string
-        Enabled  bool
+        AuthUser string `json:"auth_user"`
+        AuthPass string `json:"auth_pass"`
+        Endpoint string `json:"endpoint"`
+        BindAddr string `json:"bind_addr"`
+        Enabled  bool   `json:"enabled"`
 }
 
 // validateHTTPServerAddr проверяет корректность адреса сервера.
@@ -544,18 +578,18 @@ type PProfConfig struct {
 // Возвращает:
 //
 //        error - ошибка валидации или nil
-func validateHTTPServerAddr(addr string) error <span class="cov0" title="0">{
+func validateHTTPServerAddr(addr string) error <span class="cov10" title="7">{
         hp := strings.Split(addr, ":")
-        if len(hp) != 2 </span><span class="cov0" title="0">{
+        if len(hp) != 2 </span><span class="cov1" title="1">{
                 return errors.New("address must be in host:port format")
         }</span>
 
-        <span class="cov0" title="0">port, err := strconv.Atoi(hp[1])
-        if err != nil || port &lt; 1 || port &gt; 65535 </span><span class="cov0" title="0">{
+        <span class="cov9" title="6">port, err := strconv.Atoi(hp[1])
+        if err != nil || port &lt; 1 || port &gt; 65535 </span><span class="cov1" title="1">{
                 return errors.New("port must be a number between 1 and 65535")
         }</span>
 
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov8" title="5">return nil</span>
 }
 
 // validateBaseURL проверяет корректность базового URL.
@@ -567,36 +601,53 @@ func validateHTTPServerAddr(addr string) error <span class="cov0" title="0">{
 // Возвращает:
 //
 //        error - ошибка валидации или nil
-func validateBaseURL(baseURL string) error <span class="cov0" title="0">{
+func validateBaseURL(baseURL string) error <span class="cov6" title="3">{
         u, err := url.Parse(baseURL)
         if err != nil </span><span class="cov0" title="0">{
                 return err
         }</span>
 
-        <span class="cov0" title="0">if u.Scheme == "" || u.Host == "" </span><span class="cov0" title="0">{
+        <span class="cov6" title="3">if u.Scheme == "" || u.Host == "" </span><span class="cov1" title="1">{
                 return errors.New("URL must be absolute with scheme and host")
         }</span>
 
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov4" title="2">return nil</span>
+}
+
+// validateCertFiles проверяет существование файлов сертификатов.
+// Возвращает:
+//
+//        error - ошибка или nil
+func validateCertFiles(certFile, keyFile string) error <span class="cov6" title="3">{
+        if _, err := os.Stat(certFile); os.IsNotExist(err) </span><span class="cov1" title="1">{
+                return errors.New("SSL certificate file not found")
+        }</span>
+        <span class="cov4" title="2">if _, err := os.Stat(keyFile); os.IsNotExist(err) </span><span class="cov1" title="1">{
+                return errors.New("SSL key file not found")
+        }</span>
+        <span class="cov1" title="1">return nil</span>
 }
 
 // Load загружает конфигурацию из разных источников.
 //
 // Порядок загрузки:
 // 1. Устанавливает значения по умолчанию
-// 2. Читает аргументы командной строки
-// 3. Перезаписывает переменными окружения
+// 2. Читает JSON-конфиг (если указан)
+// 3. Читает аргументы командной строки
+// 4. Перезаписывает переменными окружения
 //
 // Возвращает:
-//
-//        *Config - загруженную конфигурацию
-func Load() *Config <span class="cov0" title="0">{
+// *Config - загруженную конфигурацию
+func Load() *Config <span class="cov10" title="7">{
         cfg := &amp;Config{
                 HTTPServerAddr: "localhost:8080",
                 BaseURL:        "http://localhost:8080",
                 LogLevel:       "info",
                 FileStorage:    "storage.dat",
                 JwtKey:         "your_strong_secret_here",
+                EnableHTTPS:    false,
+                SSLCertFile:    "cert.pem",
+                SSLKeyFile:     "key.pem",
                 ConfigPProf: PProfConfig{
                         Enabled:  true,
                         AuthUser: "admin",
@@ -606,27 +657,20 @@ func Load() *Config <span class="cov0" title="0">{
                 },
         }
 
+        // Загрузка из JSON-файла если указан
+        configFile := getConfigFilePath()
+        if configFile != "" </span><span class="cov6" title="3">{
+                fileCfg, err := loadFromJSON(configFile)
+                if err != nil </span><span class="cov1" title="1">{
+                        log.Printf("Ошибка загрузки JSON-конфига: %v", err)
+                }</span> else<span class="cov4" title="2"> {
+                        // Объединяем конфиги, сохраняя значения по умолчанию для незаполненных полей
+                        mergeConfigs(cfg, fileCfg)
+                }</span>
+        }
+
         // Загрузка из аргументов командной строки
-        flag.Func("a", "Server address in host:port format", func(flagValue string) error </span><span class="cov0" title="0">{
-                if err := validateHTTPServerAddr(flagValue); err != nil </span><span class="cov0" title="0">{
-                        return err
-                }</span>
-                <span class="cov0" title="0">cfg.HTTPServerAddr = flagValue
-                return nil</span>
-        })
-
-        <span class="cov0" title="0">flag.Func("b", "Base URL for shortened links (e.g. http://example.com)", func(flagValue string) error </span><span class="cov0" title="0">{
-                if err := validateBaseURL(flagValue); err != nil </span><span class="cov0" title="0">{
-                        return err
-                }</span>
-                <span class="cov0" title="0">cfg.BaseURL = strings.TrimSuffix(flagValue, "/")
-                return nil</span>
-        })
-
-        <span class="cov0" title="0">flag.StringVar(&amp;cfg.LogLevel, "l", cfg.LogLevel, "Log level (debug, info, warn, error)")
-        flag.StringVar(&amp;cfg.FileStorage, "f", cfg.FileStorage, "Path to file storage")
-        flag.StringVar(&amp;cfg.DBConnect, "d", cfg.DBConnect, "Database connection string")
-        flag.Parse()
+        <span class="cov10" title="7">loadFromFlags(cfg)
 
         // Переопределение переменными окружения
         loadFromEnv(cfg)
@@ -634,49 +678,186 @@ func Load() *Config <span class="cov0" title="0">{
         // Дополнительная обработка
         cfg.BaseURL = strings.TrimSuffix(cfg.BaseURL, "/")
 
-        return cfg</span>
+        // Валидация SSL файлов если HTTPS включен
+        if cfg.EnableHTTPS </span><span class="cov0" title="0">{
+                if err := validateCertFiles(cfg.SSLCertFile, cfg.SSLKeyFile); err != nil </span><span class="cov0" title="0">{
+                        log.Fatalf("HTTPS configuration error: %v", err)
+                }</span>
+        }
+
+        <span class="cov10" title="7">return cfg</span>
+}
+
+// getConfigFilePath возвращает путь к файлу конфигурации из флагов или переменных окружения
+func getConfigFilePath() string <span class="cov10" title="7">{
+
+        for i, arg := range os.Args[1:] </span><span class="cov9" title="6">{
+                if arg == "-c" || arg == "--config" </span><span class="cov0" title="0">{
+                        if i+1 &lt; len(os.Args) </span><span class="cov0" title="0">{
+                                return os.Args[i+2]
+                        }</span>
+                }
+                <span class="cov9" title="6">if strings.HasPrefix(arg, "-c=") </span><span class="cov0" title="0">{
+                        return strings.TrimPrefix(arg, "-c=")
+                }</span>
+                <span class="cov9" title="6">if strings.HasPrefix(arg, "--config=") </span><span class="cov0" title="0">{
+                        return strings.TrimPrefix(arg, "--config=")
+                }</span>
+        }
+
+        <span class="cov10" title="7">if envConfig := os.Getenv("CONFIG"); envConfig != "" </span><span class="cov6" title="3">{
+                return envConfig
+        }</span>
+        <span class="cov7" title="4">return ""</span>
+}
+
+// loadFromJSON загружает конфигурацию из JSON-файла
+func loadFromJSON(path string) (*Config, error) <span class="cov6" title="3">{
+        file, err := os.ReadFile(path)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov6" title="3">var cfg Config
+        if err := json.Unmarshal(file, &amp;cfg); err != nil </span><span class="cov1" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov4" title="2">return &amp;cfg, nil</span>
+}
+
+// mergeConfigs объединяет две конфигурации, сохраняя оригинальные значения для пустых полей
+func mergeConfigs(original, new *Config) <span class="cov6" title="3">{
+        if new.HTTPServerAddr != "" </span><span class="cov6" title="3">{
+                original.HTTPServerAddr = new.HTTPServerAddr
+        }</span>
+        <span class="cov6" title="3">if new.BaseURL != "" </span><span class="cov4" title="2">{
+                original.BaseURL = new.BaseURL
+        }</span>
+        <span class="cov6" title="3">if new.LogLevel != "" </span><span class="cov6" title="3">{
+                original.LogLevel = new.LogLevel
+        }</span>
+        <span class="cov6" title="3">if new.FileStorage != "" </span><span class="cov4" title="2">{
+                original.FileStorage = new.FileStorage
+        }</span>
+        <span class="cov6" title="3">if new.DBConnect != "" </span><span class="cov0" title="0">{
+                original.DBConnect = new.DBConnect
+        }</span>
+        <span class="cov6" title="3">if new.JwtKey != "" </span><span class="cov4" title="2">{
+                original.JwtKey = new.JwtKey
+        }</span>
+        <span class="cov6" title="3">if new.EnableHTTPS </span><span class="cov0" title="0">{
+                original.EnableHTTPS = new.EnableHTTPS
+        }</span>
+        <span class="cov6" title="3">if new.SSLCertFile != "" </span><span class="cov0" title="0">{
+                original.SSLCertFile = new.SSLCertFile
+        }</span>
+        <span class="cov6" title="3">if new.SSLKeyFile != "" </span><span class="cov0" title="0">{
+                original.SSLKeyFile = new.SSLKeyFile
+        }</span>
+
+        // Объединение PProfConfig
+        <span class="cov6" title="3">if new.ConfigPProf.AuthUser != "" </span><span class="cov4" title="2">{
+                original.ConfigPProf.AuthUser = new.ConfigPProf.AuthUser
+        }</span>
+        <span class="cov6" title="3">if new.ConfigPProf.AuthPass != "" </span><span class="cov0" title="0">{
+                original.ConfigPProf.AuthPass = new.ConfigPProf.AuthPass
+        }</span>
+        <span class="cov6" title="3">if new.ConfigPProf.Endpoint != "" </span><span class="cov0" title="0">{
+                original.ConfigPProf.Endpoint = new.ConfigPProf.Endpoint
+        }</span>
+        <span class="cov6" title="3">if new.ConfigPProf.BindAddr != "" </span><span class="cov0" title="0">{
+                original.ConfigPProf.BindAddr = new.ConfigPProf.BindAddr
+        }</span>
+        <span class="cov6" title="3">if new.ConfigPProf.Enabled </span><span class="cov4" title="2">{
+                original.ConfigPProf.Enabled = new.ConfigPProf.Enabled
+        }</span>
+}
+
+// loadFromFlags загружает значения из флагов командной строки
+func loadFromFlags(cfg *Config) <span class="cov10" title="7">{
+        flag.Func("a", "Server address in host:port format", func(flagValue string) error </span><span class="cov4" title="2">{
+                if err := validateHTTPServerAddr(flagValue); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov4" title="2">cfg.HTTPServerAddr = flagValue
+                return nil</span>
+        })
+
+        <span class="cov10" title="7">flag.Func("b", "Base URL for shortened links (e.g. http://example.com)", func(flagValue string) error </span><span class="cov0" title="0">{
+                if err := validateBaseURL(flagValue); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov0" title="0">cfg.BaseURL = strings.TrimSuffix(flagValue, "/")
+                return nil</span>
+        })
+
+        <span class="cov10" title="7">flag.StringVar(&amp;cfg.LogLevel, "l", cfg.LogLevel, "Log level (debug, info, warn, error)")
+        flag.StringVar(&amp;cfg.FileStorage, "f", cfg.FileStorage, "Path to file storage")
+        flag.StringVar(&amp;cfg.DBConnect, "d", cfg.DBConnect, "Database connection string")
+        flag.BoolVar(&amp;cfg.EnableHTTPS, "s", cfg.EnableHTTPS, "Enable HTTPS server")
+        flag.Parse()</span>
 }
 
 // loadFromEnv загружает значения из переменных окружения.
-func loadFromEnv(cfg *Config) <span class="cov0" title="0">{
-        if envAddr := os.Getenv("SERVER_ADDRESS"); envAddr != "" </span><span class="cov0" title="0">{
+func loadFromEnv(cfg *Config) <span class="cov10" title="7">{
+        if envAddr := os.Getenv("SERVER_ADDRESS"); envAddr != "" </span><span class="cov4" title="2">{
                 if err := validateHTTPServerAddr(envAddr); err != nil </span><span class="cov0" title="0">{
                         log.Fatalf("invalid SERVER_ADDRESS: %v", err)
                 }</span>
-                <span class="cov0" title="0">cfg.HTTPServerAddr = envAddr</span>
+                <span class="cov4" title="2">cfg.HTTPServerAddr = envAddr</span>
         }
 
-        <span class="cov0" title="0">if envURL := os.Getenv("BASE_URL"); envURL != "" </span><span class="cov0" title="0">{
+        <span class="cov10" title="7">if envURL := os.Getenv("BASE_URL"); envURL != "" </span><span class="cov0" title="0">{
                 if err := validateBaseURL(envURL); err != nil </span><span class="cov0" title="0">{
                         log.Fatalf("invalid BASE_URL: %v", err)
                 }</span>
                 <span class="cov0" title="0">cfg.BaseURL = envURL</span>
         }
 
-        <span class="cov0" title="0">if envFile := os.Getenv("FILE_STORAGE_PATH"); envFile != "" </span><span class="cov0" title="0">{
+        <span class="cov10" title="7">if envFile := os.Getenv("FILE_STORAGE_PATH"); envFile != "" </span><span class="cov0" title="0">{
                 cfg.FileStorage = envFile
         }</span>
 
-        <span class="cov0" title="0">if envDB := os.Getenv("DATABASE_DSN"); envDB != "" </span><span class="cov0" title="0">{
+        <span class="cov10" title="7">if envDB := os.Getenv("DATABASE_DSN"); envDB != "" </span><span class="cov10" title="7">{
                 cfg.DBConnect = envDB
         }</span>
 
-        <span class="cov0" title="0">if envJWT := os.Getenv("JWT_SECRET"); envJWT != "" </span><span class="cov0" title="0">{
+        <span class="cov10" title="7">if envJWT := os.Getenv("JWT_SECRET"); envJWT != "" </span><span class="cov1" title="1">{
                 if len(envJWT) &lt; 32 </span><span class="cov0" title="0">{
                         log.Fatal("JWT_SECRET must be at least 32 characters long")
                 }</span>
-                <span class="cov0" title="0">cfg.JwtKey = envJWT</span>
+                <span class="cov1" title="1">cfg.JwtKey = envJWT</span>
         }
 
+        <span class="cov10" title="7">if envLogLevel := os.Getenv("LOG_LEVEL"); envLogLevel != "" </span><span class="cov1" title="1">{
+                cfg.LogLevel = envLogLevel
+        }</span>
+
+        // Обработка HTTPS настроек
+        <span class="cov10" title="7">if envEnableHTTPS := os.Getenv("SSL_ENABLE"); envEnableHTTPS != "" </span><span class="cov0" title="0">{
+                if v, err := strconv.ParseBool(envEnableHTTPS); err == nil </span><span class="cov0" title="0">{
+                        cfg.EnableHTTPS = v
+                }</span>
+        }
+
+        <span class="cov10" title="7">if envCert := os.Getenv("SSL_CERT_FILE"); envCert != "" </span><span class="cov10" title="7">{
+                cfg.SSLCertFile = envCert
+        }</span>
+
+        <span class="cov10" title="7">if envKey := os.Getenv("SSL_KEY_FILE"); envKey != "" </span><span class="cov10" title="7">{
+                cfg.SSLKeyFile = envKey
+        }</span>
+
         // Обработка pprof настроек
-        <span class="cov0" title="0">if user := os.Getenv("PPROF_USER"); user != "" </span><span class="cov0" title="0">{
+        <span class="cov10" title="7">if user := os.Getenv("PPROF_USER"); user != "" </span><span class="cov1" title="1">{
                 cfg.ConfigPProf.AuthUser = user
         }</span>
-        <span class="cov0" title="0">if pass := os.Getenv("PPROF_PASS"); pass != "" </span><span class="cov0" title="0">{
+        <span class="cov10" title="7">if pass := os.Getenv("PPROF_PASS"); pass != "" </span><span class="cov1" title="1">{
                 cfg.ConfigPProf.AuthPass = pass
         }</span>
-        <span class="cov0" title="0">if enabled := os.Getenv("PPROF_ENABLED"); enabled != "" </span><span class="cov0" title="0">{
-                if v, err := strconv.ParseBool(enabled); err == nil </span><span class="cov0" title="0">{
+        <span class="cov10" title="7">if enabled := os.Getenv("PPROF_ENABLED"); enabled != "" </span><span class="cov1" title="1">{
+                if v, err := strconv.ParseBool(enabled); err == nil </span><span class="cov1" title="1">{
                         cfg.ConfigPProf.Enabled = v
                 }</span>
         }
@@ -1507,7 +1688,7 @@ var writerPool = sync.Pool{
 
 // Пул gzip.Reader для повторного использования объектов
 var readerPool = sync.Pool{
-        New: func() interface{} <span class="cov9" title="100">{
+        New: func() interface{} <span class="cov9" title="101">{
                 return new(gzip.Reader)
         }</span>,
 }
@@ -1764,34 +1945,15 @@ import (
 //            AuthPass: "secret",
 //        }
 //        pprof.StartPProf(logger.Log, cfg)
-func StartPProf(log *zap.Logger, config config.PProfConfig) <span class="cov0" title="0">{
-        if !config.Enabled </span><span class="cov0" title="0">{
+func StartPProf(log *zap.Logger, config config.PProfConfig) <span class="cov1" title="1">{
+        if !config.Enabled </span><span class="cov1" title="1">{
                 return
         }</span>
         <span class="cov0" title="0">r := chi.NewRouter()
 
-        // Регистрируем стандартные обработчики pprof
-        r.Route(config.Endpoint, func(r chi.Router) </span><span class="cov0" title="0">{
-                // Применяем аутентификацию ко всем под-роутам
-                r.Use(basicAuthMiddleware(config.AuthUser, config.AuthPass))
+        registerPProfRoutes(r, config)
 
-                // Регистрируем стандартные обработчики pprof
-                r.Get("/", http.HandlerFunc(pprof.Index))
-                r.Get("/cmdline", http.HandlerFunc(pprof.Cmdline))
-                r.Get("/profile", http.HandlerFunc(pprof.Profile))
-                r.Get("/symbol", http.HandlerFunc(pprof.Symbol))
-                r.Get("/trace", http.HandlerFunc(pprof.Trace))
-
-                // Регистрируем обработчики профилей
-                r.Handle("/goroutine", pprof.Handler("goroutine"))
-                r.Handle("/heap", pprof.Handler("heap"))
-                r.Handle("/allocs", pprof.Handler("allocs"))
-                r.Handle("/threadcreate", pprof.Handler("threadcreate"))
-                r.Handle("/block", pprof.Handler("block"))
-                r.Handle("/mutex", pprof.Handler("mutex"))
-        }</span>)
-
-        <span class="cov0" title="0">server := &amp;http.Server{
+        server := &amp;http.Server{
                 Addr:    config.BindAddr,
                 Handler: r,
         }
@@ -1811,20 +1973,47 @@ func StartPProf(log *zap.Logger, config config.PProfConfig) <span class="cov0" t
 //
 // Возвращает:
 //   - middleware функцию для chi.Router
-func basicAuthMiddleware(expectedUser, expectedPass string) func(http.Handler) http.Handler <span class="cov0" title="0">{
-        return func(next http.Handler) http.Handler </span><span class="cov0" title="0">{
-                return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) </span><span class="cov0" title="0">{
+func basicAuthMiddleware(expectedUser, expectedPass string) func(http.Handler) http.Handler <span class="cov3" title="2">{
+        return func(next http.Handler) http.Handler </span><span class="cov3" title="2">{
+                return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) </span><span class="cov10" title="14">{
                         user, password, ok := r.BasicAuth()
 
-                        if !ok || user != expectedUser || password != expectedPass </span><span class="cov0" title="0">{
+                        if !ok || user != expectedUser || password != expectedPass </span><span class="cov4" title="3">{
                                 w.Header().Set("WWW-Authenticate", `Basic realm="Restricted"`)
                                 http.Error(w, "Unauthorized", http.StatusUnauthorized)
                                 return
                         }</span>
 
-                        <span class="cov0" title="0">next.ServeHTTP(w, r)</span>
+                        <span class="cov9" title="11">next.ServeHTTP(w, r)</span>
                 })
         }
+}
+
+// Регистрируем стандартные обработчики pprof
+func registerPProfRoutes(r *chi.Mux, config config.PProfConfig) <span class="cov1" title="1">{
+        if !config.Enabled </span><span class="cov0" title="0">{
+                return
+        }</span>
+
+        <span class="cov1" title="1">r.Route(config.Endpoint, func(r chi.Router) </span><span class="cov1" title="1">{
+                // Применяем аутентификацию ко всем под-роутам
+                r.Use(basicAuthMiddleware(config.AuthUser, config.AuthPass))
+
+                // Регистрируем стандартные обработчики pprof
+                r.Get("/", http.HandlerFunc(pprof.Index))
+                r.Get("/cmdline", http.HandlerFunc(pprof.Cmdline))
+                r.Get("/profile", http.HandlerFunc(pprof.Profile))
+                r.Get("/symbol", http.HandlerFunc(pprof.Symbol))
+                r.Get("/trace", http.HandlerFunc(pprof.Trace))
+
+                // Регистрируем обработчики профилей
+                r.Handle("/goroutine", pprof.Handler("goroutine"))
+                r.Handle("/heap", pprof.Handler("heap"))
+                r.Handle("/allocs", pprof.Handler("allocs"))
+                r.Handle("/threadcreate", pprof.Handler("threadcreate"))
+                r.Handle("/block", pprof.Handler("block"))
+                r.Handle("/mutex", pprof.Handler("mutex"))
+        }</span>)
 }
 </pre>
 		
@@ -2157,27 +2346,6 @@ func StartServer(log *zap.Logger, cfg *config.Config) <span class="cov0" title="
         router.Use(mwlogger.RequestLogging(log))
         router.Use(mwgzip.Gzip)
 
-        /*
-                // Группа с автоматической аутентификацией
-                router.Group(func(router chi.Router) {
-                        router.Use(auth.JWTAutoIssue([]byte(cfg.JwtKey)))
-
-                        router.Post("/", shorturl.GetHandler(srv, cfg.BaseURL, log))
-                        router.Get("/{id}", redirect.GetHandler(srv, log))
-
-                        router.Post("/api/shorten", shortenapi.GetHandler(srv, cfg.BaseURL, log))
-
-                        router.Get("/ping", ping.GetHandler(srv, log))
-                        router.Post("/api/shorten/batch", batch.GetHandler(srv, cfg.BaseURL, log))
-                })
-
-                // Группа со строгой аутентификацией
-                router.Group(func(router chi.Router) {
-                        router.Use(auth.StrictJWTAutoIssue([]byte(cfg.JwtKey)))
-                        router.Get("/api/user/urls", userurls.GetHandler(srv, cfg.BaseURL, log))
-                })
-        */
-
         router.Use(auth.JWTAutoIssue([]byte(cfg.JwtKey)))
 
         router.Post("/", shorturl.GetHandler(srv, cfg.BaseURL, log))
@@ -2199,15 +2367,24 @@ func StartServer(log *zap.Logger, cfg *config.Config) <span class="cov0" title="
                 Handler: router, // Ваш роутер
         }
 
-        go func() </span><span class="cov0" title="0">{
-                if err := server.ListenAndServe(); err != nil &amp;&amp; err != http.ErrServerClosed </span><span class="cov0" title="0">{
-                        log.Error("failed to serve server", zap.Error(err))
-                }</span>
-        }()
+        if cfg.EnableHTTPS </span><span class="cov0" title="0">{
+                // Запуск сервера с HTTPS
+                go func() </span><span class="cov0" title="0">{
+                        if err := server.ListenAndServeTLS(cfg.SSLCertFile, cfg.SSLKeyFile); err != nil &amp;&amp; err != http.ErrServerClosed </span><span class="cov0" title="0">{
+                                log.Error("failed to serve server", zap.Error(err))
+                        }</span>
+                }()
+        } else<span class="cov0" title="0"> {
+                go func() </span><span class="cov0" title="0">{
+                        if err := server.ListenAndServe(); err != nil &amp;&amp; err != http.ErrServerClosed </span><span class="cov0" title="0">{
+                                log.Error("failed to serve server", zap.Error(err))
+                        }</span>
+                }()
+        }
 
         // Обработка сигналов завершения
         <span class="cov0" title="0">quit := make(chan os.Signal, 1)
-        signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+        signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
         &lt;-quit
 
         log.Info("Shutting down server...")
@@ -2224,7 +2401,11 @@ func StartServer(log *zap.Logger, cfg *config.Config) <span class="cov0" title="
         // корректное завершение работы воркеров сервиса
         <span class="cov0" title="0">srv.GracefulStop(5 * time.Second)
 
-        log.Info("Server shutdown complete")</span>
+        if err := srv.Close(); err != nil </span><span class="cov0" title="0">{
+                log.Info("DB close error", zap.Error(err))
+        }</span>
+
+        <span class="cov0" title="0">log.Info("Server shutdown complete")</span>
 
 }
 </pre>
@@ -2240,7 +2421,6 @@ import (
         reflect "reflect"
 
         gomock "github.com/golang/mock/gomock"
-
         models "github.com/ryabkov82/shortener/internal/app/models"
 )
 
@@ -2279,6 +2459,20 @@ func (m *MockRepository) BatchMarkAsDeleted(arg0 string, arg1 []string) error <s
 func (mr *MockRepositoryMockRecorder) BatchMarkAsDeleted(arg0, arg1 interface{}) *gomock.Call <span class="cov0" title="0">{
         mr.mock.ctrl.T.Helper()
         return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchMarkAsDeleted", reflect.TypeOf((*MockRepository)(nil).BatchMarkAsDeleted), arg0, arg1)
+}</span>
+
+// Close mocks base method.
+func (m *MockRepository) Close() error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "Close")
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// Close indicates an expected call of Close.
+func (mr *MockRepositoryMockRecorder) Close() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockRepository)(nil).Close))
 }</span>
 
 // GetExistingURLs mocks base method.
@@ -2413,6 +2607,7 @@ type Repository interface {
         GetExistingURLs(context.Context, []string) (map[string]string, error)
         GetUserUrls(context.Context, string) ([]models.URLMapping, error)
         BatchMarkAsDeleted(userID string, urls []string) error
+        Close() error
 }
 
 // Service реализует основной сервис приложения.
@@ -2586,6 +2781,11 @@ func (s *Service) GracefulStop(timeout time.Duration) <span class="cov0" title="
         s.deleteworker.GracefulStop(timeout)
 }</span>
 
+// Close освобождает ресурсы
+func (s *Service) Close() error <span class="cov0" title="0">{
+        return s.repo.Close()
+}</span>
+
 // generateShortKey генерирует случайный короткий ключ.
 //
 // Возвращает:
@@ -2657,13 +2857,13 @@ type InMemoryStorage struct {
 // Пример:
 //
 //        storage, err := NewInMemoryStorage("data/storage.json")
-func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span class="cov5" title="6">{
+func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span class="cov6" title="6">{
         file, err := os.OpenFile(fileStoragePath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
 
-        <span class="cov5" title="6">return &amp;InMemoryStorage{
+        <span class="cov6" title="6">return &amp;InMemoryStorage{
                 userURLIndex: make(map[string]map[string]string),
                 shortCodeMap: make(map[string]models.UserURLMapping),
                 countRecords: 0,
@@ -2684,41 +2884,41 @@ func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span 
 // Возвращает:
 //
 //        error - ошибка чтения файла
-func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov5" title="6">{
+func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov6" title="6">{
         file, err := os.OpenFile(fileStoragePath, os.O_RDONLY|os.O_CREATE, 0666)
         if err != nil </span><span class="cov0" title="0">{
                 return err
         }</span>
-        <span class="cov5" title="6">defer file.Close()
+        <span class="cov6" title="6">defer file.Close()
 
         scanner := bufio.NewScanner(file)
         var countRecords uint64
 
-        for scanner.Scan() </span><span class="cov10" title="31">{
+        for scanner.Scan() </span><span class="cov10" title="19">{
                 line := scanner.Bytes()
                 if len(line) == 0 </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="31">var url models.UserURLMapping
+                <span class="cov10" title="19">var url models.UserURLMapping
                 if err := json.Unmarshal(line, &amp;url); err != nil </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="31">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
+                <span class="cov10" title="19">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="31">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov8" title="15">{
+                <span class="cov10" title="19">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov8" title="12">{
                         s.userURLIndex[url.UserID] = make(map[string]string)
                 }</span>
 
-                <span class="cov10" title="31">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
+                <span class="cov10" title="19">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
                 s.shortCodeMap[url.ShortURL] = url
                 countRecords++</span>
         }
 
-        <span class="cov5" title="6">s.countRecords = countRecords
+        <span class="cov6" title="6">s.countRecords = countRecords
         return scanner.Err()</span>
 }
 
@@ -2733,7 +2933,7 @@ func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov5" 
 //
 //        models.URLMapping - найденное соответствие
 //        error - ошибка поиска (storage.ErrURLNotFound если не найден)
-func (s *InMemoryStorage) GetShortKey(ctx context.Context, originalURL string) (models.URLMapping, error) <span class="cov2" title="2">{
+func (s *InMemoryStorage) GetShortKey(ctx context.Context, originalURL string) (models.URLMapping, error) <span class="cov3" title="2">{
         s.mu.RLock()
         defer s.mu.RUnlock()
 
@@ -2742,8 +2942,8 @@ func (s *InMemoryStorage) GetShortKey(ctx context.Context, originalURL string) (
                 return models.URLMapping{}, errors.New("userID is not set")
         }</span>
 
-        <span class="cov2" title="2">shortKey, found := s.userURLIndex[userID.(string)][originalURL]
-        if !found </span><span class="cov2" title="2">{
+        <span class="cov3" title="2">shortKey, found := s.userURLIndex[userID.(string)][originalURL]
+        if !found </span><span class="cov3" title="2">{
                 return models.URLMapping{}, storage.ErrURLNotFound
         }</span>
 
@@ -2771,15 +2971,15 @@ func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (
         defer s.mu.RUnlock()
 
         url, found := s.shortCodeMap[shortKey]
-        if !found </span><span class="cov2" title="2">{
+        if !found </span><span class="cov3" title="2">{
                 return models.URLMapping{}, storage.ErrURLNotFound
         }</span>
 
-        <span class="cov5" title="5">if url.DeletedFlag </span><span class="cov3" title="3">{
+        <span class="cov5" title="5">if url.DeletedFlag </span><span class="cov4" title="3">{
                 return models.URLMapping{}, storage.ErrURLDeleted
         }</span>
 
-        <span class="cov2" title="2">return models.URLMapping{
+        <span class="cov3" title="2">return models.URLMapping{
                 ShortURL:    url.ShortURL,
                 OriginalURL: url.OriginalURL,
         }, nil</span>
@@ -2797,7 +2997,7 @@ func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (
 //        error:
 //          - storage.ErrShortURLExists если shortURL уже существует
 //          - storage.ErrURLExists если originalURL уже существует
-func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping *models.URLMapping) error <span class="cov8" title="15">{
+func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping *models.URLMapping) error <span class="cov9" title="15">{
         s.mu.Lock()
         defer s.mu.Unlock()
 
@@ -2805,21 +3005,21 @@ func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping *models.URLMappin
                 return storage.ErrShortURLExists
         }</span>
 
-        <span class="cov8" title="15">userID := ctx.Value(jwtauth.UserIDContextKey)
+        <span class="cov9" title="15">userID := ctx.Value(jwtauth.UserIDContextKey)
         if userID == nil </span><span class="cov0" title="0">{
                 return errors.New("userID is not set")
         }</span>
 
-        <span class="cov8" title="15">if _, ok := s.userURLIndex[userID.(string)]; !ok </span><span class="cov6" title="8">{
+        <span class="cov9" title="15">if _, ok := s.userURLIndex[userID.(string)]; !ok </span><span class="cov7" title="8">{
                 s.userURLIndex[userID.(string)] = make(map[string]string)
         }</span>
 
-        <span class="cov8" title="15">if shortURL, exists := s.userURLIndex[userID.(string)][mapping.OriginalURL]; exists </span><span class="cov2" title="2">{
+        <span class="cov9" title="15">if shortURL, exists := s.userURLIndex[userID.(string)][mapping.OriginalURL]; exists </span><span class="cov3" title="2">{
                 mapping.ShortURL = shortURL
                 return storage.ErrURLExists
         }</span>
 
-        <span class="cov7" title="13">s.userURLIndex[userID.(string)][mapping.OriginalURL] = mapping.ShortURL
+        <span class="cov8" title="13">s.userURLIndex[userID.(string)][mapping.OriginalURL] = mapping.ShortURL
         s.countRecords++
 
         userURLMapping := models.UserURLMapping{
@@ -2857,12 +3057,12 @@ func (s *InMemoryStorage) GetExistingURLs(ctx context.Context, originalURLs []st
                 return existing, nil
         }</span>
 
-        <span class="cov1" title="1">for _, originalURL := range originalURLs </span><span class="cov2" title="2">{
+        <span class="cov1" title="1">for _, originalURL := range originalURLs </span><span class="cov3" title="2">{
                 mapping, err := s.GetShortKey(ctx, originalURL)
                 if err != nil &amp;&amp; !errors.Is(err, storage.ErrURLNotFound) </span><span class="cov0" title="0">{
                         return nil, err
                 }</span>
-                <span class="cov2" title="2">if err == nil </span><span class="cov0" title="0">{
+                <span class="cov3" title="2">if err == nil </span><span class="cov0" title="0">{
                         existing[mapping.OriginalURL] = mapping.ShortURL
                 }</span>
         }
@@ -2881,7 +3081,7 @@ func (s *InMemoryStorage) GetExistingURLs(ctx context.Context, originalURLs []st
 //
 //        error - первая ошибка при сохранении
 func (s *InMemoryStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapping) error <span class="cov1" title="1">{
-        for _, url := range urls </span><span class="cov2" title="2">{
+        for _, url := range urls </span><span class="cov3" title="2">{
                 if err := s.SaveURL(ctx, &amp;url); err != nil &amp;&amp; !errors.Is(err, storage.ErrURLExists) </span><span class="cov0" title="0">{
                         return err
                 }</span>
@@ -2900,7 +3100,7 @@ func (s *InMemoryStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapp
 //
 //        []models.URLMapping - список URL пользователя
 //        error - ошибка операции
-func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error) <span class="cov2" title="2">{
+func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error) <span class="cov3" title="2">{
         s.mu.RLock()
         defer s.mu.RUnlock()
 
@@ -2909,13 +3109,13 @@ func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]mo
                 return nil, errors.New("userID is not set")
         }</span>
 
-        <span class="cov2" title="2">userURLs, exists := s.userURLIndex[userID.(string)]
+        <span class="cov3" title="2">userURLs, exists := s.userURLIndex[userID.(string)]
         if !exists </span><span class="cov1" title="1">{
                 return nil, nil
         }</span>
 
         <span class="cov1" title="1">var result []models.URLMapping
-        for originalURL, shortCode := range userURLs </span><span class="cov2" title="2">{
+        for originalURL, shortCode := range userURLs </span><span class="cov3" title="2">{
                 result = append(result, models.URLMapping{
                         OriginalURL: originalURL,
                         ShortURL:    baseURL + "/" + shortCode,
@@ -2934,12 +3134,12 @@ func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]mo
 // Возвращает:
 //
 //        error - ошибка операции
-func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error <span class="cov4" title="4">{
+func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error <span class="cov5" title="4">{
         s.mu.Lock()
         defer s.mu.Unlock()
 
         for _, code := range urls </span><span class="cov5" title="5">{
-                if mapping, exists := s.shortCodeMap[code]; exists &amp;&amp; mapping.UserID == userID </span><span class="cov3" title="3">{
+                if mapping, exists := s.shortCodeMap[code]; exists &amp;&amp; mapping.UserID == userID </span><span class="cov4" title="3">{
                         mapping.DeletedFlag = true
                         s.shortCodeMap[code] = mapping
                         if err := s.encoder.Encode(mapping); err != nil </span><span class="cov0" title="0">{
@@ -2947,7 +3147,7 @@ func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error
                         }</span>
                 }
         }
-        <span class="cov4" title="4">return nil</span>
+        <span class="cov5" title="4">return nil</span>
 }
 
 // FilePath возвращает путь к файлу, используемому хранилищем.
@@ -2962,8 +3162,8 @@ func (s *InMemoryStorage) FilePath() string <span class="cov1" title="1">{
 }
 
 // Close освобождает ресурсы
-func (s *InMemoryStorage) Close() error <span class="cov5" title="6">{
-        if s.file != nil </span><span class="cov5" title="6">{
+func (s *InMemoryStorage) Close() error <span class="cov6" title="6">{
+        if s.file != nil </span><span class="cov6" title="6">{
                 return s.file.Close()
         }</span>
         <span class="cov0" title="0">return nil</span>
@@ -3347,6 +3547,11 @@ func (s *PostgresStorage) BatchMarkAsDeleted(userID string, urls []string) error
 
         <span class="cov5" title="4">return nil</span>
 }
+
+// Close освобождает ресурсы
+func (s *PostgresStorage) Close() error <span class="cov0" title="0">{
+        return s.db.Close()
+}</span>
 </pre>
 		
 		<pre class="file" id="file25" style="display: none">// Package deleteurls предоставляет асинхронный обработчик для пакетного удаления URL в сервисе сокращения ссылок.
@@ -3441,7 +3646,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="9">{
         ticker := time.NewTicker(w.batchWindow)
         defer ticker.Stop()
 
-        for </span><span class="cov10" title="26">{
+        for </span><span class="cov10" title="27">{
                 select </span>{
                 case &lt;-w.stopChan:<span class="cov0" title="0">
                         if len(batch) &gt; 0 </span><span class="cov0" title="0">{
@@ -3471,7 +3676,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="9">{
                                 ticker.Reset(w.batchWindow)
                         }</span>
 
-                case &lt;-ticker.C:<span class="cov7" title="9">
+                case &lt;-ticker.C:<span class="cov7" title="10">
                         if len(batch) &gt; 0 </span><span class="cov6" title="8">{
                                 w.batchChan &lt;- batch
                                 batch = make(map[string][]string)
