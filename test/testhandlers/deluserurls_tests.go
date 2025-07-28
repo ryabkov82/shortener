@@ -5,14 +5,15 @@ import (
 	"compress/gzip"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/grpc/status"
 
-	"github.com/ryabkov82/shortener/internal/app/models"
-
+	pb "github.com/ryabkov82/shortener/api"
 	"github.com/ryabkov82/shortener/internal/app/jwtauth"
 	"github.com/ryabkov82/shortener/internal/app/service"
 	"github.com/ryabkov82/shortener/test/testutils"
@@ -51,70 +52,11 @@ import (
 //   - Поддерживает сжатие gzip в запросах
 func TestDelUserUrls(t *testing.T, serv *service.Service, client *resty.Client) {
 
-	// Тестовые данные
-	cookie1, user1 := testutils.CreateSignedCookie()
-	cookie2, user2 := testutils.CreateSignedCookie()
-	testURLs := []models.UserURLMapping{
-		{UserID: user1, OriginalURL: "https://example.com/1"},
-		{UserID: user1, OriginalURL: "https://example.com/2"},
-		{UserID: user1, OriginalURL: "https://example.com/3"},
-		{UserID: user1, OriginalURL: "https://example.com/4"},
-		{UserID: user2, OriginalURL: "https://example.com/5"},
-	}
+	user1URLs, _ := prepareTestURLs(serv)
 
-	// Заполняем хранилище
-	for i, url := range testURLs {
-		ctx := context.WithValue(context.Background(), jwtauth.UserIDContextKey, url.UserID)
-		shortURL, err := serv.GetShortKey(ctx, url.OriginalURL)
-		if err != nil {
-			panic(err)
-		}
-		testURLs[i].ShortURL = shortURL
-	}
-
-	tests := []struct {
-		cookie         *http.Cookie
-		name           string
-		userID         string
-		codesToDelete  []string
-		shouldBeMarked []string
-		wantStatus     int
-	}{
-		{
-			name:           "successful deletion",
-			userID:         user1,
-			cookie:         cookie1,
-			codesToDelete:  []string{testURLs[0].ShortURL},
-			wantStatus:     http.StatusAccepted,
-			shouldBeMarked: []string{testURLs[0].ShortURL},
-		},
-		{
-			name:           "delete multiple",
-			userID:         user1,
-			cookie:         cookie1,
-			codesToDelete:  []string{testURLs[1].ShortURL, testURLs[2].ShortURL},
-			wantStatus:     http.StatusAccepted,
-			shouldBeMarked: []string{testURLs[1].ShortURL, testURLs[2].ShortURL},
-		},
-		{
-			name:           "delete non-existent",
-			userID:         user1,
-			cookie:         cookie1,
-			codesToDelete:  []string{"nonexistent"},
-			wantStatus:     http.StatusAccepted,
-			shouldBeMarked: []string{},
-		},
-		{
-			name:           "delete other user's url",
-			userID:         user2,
-			cookie:         cookie2,
-			codesToDelete:  []string{testURLs[3].ShortURL},
-			wantStatus:     http.StatusAccepted,
-			shouldBeMarked: []string{}, // Не должно пометить как удаленный
-		},
-	}
+	tests := CommonDelUserURLsCases(user1URLs)
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+		t.Run("HTTP"+tt.name, func(t *testing.T) {
 
 			// Подготовка запроса
 			body, _ := json.Marshal(tt.codesToDelete)
@@ -135,7 +77,7 @@ func TestDelUserUrls(t *testing.T, serv *service.Service, client *resty.Client) 
 
 			// Проверки
 			assert.NoError(t, err)
-			assert.Equal(t, tt.wantStatus, resp.StatusCode())
+			assert.Equal(t, tt.wantStatus, testutils.HTTPStatusToStatusCode(resp.StatusCode()))
 
 			time.Sleep(500 * time.Millisecond)
 			// Проверка что URL помечены как удаленные
@@ -156,5 +98,91 @@ func TestDelUserUrls(t *testing.T, serv *service.Service, client *resty.Client) 
 			}
 		})
 	}
+}
+
+func TestDelUserUrlsGRPC(t *testing.T, serv *service.Service, grpcClient pb.ShortenerClient) {
+
+	user1URLs, _ := prepareTestURLs(serv)
+
+	tests := CommonDelUserURLsCases(user1URLs)
+	for _, tt := range tests {
+		t.Run("gRPC"+tt.name, func(t *testing.T) {
+
+			token := tt.cookie.Value
+			ctx := testutils.ContextWithJWT(context.Background(), token)
+
+			_, err := grpcClient.DeleteUserURLs(ctx, &pb.DeleteRequest{ShortUrls: tt.codesToDelete})
+			assert.NoError(t, err)
+
+			time.Sleep(500 * time.Millisecond)
+			// Проверка что URL помечены как удаленные
+			for _, code := range tt.codesToDelete {
+
+				_, err := grpcClient.GetOriginalURL(ctx, &pb.GetRequest{ShortUrl: code})
+
+				var redirectStatus testutils.StatusCode
+				if err != nil {
+					if s, ok := status.FromError(err); ok {
+						redirectStatus = testutils.GRPCCodeToStatusCode(s.Code())
+					} else {
+						redirectStatus = testutils.StatusInternalError
+					}
+				} else {
+					redirectStatus = testutils.StatusTemporaryRedirect
+				}
+
+				// Проверки
+				if redirectStatus == testutils.StatusNotFound {
+					if len(tt.shouldBeMarked) > 0 {
+						assert.Contains(t, tt.shouldBeMarked, code)
+					}
+				} else {
+					assert.NotContains(t, tt.shouldBeMarked, code)
+				}
+			}
+
+		})
+	}
+}
+
+func prepareTestURLs(serv *service.Service) (map[string]string, map[string]string) {
+
+	user1 := "user1"
+	user2 := "user2"
+
+	// Исходные данные
+	user1Data := map[string]string{
+		"url1": "https://example.com/1",
+		"url2": "https://example.com/2",
+		"url3": "https://example.com/3",
+		"url4": "https://example.com/4",
+	}
+	user2Data := map[string]string{
+		"url5": "https://example.com/5",
+	}
+
+	user1Shorts := map[string]string{}
+	user2Shorts := map[string]string{}
+
+	// Заполняем хранилище
+	for key, original := range user1Data {
+		ctx := context.WithValue(context.Background(), jwtauth.UserIDContextKey, user1)
+		shortKey, err := serv.GetShortKey(ctx, original)
+		if err != nil {
+			panic(fmt.Sprintf("failed to shorten URL %s: %v", original, err))
+		}
+		user1Shorts[key] = shortKey
+	}
+
+	for key, original := range user2Data {
+		ctx := context.WithValue(context.Background(), jwtauth.UserIDContextKey, user2)
+		shortKey, err := serv.GetShortKey(ctx, original)
+		if err != nil {
+			panic(fmt.Sprintf("failed to shorten URL %s: %v", original, err))
+		}
+		user2Shorts[key] = shortKey
+	}
+
+	return user1Shorts, user2Shorts
 
 }

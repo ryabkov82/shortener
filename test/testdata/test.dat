@@ -1,14 +1,3 @@
-{"short_url":"IDCaQvcp","original_url":"https://example.com/1","user_id":"4b6c9d3a-7a64-44d1-a5e9-ed84d83afa44","uuid":1,"is_deleted":false}
-{"short_url":"qrW3VJAQ","original_url":"https://example.com/2","user_id":"4b6c9d3a-7a64-44d1-a5e9-ed84d83afa44","uuid":2,"is_deleted":false}
-{"short_url":"rB8AfGJA","original_url":"https://example.com/3","user_id":"4b6c9d3a-7a64-44d1-a5e9-ed84d83afa44","uuid":3,"is_deleted":false}
-{"short_url":"Z3YAa6zC","original_url":"https://example.com/4","user_id":"4b6c9d3a-7a64-44d1-a5e9-ed84d83afa44","uuid":4,"is_deleted":false}
-{"short_url":"F6FA2vPG","original_url":"https://example.com/5","user_id":"7e97b9cc-ca24-42ac-ab6f-9177065204e1","uuid":5,"is_deleted":false}
-{"short_url":"IDCaQvcp","original_url":"https://example.com/1","user_id":"4b6c9d3a-7a64-44d1-a5e9-ed84d83afa44","uuid":1,"is_deleted":true}
-{"short_url":"EYm7J2zF","original_url":"https://practicum.yandex.ru/","user_id":"5d972329-f61f-4821-a410-7fef9142d33a","uuid":7,"is_deleted":false}
-{"short_url":"qgcbcSPk","original_url":"https://practicum.yandex.ru/","user_id":"f703a455-2503-4062-9bf2-dbe57d63ea5f","uuid":7,"is_deleted":false}
-{"short_url":"7fJFMpi3","original_url":"https://example.com/1","user_id":"eecc2c71-c6a1-453d-9c75-06fc40b62734","uuid":9,"is_deleted":false}
-{"short_url":"Dc65fAdq","original_url":"https://example.com/2","user_id":"eecc2c71-c6a1-453d-9c75-06fc40b62734","uuid":10,"is_deleted":false}
-{"short_url":"xoUmT0zr","original_url":"https://example.com/3","user_id":"4195d6e3-a848-4dfe-9573-0a71139b4d98","uuid":11,"is_deleted":false}
-{"short_url":"2eMRheb8","original_url":"https://practicum.yandex.ru/","user_id":"7a405772-17bb-44c7-b697-08f5ed5a3e35","uuid":9,"is_deleted":false}
-{"short_url":"qrW3VJAQ","original_url":"https://example.com/2","user_id":"4b6c9d3a-7a64-44d1-a5e9-ed84d83afa44","uuid":2,"is_deleted":true}
-{"short_url":"rB8AfGJA","original_url":"https://example.com/3","user_id":"4b6c9d3a-7a64-44d1-a5e9-ed84d83afa44","uuid":3,"is_deleted":true}
+{"short_url":"bHJKpndv","original_url":"https://example.com/1","user_id":"4906b555-68e8-4649-86bc-220e697561eb","uuid":1,"is_deleted":false}
+{"short_url":"wcExi0Po","original_url":"https://example.com/2","user_id":"4906b555-68e8-4649-86bc-220e697561eb","uuid":2,"is_deleted":false}
+{"short_url":"yMeGLoo2","original_url":"https://example.com/3","user_id":"b8d7a31d-4a0b-4625-b3eb-ae5c999b13ef","uuid":3,"is_deleted":false}

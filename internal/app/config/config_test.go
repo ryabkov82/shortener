@@ -213,4 +213,36 @@ func TestConfig(t *testing.T) {
 			t.Errorf("Expected 'envhost:8080' (env has highest priority), got '%s'", cfg.HTTPServerAddr)
 		}
 	})
+
+	// --- Тест 12: Валидация gRPC server address ---
+	t.Run("gRPC server address validation", func(t *testing.T) {
+
+		cases := []struct {
+			name    string
+			addr    string
+			isValid bool
+		}{
+			{"Valid 1", ":50051", true},
+			{"Valid 2", "localhost:50051", true},
+			{"Valid 3", "127.0.0.1:50051", true},
+			{"Valid 4", "[::1]:50051", true},
+			{"No addr", "", false},
+			{"Invalid port", ":99999", false},
+			{"Missing port", "localhost", false},
+		}
+
+		for _, tt := range cases {
+			t.Run(tt.name, func(t *testing.T) {
+				err := validateGRPCServerAddr(tt.addr)
+				if tt.isValid && err != nil {
+					t.Errorf("%q should be valid: %v", tt.addr, err)
+				}
+				if !tt.isValid && err == nil {
+					t.Errorf("%q should be invalid", tt.addr)
+				}
+			})
+
+		}
+	})
+
 }

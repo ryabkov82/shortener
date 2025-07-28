@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"testing"
 
+	pb "github.com/ryabkov82/shortener/api"
 	"github.com/ryabkov82/shortener/internal/app/models"
 
 	"github.com/ryabkov82/shortener/internal/app/jwtauth"
@@ -48,21 +49,14 @@ func TestUserUrls(t *testing.T, serv *service.Service, client *resty.Client) {
 	// Тестовые данные
 	cookie1, user1 := testutils.CreateSignedCookie()
 	_, user2 := testutils.CreateSignedCookie()
+
 	testURLs := []models.UserURLMapping{
 		{UserID: user1, OriginalURL: "https://example.com/1"},
 		{UserID: user1, OriginalURL: "https://example.com/2"},
 		{UserID: user2, OriginalURL: "https://example.com/3"},
 	}
 
-	// Заполняем хранилище
-	for _, url := range testURLs {
-		ctx := context.WithValue(context.Background(), jwtauth.UserIDContextKey, url.UserID)
-		_, err := serv.GetShortKey(ctx, url.OriginalURL)
-		if err != nil {
-			panic(err)
-		}
-		// url.ShortURL = shortURL
-	}
+	prepareTestUserURLs(serv, testURLs)
 
 	t.Run("Успешное получение ссылок пользователя", func(t *testing.T) {
 
@@ -103,5 +97,81 @@ func TestUserUrls(t *testing.T, serv *service.Service, client *resty.Client) {
 		// Проверяем что установлена новая кука
 		assert.NotEmpty(t, resp.Cookies())
 	})
+
+}
+
+func TestUserUrlsGRPC(t *testing.T, serv *service.Service, grpcClient pb.ShortenerClient) {
+
+	// Тестовые данные
+	cookie1, user1 := testutils.CreateSignedCookie()
+	_, user2 := testutils.CreateSignedCookie()
+
+	testURLs := []models.UserURLMapping{
+		{UserID: user1, OriginalURL: "https://example.com/1"},
+		{UserID: user1, OriginalURL: "https://example.com/2"},
+		{UserID: user2, OriginalURL: "https://example.com/3"},
+	}
+
+	prepareTestUserURLs(serv, testURLs)
+
+	t.Run("Успешное получение ссылок пользователя", func(t *testing.T) {
+
+		// Запрос
+		token := cookie1.Value
+		ctx := testutils.ContextWithJWT(context.Background(), token)
+
+		resp, err := grpcClient.GetUserURLs(ctx, &pb.UserURLsRequest{})
+
+		// Проверки
+		assert.NoError(t, err)
+
+		statusGetUserURLs := testutils.StatusOK
+		if len(resp.Urls) == 0 {
+			statusGetUserURLs = testutils.StatusNoContent
+		}
+
+		var urls []models.URLMapping
+		if statusGetUserURLs == testutils.StatusOK {
+			for _, u := range resp.Urls {
+				urls = append(urls, models.URLMapping{
+					ShortURL:    u.ShortUrl,
+					OriginalURL: u.OriginalUrl,
+				})
+			}
+		}
+
+		assert.Equal(t, testutils.StatusOK, statusGetUserURLs)
+
+		assert.Len(t, urls, 2) // user1 имеет 2 ссылки
+
+	})
+	t.Run("Пустой результат для нового пользователя", func(t *testing.T) {
+
+		cookie, _ := testutils.CreateSignedCookie()
+		ctx := testutils.ContextWithJWT(context.Background(), cookie.Value)
+
+		resp, err := grpcClient.GetUserURLs(ctx, &pb.UserURLsRequest{})
+
+		assert.NoError(t, err)
+		statusGetUserURLs := testutils.StatusOK
+		if len(resp.Urls) == 0 {
+			statusGetUserURLs = testutils.StatusNoContent
+		}
+
+		assert.Equal(t, testutils.StatusNoContent, statusGetUserURLs)
+
+	})
+}
+
+func prepareTestUserURLs(serv *service.Service, testURLs []models.UserURLMapping) {
+
+	for _, url := range testURLs {
+		ctx := context.WithValue(context.Background(), jwtauth.UserIDContextKey, url.UserID)
+		_, err := serv.GetShortKey(ctx, url.OriginalURL)
+		if err != nil {
+			panic(err)
+		}
+		// url.ShortURL = shortURL
+	}
 
 }

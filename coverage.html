@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>client: Go Coverage Report</title>
+		<title>api: Go Coverage Report</title>
 		<style>
 			body {
 				background: black;
@@ -55,83 +55,117 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/ryabkov82/shortener/cmd/client/main.go (0.0%)</option>
+				<option value="file0">github.com/ryabkov82/shortener/api/shortener.pb.go (9.8%)</option>
 				
-				<option value="file1">github.com/ryabkov82/shortener/cmd/shortener/main.go (0.0%)</option>
+				<option value="file1">github.com/ryabkov82/shortener/api/shortener_grpc.pb.go (14.7%)</option>
 				
-				<option value="file2">github.com/ryabkov82/shortener/cmd/staticlint/main.go (93.1%)</option>
+				<option value="file2">github.com/ryabkov82/shortener/cmd/client/main.go (0.0%)</option>
 				
-				<option value="file3">github.com/ryabkov82/shortener/cmd/staticlint/noosexit/analyzer.go (83.3%)</option>
+				<option value="file3">github.com/ryabkov82/shortener/cmd/genserver/genserver.go (0.0%)</option>
 				
-				<option value="file4">github.com/ryabkov82/shortener/internal/app/config/config.go (77.7%)</option>
+				<option value="file4">github.com/ryabkov82/shortener/cmd/shortener/main.go (0.0%)</option>
 				
-				<option value="file5">github.com/ryabkov82/shortener/internal/app/handlers/batch/batch.go (71.4%)</option>
+				<option value="file5">github.com/ryabkov82/shortener/cmd/staticlint/main.go (93.1%)</option>
 				
-				<option value="file6">github.com/ryabkov82/shortener/internal/app/handlers/deluserurls/deluserurls.go (54.5%)</option>
+				<option value="file6">github.com/ryabkov82/shortener/cmd/staticlint/noosexit/analyzer.go (83.3%)</option>
 				
-				<option value="file7">github.com/ryabkov82/shortener/internal/app/handlers/ping/ping.go (100.0%)</option>
+				<option value="file7">github.com/ryabkov82/shortener/internal/app/config/config.go (75.3%)</option>
 				
-				<option value="file8">github.com/ryabkov82/shortener/internal/app/handlers/redirect/redirect.go (61.1%)</option>
+				<option value="file8">github.com/ryabkov82/shortener/internal/app/handlers/grpc/base/handler.go (0.0%)</option>
 				
-				<option value="file9">github.com/ryabkov82/shortener/internal/app/handlers/shortenapi/shortenapi.go (66.7%)</option>
+				<option value="file9">github.com/ryabkov82/shortener/internal/app/handlers/grpc/redirect/redirect.go (0.0%)</option>
 				
-				<option value="file10">github.com/ryabkov82/shortener/internal/app/handlers/shorturl/shorturl.go (67.7%)</option>
+				<option value="file10">github.com/ryabkov82/shortener/internal/app/handlers/grpc/server_gen.go (20.5%)</option>
 				
-				<option value="file11">github.com/ryabkov82/shortener/internal/app/handlers/stats/stats.go (91.7%)</option>
+				<option value="file11">github.com/ryabkov82/shortener/internal/app/handlers/grpc/shorturl/shorturl.go (77.8%)</option>
 				
-				<option value="file12">github.com/ryabkov82/shortener/internal/app/handlers/userurls/userurls.go (76.5%)</option>
+				<option value="file12">github.com/ryabkov82/shortener/internal/app/handlers/http/batch/batch.go (71.4%)</option>
 				
-				<option value="file13">github.com/ryabkov82/shortener/internal/app/httpgzip/httpgzip.go (92.6%)</option>
+				<option value="file13">github.com/ryabkov82/shortener/internal/app/handlers/http/deluserurls/deluserurls.go (54.5%)</option>
 				
-				<option value="file14">github.com/ryabkov82/shortener/internal/app/jwtauth/jwtauth.go (100.0%)</option>
+				<option value="file14">github.com/ryabkov82/shortener/internal/app/handlers/http/ping/ping.go (100.0%)</option>
 				
-				<option value="file15">github.com/ryabkov82/shortener/internal/app/logger/logger.go (80.0%)</option>
+				<option value="file15">github.com/ryabkov82/shortener/internal/app/handlers/http/redirect/redirect.go (61.1%)</option>
 				
-				<option value="file16">github.com/ryabkov82/shortener/internal/app/pprof/routes.go (77.4%)</option>
+				<option value="file16">github.com/ryabkov82/shortener/internal/app/handlers/http/shortenapi/shortenapi.go (66.7%)</option>
 				
-				<option value="file17">github.com/ryabkov82/shortener/internal/app/server/middleware/auth/auth.go (77.4%)</option>
+				<option value="file17">github.com/ryabkov82/shortener/internal/app/handlers/http/shorturl/shorturl.go (67.7%)</option>
 				
-				<option value="file18">github.com/ryabkov82/shortener/internal/app/server/middleware/logger/logger.go (100.0%)</option>
+				<option value="file18">github.com/ryabkov82/shortener/internal/app/handlers/http/stats/stats.go (91.7%)</option>
 				
-				<option value="file19">github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip/mwgzip.go (89.5%)</option>
+				<option value="file19">github.com/ryabkov82/shortener/internal/app/handlers/http/userurls/userurls.go (76.5%)</option>
 				
-				<option value="file20">github.com/ryabkov82/shortener/internal/app/server/middleware/trustednet/trustednet.go (77.8%)</option>
+				<option value="file20">github.com/ryabkov82/shortener/internal/app/httpgzip/httpgzip.go (92.6%)</option>
 				
-				<option value="file21">github.com/ryabkov82/shortener/internal/app/server/server.go (0.0%)</option>
+				<option value="file21">github.com/ryabkov82/shortener/internal/app/jwtauth/jwtauth.go (100.0%)</option>
 				
-				<option value="file22">github.com/ryabkov82/shortener/internal/app/service/mocks/Repository.go (48.7%)</option>
+				<option value="file22">github.com/ryabkov82/shortener/internal/app/logger/logger.go (80.0%)</option>
 				
-				<option value="file23">github.com/ryabkov82/shortener/internal/app/service/service.go (87.2%)</option>
+				<option value="file23">github.com/ryabkov82/shortener/internal/app/pprof/routes.go (77.4%)</option>
 				
-				<option value="file24">github.com/ryabkov82/shortener/internal/app/storage/inmemory/inmemory.go (78.2%)</option>
+				<option value="file24">github.com/ryabkov82/shortener/internal/app/server/grpc/interceptors/jwt_auth.go (24.6%)</option>
 				
-				<option value="file25">github.com/ryabkov82/shortener/internal/app/storage/postgres/migrate.go (66.7%)</option>
+				<option value="file25">github.com/ryabkov82/shortener/internal/app/server/grpc/interceptors/logger.go (100.0%)</option>
 				
-				<option value="file26">github.com/ryabkov82/shortener/internal/app/storage/postgres/postgres.go (64.6%)</option>
+				<option value="file26">github.com/ryabkov82/shortener/internal/app/server/grpc/interceptors/trusted_subnet.go (0.0%)</option>
 				
-				<option value="file27">github.com/ryabkov82/shortener/internal/app/workers/deleteurls/deleteworker.go (63.1%)</option>
+				<option value="file27">github.com/ryabkov82/shortener/internal/app/server/grpc/server.go (0.0%)</option>
 				
-				<option value="file28">github.com/ryabkov82/shortener/test/testconfig/postgres.go (75.0%)</option>
+				<option value="file28">github.com/ryabkov82/shortener/internal/app/server/http/middleware/auth/auth.go (77.4%)</option>
 				
-				<option value="file29">github.com/ryabkov82/shortener/test/testhandlers/batch_tests.go (100.0%)</option>
+				<option value="file29">github.com/ryabkov82/shortener/internal/app/server/http/middleware/logger/logger.go (100.0%)</option>
 				
-				<option value="file30">github.com/ryabkov82/shortener/test/testhandlers/deluserurls_tests.go (96.6%)</option>
+				<option value="file30">github.com/ryabkov82/shortener/internal/app/server/http/middleware/mwgzip/mwgzip.go (89.5%)</option>
 				
-				<option value="file31">github.com/ryabkov82/shortener/test/testhandlers/redirect_tests.go (100.0%)</option>
+				<option value="file31">github.com/ryabkov82/shortener/internal/app/server/http/middleware/trustednet/trustednet.go (77.8%)</option>
 				
-				<option value="file32">github.com/ryabkov82/shortener/test/testhandlers/shortenapi_tests.go (100.0%)</option>
+				<option value="file32">github.com/ryabkov82/shortener/internal/app/server/http/server.go (0.0%)</option>
 				
-				<option value="file33">github.com/ryabkov82/shortener/test/testhandlers/shorturl_tests.go (100.0%)</option>
+				<option value="file33">github.com/ryabkov82/shortener/internal/app/server/run.go (0.0%)</option>
 				
-				<option value="file34">github.com/ryabkov82/shortener/test/testhandlers/userurls_tests.go (96.2%)</option>
+				<option value="file34">github.com/ryabkov82/shortener/internal/app/service/mocks/Repository.go (48.7%)</option>
 				
-				<option value="file35">github.com/ryabkov82/shortener/test/testutils/auth.go (75.0%)</option>
+				<option value="file35">github.com/ryabkov82/shortener/internal/app/service/service.go (87.2%)</option>
 				
-				<option value="file36">github.com/ryabkov82/shortener/test/testutils/client.go (100.0%)</option>
+				<option value="file36">github.com/ryabkov82/shortener/internal/app/storage/inmemory/inmemory.go (70.4%)</option>
 				
-				<option value="file37">github.com/ryabkov82/shortener/test/testutils/inmemory.go (80.0%)</option>
+				<option value="file37">github.com/ryabkov82/shortener/internal/app/storage/postgres/migrate.go (66.7%)</option>
 				
-				<option value="file38">github.com/ryabkov82/shortener/test/testutils/paths.go (75.0%)</option>
+				<option value="file38">github.com/ryabkov82/shortener/internal/app/storage/postgres/postgres.go (64.6%)</option>
+				
+				<option value="file39">github.com/ryabkov82/shortener/internal/app/workers/deleteurls/deleteworker.go (63.1%)</option>
+				
+				<option value="file40">github.com/ryabkov82/shortener/test/testconfig/postgres.go (75.0%)</option>
+				
+				<option value="file41">github.com/ryabkov82/shortener/test/testhandlers/batch_tests.go (100.0%)</option>
+				
+				<option value="file42">github.com/ryabkov82/shortener/test/testhandlers/client_adapters.go (80.0%)</option>
+				
+				<option value="file43">github.com/ryabkov82/shortener/test/testhandlers/common_cases.go (100.0%)</option>
+				
+				<option value="file44">github.com/ryabkov82/shortener/test/testhandlers/deluserurls_tests.go (96.6%)</option>
+				
+				<option value="file45">github.com/ryabkov82/shortener/test/testhandlers/redirect_tests.go (100.0%)</option>
+				
+				<option value="file46">github.com/ryabkov82/shortener/test/testhandlers/shortenapi_tests.go (100.0%)</option>
+				
+				<option value="file47">github.com/ryabkov82/shortener/test/testhandlers/shorturl_grpc_tests.go (100.0%)</option>
+				
+				<option value="file48">github.com/ryabkov82/shortener/test/testhandlers/shorturl_http_tests.go (100.0%)</option>
+				
+				<option value="file49">github.com/ryabkov82/shortener/test/testhandlers/userurls_tests.go (96.2%)</option>
+				
+				<option value="file50">github.com/ryabkov82/shortener/test/testutils/auth.go (18.5%)</option>
+				
+				<option value="file51">github.com/ryabkov82/shortener/test/testutils/client.go (100.0%)</option>
+				
+				<option value="file52">github.com/ryabkov82/shortener/test/testutils/grpc_client.go (88.6%)</option>
+				
+				<option value="file53">github.com/ryabkov82/shortener/test/testutils/inmemory.go (80.0%)</option>
+				
+				<option value="file54">github.com/ryabkov82/shortener/test/testutils/paths.go (75.0%)</option>
+				
+				<option value="file55">github.com/ryabkov82/shortener/test/testutils/status.go (30.4%)</option>
 				
 				</select>
 			</div>
@@ -154,7 +188,1270 @@
 		</div>
 		<div id="content">
 		
-		<pre class="file" id="file0" style="display: none">package main
+		<pre class="file" id="file0" style="display: none">// Code generated by protoc-gen-go. DO NOT EDIT.
+// versions:
+//         protoc-gen-go v1.36.6
+//         protoc        v6.31.1
+// source: api/shortener.proto
+
+package api
+
+import (
+        protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+        protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+        reflect "reflect"
+        sync "sync"
+        unsafe "unsafe"
+)
+
+const (
+        // Verify that this generated code is sufficiently up-to-date.
+        _ = protoimpl.EnforceVersion(20 - protoimpl.MinVersion)
+        // Verify that runtime/protoimpl is sufficiently up-to-date.
+        _ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
+)
+
+type CreateRequest struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        OriginalUrl   string                 `protobuf:"bytes,1,opt,name=original_url,json=originalUrl,proto3" json:"original_url,omitempty"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateRequest) Reset() <span class="cov4" title="3">{
+        *x = CreateRequest{}
+        mi := &amp;file_api_shortener_proto_msgTypes[0]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *CreateRequest) String() string <span class="cov4" title="3">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*CreateRequest) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *CreateRequest) ProtoReflect() protoreflect.Message <span class="cov10" title="15">{
+        mi := &amp;file_api_shortener_proto_msgTypes[0]
+        if x != nil </span><span class="cov10" title="15">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov6" title="6">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov10" title="15">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use CreateRequest.ProtoReflect.Descriptor instead.
+func (*CreateRequest) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{0}
+}</span>
+
+func (x *CreateRequest) GetOriginalUrl() string <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.OriginalUrl
+        }</span>
+        <span class="cov0" title="0">return ""</span>
+}
+
+type CreateResponse struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        ShortUrl      string                 `protobuf:"bytes,1,opt,name=short_url,json=shortUrl,proto3" json:"short_url,omitempty"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateResponse) Reset() <span class="cov1" title="1">{
+        *x = CreateResponse{}
+        mi := &amp;file_api_shortener_proto_msgTypes[1]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *CreateResponse) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*CreateResponse) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *CreateResponse) ProtoReflect() protoreflect.Message <span class="cov4" title="3">{
+        mi := &amp;file_api_shortener_proto_msgTypes[1]
+        if x != nil </span><span class="cov4" title="3">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov3" title="2">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov4" title="3">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use CreateResponse.ProtoReflect.Descriptor instead.
+func (*CreateResponse) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{1}
+}</span>
+
+func (x *CreateResponse) GetShortUrl() string <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.ShortUrl
+        }</span>
+        <span class="cov0" title="0">return ""</span>
+}
+
+type GetRequest struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        ShortUrl      string                 `protobuf:"bytes,1,opt,name=short_url,json=shortUrl,proto3" json:"short_url,omitempty"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetRequest) Reset() <span class="cov0" title="0">{
+        *x = GetRequest{}
+        mi := &amp;file_api_shortener_proto_msgTypes[2]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *GetRequest) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*GetRequest) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *GetRequest) ProtoReflect() protoreflect.Message <span class="cov0" title="0">{
+        mi := &amp;file_api_shortener_proto_msgTypes[2]
+        if x != nil </span><span class="cov0" title="0">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov0" title="0">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov0" title="0">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use GetRequest.ProtoReflect.Descriptor instead.
+func (*GetRequest) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{2}
+}</span>
+
+func (x *GetRequest) GetShortUrl() string <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.ShortUrl
+        }</span>
+        <span class="cov0" title="0">return ""</span>
+}
+
+type GetResponse struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        OriginalUrl   string                 `protobuf:"bytes,1,opt,name=original_url,json=originalUrl,proto3" json:"original_url,omitempty"`
+        Deleted       bool                   `protobuf:"varint,2,opt,name=deleted,proto3" json:"deleted,omitempty"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetResponse) Reset() <span class="cov0" title="0">{
+        *x = GetResponse{}
+        mi := &amp;file_api_shortener_proto_msgTypes[3]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *GetResponse) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*GetResponse) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *GetResponse) ProtoReflect() protoreflect.Message <span class="cov0" title="0">{
+        mi := &amp;file_api_shortener_proto_msgTypes[3]
+        if x != nil </span><span class="cov0" title="0">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov0" title="0">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov0" title="0">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use GetResponse.ProtoReflect.Descriptor instead.
+func (*GetResponse) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{3}
+}</span>
+
+func (x *GetResponse) GetOriginalUrl() string <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.OriginalUrl
+        }</span>
+        <span class="cov0" title="0">return ""</span>
+}
+
+func (x *GetResponse) GetDeleted() bool <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.Deleted
+        }</span>
+        <span class="cov0" title="0">return false</span>
+}
+
+type PingRequest struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *PingRequest) Reset() <span class="cov0" title="0">{
+        *x = PingRequest{}
+        mi := &amp;file_api_shortener_proto_msgTypes[4]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *PingRequest) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*PingRequest) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *PingRequest) ProtoReflect() protoreflect.Message <span class="cov0" title="0">{
+        mi := &amp;file_api_shortener_proto_msgTypes[4]
+        if x != nil </span><span class="cov0" title="0">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov0" title="0">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov0" title="0">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use PingRequest.ProtoReflect.Descriptor instead.
+func (*PingRequest) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{4}
+}</span>
+
+type PingResponse struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        Ok            bool                   `protobuf:"varint,1,opt,name=ok,proto3" json:"ok,omitempty"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *PingResponse) Reset() <span class="cov0" title="0">{
+        *x = PingResponse{}
+        mi := &amp;file_api_shortener_proto_msgTypes[5]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *PingResponse) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*PingResponse) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *PingResponse) ProtoReflect() protoreflect.Message <span class="cov0" title="0">{
+        mi := &amp;file_api_shortener_proto_msgTypes[5]
+        if x != nil </span><span class="cov0" title="0">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov0" title="0">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov0" title="0">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use PingResponse.ProtoReflect.Descriptor instead.
+func (*PingResponse) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{5}
+}</span>
+
+func (x *PingResponse) GetOk() bool <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.Ok
+        }</span>
+        <span class="cov0" title="0">return false</span>
+}
+
+type StatsRequest struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *StatsRequest) Reset() <span class="cov0" title="0">{
+        *x = StatsRequest{}
+        mi := &amp;file_api_shortener_proto_msgTypes[6]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *StatsRequest) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*StatsRequest) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *StatsRequest) ProtoReflect() protoreflect.Message <span class="cov0" title="0">{
+        mi := &amp;file_api_shortener_proto_msgTypes[6]
+        if x != nil </span><span class="cov0" title="0">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov0" title="0">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov0" title="0">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use StatsRequest.ProtoReflect.Descriptor instead.
+func (*StatsRequest) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{6}
+}</span>
+
+type StatsResponse struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        Urls          int64                  `protobuf:"varint,1,opt,name=urls,proto3" json:"urls,omitempty"`
+        Users         int64                  `protobuf:"varint,2,opt,name=users,proto3" json:"users,omitempty"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *StatsResponse) Reset() <span class="cov0" title="0">{
+        *x = StatsResponse{}
+        mi := &amp;file_api_shortener_proto_msgTypes[7]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *StatsResponse) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*StatsResponse) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *StatsResponse) ProtoReflect() protoreflect.Message <span class="cov0" title="0">{
+        mi := &amp;file_api_shortener_proto_msgTypes[7]
+        if x != nil </span><span class="cov0" title="0">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov0" title="0">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov0" title="0">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use StatsResponse.ProtoReflect.Descriptor instead.
+func (*StatsResponse) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{7}
+}</span>
+
+func (x *StatsResponse) GetUrls() int64 <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.Urls
+        }</span>
+        <span class="cov0" title="0">return 0</span>
+}
+
+func (x *StatsResponse) GetUsers() int64 <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.Users
+        }</span>
+        <span class="cov0" title="0">return 0</span>
+}
+
+type UserURLsRequest struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *UserURLsRequest) Reset() <span class="cov0" title="0">{
+        *x = UserURLsRequest{}
+        mi := &amp;file_api_shortener_proto_msgTypes[8]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *UserURLsRequest) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*UserURLsRequest) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *UserURLsRequest) ProtoReflect() protoreflect.Message <span class="cov0" title="0">{
+        mi := &amp;file_api_shortener_proto_msgTypes[8]
+        if x != nil </span><span class="cov0" title="0">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov0" title="0">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov0" title="0">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use UserURLsRequest.ProtoReflect.Descriptor instead.
+func (*UserURLsRequest) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{8}
+}</span>
+
+type UserURLsResponse struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        Urls          []*UserURL             `protobuf:"bytes,1,rep,name=urls,proto3" json:"urls,omitempty"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *UserURLsResponse) Reset() <span class="cov0" title="0">{
+        *x = UserURLsResponse{}
+        mi := &amp;file_api_shortener_proto_msgTypes[9]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *UserURLsResponse) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*UserURLsResponse) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *UserURLsResponse) ProtoReflect() protoreflect.Message <span class="cov0" title="0">{
+        mi := &amp;file_api_shortener_proto_msgTypes[9]
+        if x != nil </span><span class="cov0" title="0">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov0" title="0">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov0" title="0">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use UserURLsResponse.ProtoReflect.Descriptor instead.
+func (*UserURLsResponse) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{9}
+}</span>
+
+func (x *UserURLsResponse) GetUrls() []*UserURL <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.Urls
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+type UserURL struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        ShortUrl      string                 `protobuf:"bytes,1,opt,name=short_url,json=shortUrl,proto3" json:"short_url,omitempty"`
+        OriginalUrl   string                 `protobuf:"bytes,2,opt,name=original_url,json=originalUrl,proto3" json:"original_url,omitempty"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *UserURL) Reset() <span class="cov0" title="0">{
+        *x = UserURL{}
+        mi := &amp;file_api_shortener_proto_msgTypes[10]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *UserURL) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*UserURL) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *UserURL) ProtoReflect() protoreflect.Message <span class="cov0" title="0">{
+        mi := &amp;file_api_shortener_proto_msgTypes[10]
+        if x != nil </span><span class="cov0" title="0">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov0" title="0">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov0" title="0">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use UserURL.ProtoReflect.Descriptor instead.
+func (*UserURL) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{10}
+}</span>
+
+func (x *UserURL) GetShortUrl() string <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.ShortUrl
+        }</span>
+        <span class="cov0" title="0">return ""</span>
+}
+
+func (x *UserURL) GetOriginalUrl() string <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.OriginalUrl
+        }</span>
+        <span class="cov0" title="0">return ""</span>
+}
+
+type DeleteRequest struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        ShortUrls     []string               `protobuf:"bytes,1,rep,name=short_urls,json=shortUrls,proto3" json:"short_urls,omitempty"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteRequest) Reset() <span class="cov0" title="0">{
+        *x = DeleteRequest{}
+        mi := &amp;file_api_shortener_proto_msgTypes[11]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *DeleteRequest) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*DeleteRequest) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *DeleteRequest) ProtoReflect() protoreflect.Message <span class="cov0" title="0">{
+        mi := &amp;file_api_shortener_proto_msgTypes[11]
+        if x != nil </span><span class="cov0" title="0">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov0" title="0">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov0" title="0">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use DeleteRequest.ProtoReflect.Descriptor instead.
+func (*DeleteRequest) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{11}
+}</span>
+
+func (x *DeleteRequest) GetShortUrls() []string <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.ShortUrls
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+type DeleteResponse struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteResponse) Reset() <span class="cov0" title="0">{
+        *x = DeleteResponse{}
+        mi := &amp;file_api_shortener_proto_msgTypes[12]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *DeleteResponse) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*DeleteResponse) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *DeleteResponse) ProtoReflect() protoreflect.Message <span class="cov0" title="0">{
+        mi := &amp;file_api_shortener_proto_msgTypes[12]
+        if x != nil </span><span class="cov0" title="0">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov0" title="0">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov0" title="0">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use DeleteResponse.ProtoReflect.Descriptor instead.
+func (*DeleteResponse) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{12}
+}</span>
+
+type BatchCreateRequest struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        Items         []*BatchCreateItem     `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *BatchCreateRequest) Reset() <span class="cov0" title="0">{
+        *x = BatchCreateRequest{}
+        mi := &amp;file_api_shortener_proto_msgTypes[13]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *BatchCreateRequest) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*BatchCreateRequest) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *BatchCreateRequest) ProtoReflect() protoreflect.Message <span class="cov0" title="0">{
+        mi := &amp;file_api_shortener_proto_msgTypes[13]
+        if x != nil </span><span class="cov0" title="0">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov0" title="0">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov0" title="0">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use BatchCreateRequest.ProtoReflect.Descriptor instead.
+func (*BatchCreateRequest) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{13}
+}</span>
+
+func (x *BatchCreateRequest) GetItems() []*BatchCreateItem <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.Items
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+type BatchCreateItem struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        CorrelationId string                 `protobuf:"bytes,1,opt,name=correlation_id,json=correlationId,proto3" json:"correlation_id,omitempty"`
+        OriginalUrl   string                 `protobuf:"bytes,2,opt,name=original_url,json=originalUrl,proto3" json:"original_url,omitempty"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *BatchCreateItem) Reset() <span class="cov0" title="0">{
+        *x = BatchCreateItem{}
+        mi := &amp;file_api_shortener_proto_msgTypes[14]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *BatchCreateItem) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*BatchCreateItem) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *BatchCreateItem) ProtoReflect() protoreflect.Message <span class="cov0" title="0">{
+        mi := &amp;file_api_shortener_proto_msgTypes[14]
+        if x != nil </span><span class="cov0" title="0">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov0" title="0">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov0" title="0">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use BatchCreateItem.ProtoReflect.Descriptor instead.
+func (*BatchCreateItem) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{14}
+}</span>
+
+func (x *BatchCreateItem) GetCorrelationId() string <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.CorrelationId
+        }</span>
+        <span class="cov0" title="0">return ""</span>
+}
+
+func (x *BatchCreateItem) GetOriginalUrl() string <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.OriginalUrl
+        }</span>
+        <span class="cov0" title="0">return ""</span>
+}
+
+type BatchCreateResponse struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        Items         []*BatchCreateResult   `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *BatchCreateResponse) Reset() <span class="cov0" title="0">{
+        *x = BatchCreateResponse{}
+        mi := &amp;file_api_shortener_proto_msgTypes[15]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *BatchCreateResponse) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*BatchCreateResponse) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *BatchCreateResponse) ProtoReflect() protoreflect.Message <span class="cov0" title="0">{
+        mi := &amp;file_api_shortener_proto_msgTypes[15]
+        if x != nil </span><span class="cov0" title="0">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov0" title="0">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov0" title="0">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use BatchCreateResponse.ProtoReflect.Descriptor instead.
+func (*BatchCreateResponse) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{15}
+}</span>
+
+func (x *BatchCreateResponse) GetItems() []*BatchCreateResult <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.Items
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+type BatchCreateResult struct {
+        state         protoimpl.MessageState `protogen:"open.v1"`
+        CorrelationId string                 `protobuf:"bytes,1,opt,name=correlation_id,json=correlationId,proto3" json:"correlation_id,omitempty"`
+        ShortUrl      string                 `protobuf:"bytes,2,opt,name=short_url,json=shortUrl,proto3" json:"short_url,omitempty"`
+        unknownFields protoimpl.UnknownFields
+        sizeCache     protoimpl.SizeCache
+}
+
+func (x *BatchCreateResult) Reset() <span class="cov0" title="0">{
+        *x = BatchCreateResult{}
+        mi := &amp;file_api_shortener_proto_msgTypes[16]
+        ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+        ms.StoreMessageInfo(mi)
+}</span>
+
+func (x *BatchCreateResult) String() string <span class="cov0" title="0">{
+        return protoimpl.X.MessageStringOf(x)
+}</span>
+
+func (*BatchCreateResult) ProtoMessage() {<span class="cov0" title="0">}</span>
+
+func (x *BatchCreateResult) ProtoReflect() protoreflect.Message <span class="cov0" title="0">{
+        mi := &amp;file_api_shortener_proto_msgTypes[16]
+        if x != nil </span><span class="cov0" title="0">{
+                ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+                if ms.LoadMessageInfo() == nil </span><span class="cov0" title="0">{
+                        ms.StoreMessageInfo(mi)
+                }</span>
+                <span class="cov0" title="0">return ms</span>
+        }
+        <span class="cov0" title="0">return mi.MessageOf(x)</span>
+}
+
+// Deprecated: Use BatchCreateResult.ProtoReflect.Descriptor instead.
+func (*BatchCreateResult) Descriptor() ([]byte, []int) <span class="cov0" title="0">{
+        return file_api_shortener_proto_rawDescGZIP(), []int{16}
+}</span>
+
+func (x *BatchCreateResult) GetCorrelationId() string <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.CorrelationId
+        }</span>
+        <span class="cov0" title="0">return ""</span>
+}
+
+func (x *BatchCreateResult) GetShortUrl() string <span class="cov0" title="0">{
+        if x != nil </span><span class="cov0" title="0">{
+                return x.ShortUrl
+        }</span>
+        <span class="cov0" title="0">return ""</span>
+}
+
+var File_api_shortener_proto protoreflect.FileDescriptor
+
+const file_api_shortener_proto_rawDesc = "" +
+        "\n" +
+        "\x13api/shortener.proto\x12\tshortener\"2\n" +
+        "\rCreateRequest\x12!\n" +
+        "\foriginal_url\x18\x01 \x01(\tR\voriginalUrl\"-\n" +
+        "\x0eCreateResponse\x12\x1b\n" +
+        "\tshort_url\x18\x01 \x01(\tR\bshortUrl\")\n" +
+        "\n" +
+        "GetRequest\x12\x1b\n" +
+        "\tshort_url\x18\x01 \x01(\tR\bshortUrl\"J\n" +
+        "\vGetResponse\x12!\n" +
+        "\foriginal_url\x18\x01 \x01(\tR\voriginalUrl\x12\x18\n" +
+        "\adeleted\x18\x02 \x01(\bR\adeleted\"\r\n" +
+        "\vPingRequest\"\x1e\n" +
+        "\fPingResponse\x12\x0e\n" +
+        "\x02ok\x18\x01 \x01(\bR\x02ok\"\x0e\n" +
+        "\fStatsRequest\"9\n" +
+        "\rStatsResponse\x12\x12\n" +
+        "\x04urls\x18\x01 \x01(\x03R\x04urls\x12\x14\n" +
+        "\x05users\x18\x02 \x01(\x03R\x05users\"\x11\n" +
+        "\x0fUserURLsRequest\":\n" +
+        "\x10UserURLsResponse\x12&amp;\n" +
+        "\x04urls\x18\x01 \x03(\v2\x12.shortener.UserURLR\x04urls\"I\n" +
+        "\aUserURL\x12\x1b\n" +
+        "\tshort_url\x18\x01 \x01(\tR\bshortUrl\x12!\n" +
+        "\foriginal_url\x18\x02 \x01(\tR\voriginalUrl\".\n" +
+        "\rDeleteRequest\x12\x1d\n" +
+        "\n" +
+        "short_urls\x18\x01 \x03(\tR\tshortUrls\"\x10\n" +
+        "\x0eDeleteResponse\"F\n" +
+        "\x12BatchCreateRequest\x120\n" +
+        "\x05items\x18\x01 \x03(\v2\x1a.shortener.BatchCreateItemR\x05items\"[\n" +
+        "\x0fBatchCreateItem\x12%\n" +
+        "\x0ecorrelation_id\x18\x01 \x01(\tR\rcorrelationId\x12!\n" +
+        "\foriginal_url\x18\x02 \x01(\tR\voriginalUrl\"I\n" +
+        "\x13BatchCreateResponse\x122\n" +
+        "\x05items\x18\x01 \x03(\v2\x1c.shortener.BatchCreateResultR\x05items\"W\n" +
+        "\x11BatchCreateResult\x12%\n" +
+        "\x0ecorrelation_id\x18\x01 \x01(\tR\rcorrelationId\x12\x1b\n" +
+        "\tshort_url\x18\x02 \x01(\tR\bshortUrl2\xe8\x03\n" +
+        "\tShortener\x12E\n" +
+        "\x0eCreateShortURL\x12\x18.shortener.CreateRequest\x1a\x19.shortener.CreateResponse\x12?\n" +
+        "\x0eGetOriginalURL\x12\x15.shortener.GetRequest\x1a\x16.shortener.GetResponse\x127\n" +
+        "\x04Ping\x12\x16.shortener.PingRequest\x1a\x17.shortener.PingResponse\x12=\n" +
+        "\bGetStats\x12\x17.shortener.StatsRequest\x1a\x18.shortener.StatsResponse\x12F\n" +
+        "\vGetUserURLs\x12\x1a.shortener.UserURLsRequest\x1a\x1b.shortener.UserURLsResponse\x12E\n" +
+        "\x0eDeleteUserURLs\x12\x18.shortener.DeleteRequest\x1a\x19.shortener.DeleteResponse\x12L\n" +
+        "\vBatchCreate\x12\x1d.shortener.BatchCreateRequest\x1a\x1e.shortener.BatchCreateResponseB(Z&amp;github.com/ryabkov82/shortener/api;apib\x06proto3"
+
+var (
+        file_api_shortener_proto_rawDescOnce sync.Once
+        file_api_shortener_proto_rawDescData []byte
+)
+
+func file_api_shortener_proto_rawDescGZIP() []byte <span class="cov0" title="0">{
+        file_api_shortener_proto_rawDescOnce.Do(func() </span><span class="cov0" title="0">{
+                file_api_shortener_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_api_shortener_proto_rawDesc), len(file_api_shortener_proto_rawDesc)))
+        }</span>)
+        <span class="cov0" title="0">return file_api_shortener_proto_rawDescData</span>
+}
+
+var file_api_shortener_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
+var file_api_shortener_proto_goTypes = []any{
+        (*CreateRequest)(nil),       // 0: shortener.CreateRequest
+        (*CreateResponse)(nil),      // 1: shortener.CreateResponse
+        (*GetRequest)(nil),          // 2: shortener.GetRequest
+        (*GetResponse)(nil),         // 3: shortener.GetResponse
+        (*PingRequest)(nil),         // 4: shortener.PingRequest
+        (*PingResponse)(nil),        // 5: shortener.PingResponse
+        (*StatsRequest)(nil),        // 6: shortener.StatsRequest
+        (*StatsResponse)(nil),       // 7: shortener.StatsResponse
+        (*UserURLsRequest)(nil),     // 8: shortener.UserURLsRequest
+        (*UserURLsResponse)(nil),    // 9: shortener.UserURLsResponse
+        (*UserURL)(nil),             // 10: shortener.UserURL
+        (*DeleteRequest)(nil),       // 11: shortener.DeleteRequest
+        (*DeleteResponse)(nil),      // 12: shortener.DeleteResponse
+        (*BatchCreateRequest)(nil),  // 13: shortener.BatchCreateRequest
+        (*BatchCreateItem)(nil),     // 14: shortener.BatchCreateItem
+        (*BatchCreateResponse)(nil), // 15: shortener.BatchCreateResponse
+        (*BatchCreateResult)(nil),   // 16: shortener.BatchCreateResult
+}
+var file_api_shortener_proto_depIdxs = []int32{
+        10, // 0: shortener.UserURLsResponse.urls:type_name -&gt; shortener.UserURL
+        14, // 1: shortener.BatchCreateRequest.items:type_name -&gt; shortener.BatchCreateItem
+        16, // 2: shortener.BatchCreateResponse.items:type_name -&gt; shortener.BatchCreateResult
+        0,  // 3: shortener.Shortener.CreateShortURL:input_type -&gt; shortener.CreateRequest
+        2,  // 4: shortener.Shortener.GetOriginalURL:input_type -&gt; shortener.GetRequest
+        4,  // 5: shortener.Shortener.Ping:input_type -&gt; shortener.PingRequest
+        6,  // 6: shortener.Shortener.GetStats:input_type -&gt; shortener.StatsRequest
+        8,  // 7: shortener.Shortener.GetUserURLs:input_type -&gt; shortener.UserURLsRequest
+        11, // 8: shortener.Shortener.DeleteUserURLs:input_type -&gt; shortener.DeleteRequest
+        13, // 9: shortener.Shortener.BatchCreate:input_type -&gt; shortener.BatchCreateRequest
+        1,  // 10: shortener.Shortener.CreateShortURL:output_type -&gt; shortener.CreateResponse
+        3,  // 11: shortener.Shortener.GetOriginalURL:output_type -&gt; shortener.GetResponse
+        5,  // 12: shortener.Shortener.Ping:output_type -&gt; shortener.PingResponse
+        7,  // 13: shortener.Shortener.GetStats:output_type -&gt; shortener.StatsResponse
+        9,  // 14: shortener.Shortener.GetUserURLs:output_type -&gt; shortener.UserURLsResponse
+        12, // 15: shortener.Shortener.DeleteUserURLs:output_type -&gt; shortener.DeleteResponse
+        15, // 16: shortener.Shortener.BatchCreate:output_type -&gt; shortener.BatchCreateResponse
+        10, // [10:17] is the sub-list for method output_type
+        3,  // [3:10] is the sub-list for method input_type
+        3,  // [3:3] is the sub-list for extension type_name
+        3,  // [3:3] is the sub-list for extension extendee
+        0,  // [0:3] is the sub-list for field type_name
+}
+
+func init() <span class="cov7" title="8">{ file_api_shortener_proto_init() }</span>
+func file_api_shortener_proto_init() <span class="cov7" title="8">{
+        if File_api_shortener_proto != nil </span><span class="cov0" title="0">{
+                return
+        }</span>
+        <span class="cov7" title="8">type x struct{}
+        out := protoimpl.TypeBuilder{
+                File: protoimpl.DescBuilder{
+                        GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
+                        RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_shortener_proto_rawDesc), len(file_api_shortener_proto_rawDesc)),
+                        NumEnums:      0,
+                        NumMessages:   17,
+                        NumExtensions: 0,
+                        NumServices:   1,
+                },
+                GoTypes:           file_api_shortener_proto_goTypes,
+                DependencyIndexes: file_api_shortener_proto_depIdxs,
+                MessageInfos:      file_api_shortener_proto_msgTypes,
+        }.Build()
+        File_api_shortener_proto = out.File
+        file_api_shortener_proto_goTypes = nil
+        file_api_shortener_proto_depIdxs = nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">// Code generated by protoc-gen-go-grpc. DO NOT EDIT.
+// versions:
+// - protoc-gen-go-grpc v1.5.1
+// - protoc             v6.31.1
+// source: api/shortener.proto
+
+package api
+
+import (
+        context "context"
+        grpc "google.golang.org/grpc"
+        codes "google.golang.org/grpc/codes"
+        status "google.golang.org/grpc/status"
+)
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.64.0 or later.
+const _ = grpc.SupportPackageIsVersion9
+
+const (
+        Shortener_CreateShortURL_FullMethodName = "/shortener.Shortener/CreateShortURL"
+        Shortener_GetOriginalURL_FullMethodName = "/shortener.Shortener/GetOriginalURL"
+        Shortener_Ping_FullMethodName           = "/shortener.Shortener/Ping"
+        Shortener_GetStats_FullMethodName       = "/shortener.Shortener/GetStats"
+        Shortener_GetUserURLs_FullMethodName    = "/shortener.Shortener/GetUserURLs"
+        Shortener_DeleteUserURLs_FullMethodName = "/shortener.Shortener/DeleteUserURLs"
+        Shortener_BatchCreate_FullMethodName    = "/shortener.Shortener/BatchCreate"
+)
+
+// ShortenerClient is the client API for Shortener service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ShortenerClient interface {
+        CreateShortURL(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+        GetOriginalURL(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
+        Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
+        GetStats(ctx context.Context, in *StatsRequest, opts ...grpc.CallOption) (*StatsResponse, error)
+        GetUserURLs(ctx context.Context, in *UserURLsRequest, opts ...grpc.CallOption) (*UserURLsResponse, error)
+        DeleteUserURLs(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
+        BatchCreate(ctx context.Context, in *BatchCreateRequest, opts ...grpc.CallOption) (*BatchCreateResponse, error)
+}
+
+type shortenerClient struct {
+        cc grpc.ClientConnInterface
+}
+
+func NewShortenerClient(cc grpc.ClientConnInterface) ShortenerClient <span class="cov1" title="1">{
+        return &amp;shortenerClient{cc}
+}</span>
+
+func (c *shortenerClient) CreateShortURL(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) <span class="cov10" title="3">{
+        cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+        out := new(CreateResponse)
+        err := c.cc.Invoke(ctx, Shortener_CreateShortURL_FullMethodName, in, out, cOpts...)
+        if err != nil </span><span class="cov6" title="2">{
+                return nil, err
+        }</span>
+        <span class="cov1" title="1">return out, nil</span>
+}
+
+func (c *shortenerClient) GetOriginalURL(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) <span class="cov0" title="0">{
+        cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+        out := new(GetResponse)
+        err := c.cc.Invoke(ctx, Shortener_GetOriginalURL_FullMethodName, in, out, cOpts...)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return out, nil</span>
+}
+
+func (c *shortenerClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error) <span class="cov0" title="0">{
+        cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+        out := new(PingResponse)
+        err := c.cc.Invoke(ctx, Shortener_Ping_FullMethodName, in, out, cOpts...)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return out, nil</span>
+}
+
+func (c *shortenerClient) GetStats(ctx context.Context, in *StatsRequest, opts ...grpc.CallOption) (*StatsResponse, error) <span class="cov0" title="0">{
+        cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+        out := new(StatsResponse)
+        err := c.cc.Invoke(ctx, Shortener_GetStats_FullMethodName, in, out, cOpts...)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return out, nil</span>
+}
+
+func (c *shortenerClient) GetUserURLs(ctx context.Context, in *UserURLsRequest, opts ...grpc.CallOption) (*UserURLsResponse, error) <span class="cov0" title="0">{
+        cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+        out := new(UserURLsResponse)
+        err := c.cc.Invoke(ctx, Shortener_GetUserURLs_FullMethodName, in, out, cOpts...)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return out, nil</span>
+}
+
+func (c *shortenerClient) DeleteUserURLs(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error) <span class="cov0" title="0">{
+        cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+        out := new(DeleteResponse)
+        err := c.cc.Invoke(ctx, Shortener_DeleteUserURLs_FullMethodName, in, out, cOpts...)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return out, nil</span>
+}
+
+func (c *shortenerClient) BatchCreate(ctx context.Context, in *BatchCreateRequest, opts ...grpc.CallOption) (*BatchCreateResponse, error) <span class="cov0" title="0">{
+        cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+        out := new(BatchCreateResponse)
+        err := c.cc.Invoke(ctx, Shortener_BatchCreate_FullMethodName, in, out, cOpts...)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return out, nil</span>
+}
+
+// ShortenerServer is the server API for Shortener service.
+// All implementations must embed UnimplementedShortenerServer
+// for forward compatibility.
+type ShortenerServer interface {
+        CreateShortURL(context.Context, *CreateRequest) (*CreateResponse, error)
+        GetOriginalURL(context.Context, *GetRequest) (*GetResponse, error)
+        Ping(context.Context, *PingRequest) (*PingResponse, error)
+        GetStats(context.Context, *StatsRequest) (*StatsResponse, error)
+        GetUserURLs(context.Context, *UserURLsRequest) (*UserURLsResponse, error)
+        DeleteUserURLs(context.Context, *DeleteRequest) (*DeleteResponse, error)
+        BatchCreate(context.Context, *BatchCreateRequest) (*BatchCreateResponse, error)
+        mustEmbedUnimplementedShortenerServer()
+}
+
+// UnimplementedShortenerServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedShortenerServer struct{}
+
+func (UnimplementedShortenerServer) CreateShortURL(context.Context, *CreateRequest) (*CreateResponse, error) <span class="cov0" title="0">{
+        return nil, status.Errorf(codes.Unimplemented, "method CreateShortURL not implemented")
+}</span>
+func (UnimplementedShortenerServer) GetOriginalURL(context.Context, *GetRequest) (*GetResponse, error) <span class="cov0" title="0">{
+        return nil, status.Errorf(codes.Unimplemented, "method GetOriginalURL not implemented")
+}</span>
+func (UnimplementedShortenerServer) Ping(context.Context, *PingRequest) (*PingResponse, error) <span class="cov0" title="0">{
+        return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+}</span>
+func (UnimplementedShortenerServer) GetStats(context.Context, *StatsRequest) (*StatsResponse, error) <span class="cov0" title="0">{
+        return nil, status.Errorf(codes.Unimplemented, "method GetStats not implemented")
+}</span>
+func (UnimplementedShortenerServer) GetUserURLs(context.Context, *UserURLsRequest) (*UserURLsResponse, error) <span class="cov0" title="0">{
+        return nil, status.Errorf(codes.Unimplemented, "method GetUserURLs not implemented")
+}</span>
+func (UnimplementedShortenerServer) DeleteUserURLs(context.Context, *DeleteRequest) (*DeleteResponse, error) <span class="cov0" title="0">{
+        return nil, status.Errorf(codes.Unimplemented, "method DeleteUserURLs not implemented")
+}</span>
+func (UnimplementedShortenerServer) BatchCreate(context.Context, *BatchCreateRequest) (*BatchCreateResponse, error) <span class="cov0" title="0">{
+        return nil, status.Errorf(codes.Unimplemented, "method BatchCreate not implemented")
+}</span>
+func (UnimplementedShortenerServer) mustEmbedUnimplementedShortenerServer() {<span class="cov0" title="0">}</span>
+func (UnimplementedShortenerServer) testEmbeddedByValue()                   {<span class="cov1" title="1">}</span>
+
+// UnsafeShortenerServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ShortenerServer will
+// result in compilation errors.
+type UnsafeShortenerServer interface {
+        mustEmbedUnimplementedShortenerServer()
+}
+
+func RegisterShortenerServer(s grpc.ServiceRegistrar, srv ShortenerServer) <span class="cov1" title="1">{
+        // If the following call pancis, it indicates UnimplementedShortenerServer was
+        // embedded by pointer and is nil.  This will cause panics if an
+        // unimplemented method is ever invoked, so we test this at initialization
+        // time to prevent it from happening at runtime later due to I/O.
+        if t, ok := srv.(interface{ testEmbeddedByValue() }); ok </span><span class="cov1" title="1">{
+                t.testEmbeddedByValue()
+        }</span>
+        <span class="cov1" title="1">s.RegisterService(&amp;Shortener_ServiceDesc, srv)</span>
+}
+
+func _Shortener_CreateShortURL_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) <span class="cov10" title="3">{
+        in := new(CreateRequest)
+        if err := dec(in); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov10" title="3">if interceptor == nil </span><span class="cov0" title="0">{
+                return srv.(ShortenerServer).CreateShortURL(ctx, in)
+        }</span>
+        <span class="cov10" title="3">info := &amp;grpc.UnaryServerInfo{
+                Server:     srv,
+                FullMethod: Shortener_CreateShortURL_FullMethodName,
+        }
+        handler := func(ctx context.Context, req interface{}) (interface{}, error) </span><span class="cov10" title="3">{
+                return srv.(ShortenerServer).CreateShortURL(ctx, req.(*CreateRequest))
+        }</span>
+        <span class="cov10" title="3">return interceptor(ctx, in, info, handler)</span>
+}
+
+func _Shortener_GetOriginalURL_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) <span class="cov0" title="0">{
+        in := new(GetRequest)
+        if err := dec(in); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">if interceptor == nil </span><span class="cov0" title="0">{
+                return srv.(ShortenerServer).GetOriginalURL(ctx, in)
+        }</span>
+        <span class="cov0" title="0">info := &amp;grpc.UnaryServerInfo{
+                Server:     srv,
+                FullMethod: Shortener_GetOriginalURL_FullMethodName,
+        }
+        handler := func(ctx context.Context, req interface{}) (interface{}, error) </span><span class="cov0" title="0">{
+                return srv.(ShortenerServer).GetOriginalURL(ctx, req.(*GetRequest))
+        }</span>
+        <span class="cov0" title="0">return interceptor(ctx, in, info, handler)</span>
+}
+
+func _Shortener_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) <span class="cov0" title="0">{
+        in := new(PingRequest)
+        if err := dec(in); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">if interceptor == nil </span><span class="cov0" title="0">{
+                return srv.(ShortenerServer).Ping(ctx, in)
+        }</span>
+        <span class="cov0" title="0">info := &amp;grpc.UnaryServerInfo{
+                Server:     srv,
+                FullMethod: Shortener_Ping_FullMethodName,
+        }
+        handler := func(ctx context.Context, req interface{}) (interface{}, error) </span><span class="cov0" title="0">{
+                return srv.(ShortenerServer).Ping(ctx, req.(*PingRequest))
+        }</span>
+        <span class="cov0" title="0">return interceptor(ctx, in, info, handler)</span>
+}
+
+func _Shortener_GetStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) <span class="cov0" title="0">{
+        in := new(StatsRequest)
+        if err := dec(in); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">if interceptor == nil </span><span class="cov0" title="0">{
+                return srv.(ShortenerServer).GetStats(ctx, in)
+        }</span>
+        <span class="cov0" title="0">info := &amp;grpc.UnaryServerInfo{
+                Server:     srv,
+                FullMethod: Shortener_GetStats_FullMethodName,
+        }
+        handler := func(ctx context.Context, req interface{}) (interface{}, error) </span><span class="cov0" title="0">{
+                return srv.(ShortenerServer).GetStats(ctx, req.(*StatsRequest))
+        }</span>
+        <span class="cov0" title="0">return interceptor(ctx, in, info, handler)</span>
+}
+
+func _Shortener_GetUserURLs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) <span class="cov0" title="0">{
+        in := new(UserURLsRequest)
+        if err := dec(in); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">if interceptor == nil </span><span class="cov0" title="0">{
+                return srv.(ShortenerServer).GetUserURLs(ctx, in)
+        }</span>
+        <span class="cov0" title="0">info := &amp;grpc.UnaryServerInfo{
+                Server:     srv,
+                FullMethod: Shortener_GetUserURLs_FullMethodName,
+        }
+        handler := func(ctx context.Context, req interface{}) (interface{}, error) </span><span class="cov0" title="0">{
+                return srv.(ShortenerServer).GetUserURLs(ctx, req.(*UserURLsRequest))
+        }</span>
+        <span class="cov0" title="0">return interceptor(ctx, in, info, handler)</span>
+}
+
+func _Shortener_DeleteUserURLs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) <span class="cov0" title="0">{
+        in := new(DeleteRequest)
+        if err := dec(in); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">if interceptor == nil </span><span class="cov0" title="0">{
+                return srv.(ShortenerServer).DeleteUserURLs(ctx, in)
+        }</span>
+        <span class="cov0" title="0">info := &amp;grpc.UnaryServerInfo{
+                Server:     srv,
+                FullMethod: Shortener_DeleteUserURLs_FullMethodName,
+        }
+        handler := func(ctx context.Context, req interface{}) (interface{}, error) </span><span class="cov0" title="0">{
+                return srv.(ShortenerServer).DeleteUserURLs(ctx, req.(*DeleteRequest))
+        }</span>
+        <span class="cov0" title="0">return interceptor(ctx, in, info, handler)</span>
+}
+
+func _Shortener_BatchCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) <span class="cov0" title="0">{
+        in := new(BatchCreateRequest)
+        if err := dec(in); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">if interceptor == nil </span><span class="cov0" title="0">{
+                return srv.(ShortenerServer).BatchCreate(ctx, in)
+        }</span>
+        <span class="cov0" title="0">info := &amp;grpc.UnaryServerInfo{
+                Server:     srv,
+                FullMethod: Shortener_BatchCreate_FullMethodName,
+        }
+        handler := func(ctx context.Context, req interface{}) (interface{}, error) </span><span class="cov0" title="0">{
+                return srv.(ShortenerServer).BatchCreate(ctx, req.(*BatchCreateRequest))
+        }</span>
+        <span class="cov0" title="0">return interceptor(ctx, in, info, handler)</span>
+}
+
+// Shortener_ServiceDesc is the grpc.ServiceDesc for Shortener service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Shortener_ServiceDesc = grpc.ServiceDesc{
+        ServiceName: "shortener.Shortener",
+        HandlerType: (*ShortenerServer)(nil),
+        Methods: []grpc.MethodDesc{
+                {
+                        MethodName: "CreateShortURL",
+                        Handler:    _Shortener_CreateShortURL_Handler,
+                },
+                {
+                        MethodName: "GetOriginalURL",
+                        Handler:    _Shortener_GetOriginalURL_Handler,
+                },
+                {
+                        MethodName: "Ping",
+                        Handler:    _Shortener_Ping_Handler,
+                },
+                {
+                        MethodName: "GetStats",
+                        Handler:    _Shortener_GetStats_Handler,
+                },
+                {
+                        MethodName: "GetUserURLs",
+                        Handler:    _Shortener_GetUserURLs_Handler,
+                },
+                {
+                        MethodName: "DeleteUserURLs",
+                        Handler:    _Shortener_DeleteUserURLs_Handler,
+                },
+                {
+                        MethodName: "BatchCreate",
+                        Handler:    _Shortener_BatchCreate_Handler,
+                },
+        },
+        Streams:  []grpc.StreamDesc{},
+        Metadata: "api/shortener.proto",
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package main
 
 import (
         "bufio"
@@ -212,7 +1509,146 @@ func main() <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file1" style="display: none">// Пакет main предоставляет точку входа для сервиса сокращения URL.
+		<pre class="file" id="file3" style="display: none">package main
+
+import (
+        "bufio"
+        "fmt"
+        "log"
+        "os"
+        "regexp"
+        "strings"
+        "text/template"
+)
+
+type Method struct {
+        Name       string
+        Request    string
+        Response   string
+        HandlerVar string
+}
+
+const tmpl = `// Code generated by genserver from proto; DO NOT EDIT.
+
+package grpchandlers
+
+import (
+        "context"
+
+        "github.com/ryabkov82/shortener/api"
+        "github.com/ryabkov82/shortener/internal/app/handlers/grpc/base"
+        "google.golang.org/grpc/codes"
+        "google.golang.org/grpc/status"
+)
+
+type ServerOption func(s *Server)
+
+{{range .}}
+type {{.Name}}Endpoint interface {
+        {{.Name}}(ctx context.Context, req *api.{{.Request}}) (*api.{{.Response}}, error)
+}
+
+func With{{.Name}}Endpoint(h {{.Name}}Endpoint) ServerOption {
+        return func(s *Server) {
+                s.{{.HandlerVar}} = h
+        }
+}
+{{end}}
+
+type Server struct {
+        api.UnimplementedShortenerServer
+        *base.BaseHandler
+
+        {{range .}}{{.HandlerVar}} {{.Name}}Endpoint
+        {{end}}
+}
+
+func NewServer(baseHandler *base.BaseHandler, opts ...ServerOption) *Server {
+        s := &amp;Server{BaseHandler: baseHandler}
+        for _, opt := range opts {
+                opt(s)
+        }
+        return s
+}
+
+{{range .}}
+func (s *Server) {{.Name}}(ctx context.Context, req *api.{{.Request}}) (*api.{{.Response}}, error) {
+        if s.{{.HandlerVar}} == nil {
+                return nil, status.Error(codes.Unimplemented, "{{.Name}} handler not provided")
+        }
+        return s.{{.HandlerVar}}.{{.Name}}(ctx, req)
+}
+{{end}}
+`
+
+func main() <span class="cov0" title="0">{
+        protoFile := "./api/shortener.proto"
+
+        f, err := os.Open(protoFile)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatalf("failed to open proto file: %v", err)
+        }</span>
+        <span class="cov0" title="0">defer f.Close()
+
+        rpcRe := regexp.MustCompile(`rpc\s+(\w+)\s*\(\s*(\w+)\s*\)\s+returns\s*\(\s*(\w+)\s*\);`)
+        serviceStartRe := regexp.MustCompile(`service\s+(\w+)\s*{`)
+
+        var inService bool
+        var methods []Method
+
+        scanner := bufio.NewScanner(f)
+        for scanner.Scan() </span><span class="cov0" title="0">{
+                line := strings.TrimSpace(scanner.Text())
+
+                if !inService </span><span class="cov0" title="0">{
+                        if serviceStartRe.MatchString(line) </span><span class="cov0" title="0">{
+                                inService = true
+                        }</span>
+                        <span class="cov0" title="0">continue</span>
+                }
+
+                <span class="cov0" title="0">if line == "}" </span><span class="cov0" title="0">{
+                        inService = false
+                        break</span>
+                }
+
+                <span class="cov0" title="0">matches := rpcRe.FindStringSubmatch(line)
+                if len(matches) == 4 </span><span class="cov0" title="0">{
+                        name := matches[1]
+                        req := matches[2]
+                        resp := matches[3]
+
+                        methods = append(methods, Method{
+                                Name:       name,
+                                Request:    req,
+                                Response:   resp,
+                                HandlerVar: name + "Handler",
+                        })
+                }</span>
+        }
+
+        <span class="cov0" title="0">if err := scanner.Err(); err != nil </span><span class="cov0" title="0">{
+                log.Fatalf("reading proto file error: %v", err)
+        }</span>
+
+        // Генерируем файл
+        <span class="cov0" title="0">t := template.Must(template.New("server").Parse(tmpl))
+        outFile := "./internal/app/handlers/grpc/server_gen.go"
+        out, err := os.Create(outFile)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatalf("cannot create output file: %v", err)
+        }</span>
+        <span class="cov0" title="0">defer out.Close()
+
+        if err := t.Execute(out, methods); err != nil </span><span class="cov0" title="0">{
+                log.Fatalf("template execution failed: %v", err)
+        }</span>
+
+        <span class="cov0" title="0">fmt.Printf("server_gen.go успешно сгенерирован: %s\n", outFile)</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">// Пакет main предоставляет точку входа для сервиса сокращения URL.
 //
 // Основные функции:
 //
@@ -224,8 +1660,6 @@ package main
 import (
         "fmt"
         "os"
-
-        "go.uber.org/zap"
 
         "github.com/ryabkov82/shortener/internal/app/config"
         "github.com/ryabkov82/shortener/internal/app/logger"
@@ -249,9 +1683,8 @@ func main() <span class="cov0" title="0">{
         }
 
         // Запуск сервера с использованием конфигурации
-        <span class="cov0" title="0">logger.Log.Info("Starting server", zap.String("address", cfg.HTTPServerAddr), zap.String("BaseURL", cfg.BaseURL))
         // log.Printf("Starting server on %s with base URL %s", cfg.HTTPServerAddr, cfg.BaseURL)
-        server.StartServer(logger.Log, cfg)</span>
+        <span class="cov0" title="0">server.StartServers(logger.Log, cfg)</span>
 
 }
 
@@ -273,7 +1706,7 @@ func printBuildInfo() <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file2" style="display: none">// Package staticlint представляет собой комплексный статический анализатор для проекта Shortener.
+		<pre class="file" id="file5" style="display: none">// Package staticlint представляет собой комплексный статический анализатор для проекта Shortener.
 // Он объединяет:
 // - стандартные анализаторы go/analysis
 // - анализаторы staticcheck
@@ -427,7 +1860,7 @@ func setupAnalyzers() []*analysis.Analyzer <span class="cov1" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file3" style="display: none">// Package noosexit проверяет отсутствие прямых вызовов os.Exit в функции main пакета main
+		<pre class="file" id="file6" style="display: none">// Package noosexit проверяет отсутствие прямых вызовов os.Exit в функции main пакета main
 package noosexit
 
 import (
@@ -503,7 +1936,7 @@ var isCmdPackage = func(pkgPath string) bool <span class="cov0" title="0">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file4" style="display: none">/*
+		<pre class="file" id="file7" style="display: none">/*
 Package config предоставляет загрузку и валидацию конфигурации приложения.
 
 Поддерживает несколько источников конфигурации:
@@ -544,7 +1977,9 @@ import (
         "encoding/json"
         "errors"
         "flag"
+        "fmt"
         "log"
+        "net"
         "net/url"
         "os"
         "strconv"
@@ -553,17 +1988,18 @@ import (
 
 // Config содержит все параметры конфигурации приложения.
 type Config struct {
-        HTTPServerAddr string      `json:"server_address"`    // Адрес HTTP-сервера в формате host:port
-        BaseURL        string      `json:"base_url"`          // Базовый URL для сокращённых ссылок
-        LogLevel       string      `json:"log_level"`         // Уровень логирования (debug, info, warn, error)
-        FileStorage    string      `json:"file_storage_path"` // Путь к файлу хранилища
-        DBConnect      string      `json:"database_dsn"`      // Строка подключения к БД
-        JwtKey         string      `json:"jwt_secret"`        // Секретный ключ для JWT
-        ConfigPProf    PProfConfig `json:"pprof"`             // Настройки pprof
-        EnableHTTPS    bool        `json:"enable_https"`      // Включение HTTPS
-        SSLCertFile    string      `json:"ssl_cert_file"`     // Путь к SSL сертификату
-        SSLKeyFile     string      `json:"ssl_key_file"`      // Путь к SSL ключу
-        TrustedSubnet  string      `json:"trusted_subnet"`    // Доверенная подсеть
+        HTTPServerAddr string      `json:"server_address"`      // Адрес HTTP-сервера в формате host:port
+        GRPCServerAddr string      `json:"grpc_server_address"` // Адрес gRPC-сервера
+        BaseURL        string      `json:"base_url"`            // Базовый URL для сокращённых ссылок
+        LogLevel       string      `json:"log_level"`           // Уровень логирования (debug, info, warn, error)
+        FileStorage    string      `json:"file_storage_path"`   // Путь к файлу хранилища
+        DBConnect      string      `json:"database_dsn"`        // Строка подключения к БД
+        JwtKey         string      `json:"jwt_secret"`          // Секретный ключ для JWT
+        ConfigPProf    PProfConfig `json:"pprof"`               // Настройки pprof
+        EnableHTTPS    bool        `json:"enable_https"`        // Включение HTTPS
+        SSLCertFile    string      `json:"ssl_cert_file"`       // Путь к SSL сертификату
+        SSLKeyFile     string      `json:"ssl_key_file"`        // Путь к SSL ключу
+        TrustedSubnet  string      `json:"trusted_subnet"`      // Доверенная подсеть
 }
 
 // PProfConfig содержит настройки профилирования pprof.
@@ -633,6 +2069,25 @@ func validateCertFiles(certFile, keyFile string) error <span class="cov6" title=
         <span class="cov1" title="1">return nil</span>
 }
 
+func validateGRPCServerAddr(addr string) error <span class="cov10" title="7">{
+        if addr == "" </span><span class="cov1" title="1">{
+                return errors.New("gRPC server address cannot be empty")
+        }</span>
+
+        <span class="cov9" title="6">_, port, err := net.SplitHostPort(addr)
+        if err != nil </span><span class="cov1" title="1">{
+                return fmt.Errorf("invalid address format: %w", err)
+        }</span>
+
+        // Проверка порта
+        <span class="cov8" title="5">portNum, err := strconv.Atoi(port)
+        if err != nil || portNum &lt; 1 || portNum &gt; 65535 </span><span class="cov1" title="1">{
+                return errors.New("port must be between 1 and 65535")
+        }</span>
+
+        <span class="cov7" title="4">return nil</span>
+}
+
 // Load загружает конфигурацию из разных источников.
 //
 // Порядок загрузки:
@@ -646,6 +2101,7 @@ func validateCertFiles(certFile, keyFile string) error <span class="cov6" title=
 func Load() *Config <span class="cov10" title="7">{
         cfg := &amp;Config{
                 HTTPServerAddr: "localhost:8080",
+                GRPCServerAddr: "localhost:50051",
                 BaseURL:        "http://localhost:8080",
                 LogLevel:       "info",
                 FileStorage:    "storage.dat",
@@ -763,6 +2219,9 @@ func mergeConfigs(original, new *Config) <span class="cov6" title="3">{
         <span class="cov6" title="3">if new.TrustedSubnet != "" </span><span class="cov0" title="0">{
                 original.TrustedSubnet = new.TrustedSubnet
         }</span>
+        <span class="cov6" title="3">if new.GRPCServerAddr != "" </span><span class="cov0" title="0">{
+                original.GRPCServerAddr = new.GRPCServerAddr
+        }</span>
 
         // Объединение PProfConfig
         <span class="cov6" title="3">if new.ConfigPProf.AuthUser != "" </span><span class="cov4" title="2">{
@@ -805,7 +2264,16 @@ func loadFromFlags(cfg *Config) <span class="cov10" title="7">{
         flag.StringVar(&amp;cfg.DBConnect, "d", cfg.DBConnect, "Database connection string")
         flag.BoolVar(&amp;cfg.EnableHTTPS, "s", cfg.EnableHTTPS, "Enable HTTPS server")
         flag.StringVar(&amp;cfg.TrustedSubnet, "t", "", "trusted subnet in CIDR notation")
-        flag.Parse()</span>
+
+        flag.Func("ga", "gRPC server address in host:port format", func(flagValue string) error </span><span class="cov0" title="0">{
+                if err := validateGRPCServerAddr(flagValue); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov0" title="0">cfg.GRPCServerAddr = flagValue
+                return nil</span>
+        })
+
+        <span class="cov10" title="7">flag.Parse()</span>
 }
 
 // loadFromEnv загружает значения из переменных окружения.
@@ -862,6 +2330,13 @@ func loadFromEnv(cfg *Config) <span class="cov10" title="7">{
                 cfg.TrustedSubnet = envSubnet
         }</span>
 
+        <span class="cov10" title="7">if envGRPCAddr := os.Getenv("GRPC_SERVER_ADDRESS"); envGRPCAddr != "" </span><span class="cov0" title="0">{
+                if err := validateGRPCServerAddr(envGRPCAddr); err != nil </span><span class="cov0" title="0">{
+                        log.Fatalf("invalid GRPC_SERVER_ADDRESS: %v", err)
+                }</span>
+                <span class="cov0" title="0">cfg.GRPCServerAddr = envGRPCAddr</span>
+        }
+
         // Обработка pprof настроек
         <span class="cov10" title="7">if user := os.Getenv("PPROF_USER"); user != "" </span><span class="cov1" title="1">{
                 cfg.ConfigPProf.AuthUser = user
@@ -877,7 +2352,397 @@ func loadFromEnv(cfg *Config) <span class="cov10" title="7">{
 }
 </pre>
 		
-		<pre class="file" id="file5" style="display: none">// Package batch предоставляет обработчик для пакетного создания сокращённых URL.
+		<pre class="file" id="file8" style="display: none">package base
+
+import (
+        "github.com/ryabkov82/shortener/internal/app/config"
+        "github.com/ryabkov82/shortener/internal/app/server/grpc/interceptors"
+        "google.golang.org/grpc"
+
+        "go.uber.org/zap"
+)
+
+// BaseHandler содержит общие зависимости для всех обработчиков
+type BaseHandler struct {
+        Logger *zap.Logger // Общий логгер
+}
+
+// NewBaseHandler создает базовый обработчик
+func NewBaseHandler(logger *zap.Logger) *BaseHandler <span class="cov0" title="0">{
+        return &amp;BaseHandler{
+                Logger: logger,
+        }
+}</span>
+
+// CommonInterceptors возвращает цепочку общих интерцепторов
+func (h *BaseHandler) CommonInterceptors(cfg *config.Config) []grpc.UnaryServerInterceptor <span class="cov0" title="0">{
+        return []grpc.UnaryServerInterceptor{
+                interceptors.LoggingInterceptor(h.Logger),
+                interceptors.JWTAutoIssueGRPC([]byte(cfg.JwtKey)),
+                interceptors.TrustedSubnetInterceptor(interceptors.TrustedSubnetConfig{
+                        TrustedSubnet: cfg.TrustedSubnet,
+                        ProtectedMethods: map[string]bool{
+                                "/shortener.Shortener/Stats": true,
+                        },
+                        DenyIfNotConfigured: true, // Блокировать если подсеть не настроена
+                }),
+        }
+
+}</span>
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package redirect
+
+import (
+        "context"
+        "errors"
+
+        pb "github.com/ryabkov82/shortener/api"
+        "github.com/ryabkov82/shortener/internal/app/handlers/grpc/base"
+        "github.com/ryabkov82/shortener/internal/app/storage"
+        "go.uber.org/zap"
+        "google.golang.org/grpc/codes"
+        "google.golang.org/grpc/status"
+)
+
+// URLHandler определяет контракт для получения оригинального URL.
+type URLHandler interface {
+        // GetRedirectURL возвращает оригинальный URL для перенаправления.
+        //
+        // Параметры:
+        //   ctx - контекст выполнения
+        //   id - короткий идентификатор URL
+        //
+        // Возвращает:
+        //   string - оригинальный URL
+        //   error - возможные ошибки:
+        //     - storage.ErrURLNotFound: URL не существует
+        //     - storage.ErrURLDeleted: URL был удален
+        //     - другие внутренние ошибки
+        GetRedirectURL(ctx context.Context, id string) (string, error)
+}
+
+type Handler struct {
+        *base.BaseHandler // Встраиваем базовый обработчик
+        service           URLHandler
+}
+
+func New(
+        baseHandler *base.BaseHandler,
+        service URLHandler,
+) *Handler <span class="cov0" title="0">{
+        return &amp;Handler{
+                BaseHandler: baseHandler, // Инициализация базовых зависимостей
+                service:     service,
+        }
+}</span>
+
+// GetOriginalURL обработчик gRPC для получения оригинального URL
+func (h *Handler) GetOriginalURL(
+        ctx context.Context,
+        req *pb.GetRequest,
+) (*pb.GetResponse, error) <span class="cov0" title="0">{
+        // Валидация ID
+        if req.ShortUrl == "" </span><span class="cov0" title="0">{
+                h.Logger.Error("Empty ID in request")
+                return nil, status.Error(codes.InvalidArgument, "ID parameter is missing")
+        }</span>
+
+        <span class="cov0" title="0">h.Logger.Debug("Processing URL lookup",
+                zap.String("shortID", req.ShortUrl))
+
+        // Получаем оригинальный URL
+        originalURL, err := h.service.GetRedirectURL(ctx, req.ShortUrl)
+        if err != nil </span><span class="cov0" title="0">{
+                switch </span>{
+                case errors.Is(err, storage.ErrURLNotFound):<span class="cov0" title="0">
+                        h.Logger.Info("Shortened key not found",
+                                zap.String("shortKey", req.ShortUrl))
+                        return nil, status.Error(codes.NotFound, "Shortened key not found")</span>
+                case errors.Is(err, storage.ErrURLDeleted):<span class="cov0" title="0">
+                        h.Logger.Info("URL has been deleted",
+                                zap.String("shortKey", req.ShortUrl))
+                        return nil, status.Error(codes.NotFound, "URL has been deleted")</span>
+                default:<span class="cov0" title="0">
+                        h.Logger.Error("Failed to get redirect URL",
+                                zap.Error(err),
+                                zap.String("shortKey", req.ShortUrl))
+                        return nil, status.Error(codes.Internal, "Failed to get redirect URL")</span>
+                }
+        }
+
+        <span class="cov0" title="0">h.Logger.Info("Shortened key found",
+                zap.String("shortKey", req.ShortUrl),
+                zap.String("redirect", originalURL))
+
+        // Формируем ответ
+        return &amp;pb.GetResponse{
+                OriginalUrl: originalURL,
+        }, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">// Code generated by genserver from proto; DO NOT EDIT.
+
+package grpchandlers
+
+import (
+        "context"
+
+        "github.com/ryabkov82/shortener/api"
+        "github.com/ryabkov82/shortener/internal/app/handlers/grpc/base"
+        "google.golang.org/grpc/codes"
+        "google.golang.org/grpc/status"
+)
+
+type ServerOption func(s *Server)
+
+
+type CreateShortURLEndpoint interface {
+        CreateShortURL(ctx context.Context, req *api.CreateRequest) (*api.CreateResponse, error)
+}
+
+func WithCreateShortURLEndpoint(h CreateShortURLEndpoint) ServerOption <span class="cov1" title="1">{
+        return func(s *Server) </span><span class="cov1" title="1">{
+                s.CreateShortURLHandler = h
+        }</span>
+}
+
+type GetOriginalURLEndpoint interface {
+        GetOriginalURL(ctx context.Context, req *api.GetRequest) (*api.GetResponse, error)
+}
+
+func WithGetOriginalURLEndpoint(h GetOriginalURLEndpoint) ServerOption <span class="cov0" title="0">{
+        return func(s *Server) </span><span class="cov0" title="0">{
+                s.GetOriginalURLHandler = h
+        }</span>
+}
+
+type PingEndpoint interface {
+        Ping(ctx context.Context, req *api.PingRequest) (*api.PingResponse, error)
+}
+
+func WithPingEndpoint(h PingEndpoint) ServerOption <span class="cov0" title="0">{
+        return func(s *Server) </span><span class="cov0" title="0">{
+                s.PingHandler = h
+        }</span>
+}
+
+type GetStatsEndpoint interface {
+        GetStats(ctx context.Context, req *api.StatsRequest) (*api.StatsResponse, error)
+}
+
+func WithGetStatsEndpoint(h GetStatsEndpoint) ServerOption <span class="cov0" title="0">{
+        return func(s *Server) </span><span class="cov0" title="0">{
+                s.GetStatsHandler = h
+        }</span>
+}
+
+type GetUserURLsEndpoint interface {
+        GetUserURLs(ctx context.Context, req *api.UserURLsRequest) (*api.UserURLsResponse, error)
+}
+
+func WithGetUserURLsEndpoint(h GetUserURLsEndpoint) ServerOption <span class="cov0" title="0">{
+        return func(s *Server) </span><span class="cov0" title="0">{
+                s.GetUserURLsHandler = h
+        }</span>
+}
+
+type DeleteUserURLsEndpoint interface {
+        DeleteUserURLs(ctx context.Context, req *api.DeleteRequest) (*api.DeleteResponse, error)
+}
+
+func WithDeleteUserURLsEndpoint(h DeleteUserURLsEndpoint) ServerOption <span class="cov0" title="0">{
+        return func(s *Server) </span><span class="cov0" title="0">{
+                s.DeleteUserURLsHandler = h
+        }</span>
+}
+
+type BatchCreateEndpoint interface {
+        BatchCreate(ctx context.Context, req *api.BatchCreateRequest) (*api.BatchCreateResponse, error)
+}
+
+func WithBatchCreateEndpoint(h BatchCreateEndpoint) ServerOption <span class="cov0" title="0">{
+        return func(s *Server) </span><span class="cov0" title="0">{
+                s.BatchCreateHandler = h
+        }</span>
+}
+
+
+type Server struct {
+        api.UnimplementedShortenerServer
+        *base.BaseHandler
+
+        CreateShortURLHandler CreateShortURLEndpoint
+        GetOriginalURLHandler GetOriginalURLEndpoint
+        PingHandler PingEndpoint
+        GetStatsHandler GetStatsEndpoint
+        GetUserURLsHandler GetUserURLsEndpoint
+        DeleteUserURLsHandler DeleteUserURLsEndpoint
+        BatchCreateHandler BatchCreateEndpoint
+        
+}
+
+func NewServer(baseHandler *base.BaseHandler, opts ...ServerOption) *Server <span class="cov1" title="1">{
+        s := &amp;Server{BaseHandler: baseHandler}
+        for _, opt := range opts </span><span class="cov1" title="1">{
+                opt(s)
+        }</span>
+        <span class="cov1" title="1">return s</span>
+}
+
+
+func (s *Server) CreateShortURL(ctx context.Context, req *api.CreateRequest) (*api.CreateResponse, error) <span class="cov10" title="3">{
+        if s.CreateShortURLHandler == nil </span><span class="cov0" title="0">{
+                return nil, status.Error(codes.Unimplemented, "CreateShortURL handler not provided")
+        }</span>
+        <span class="cov10" title="3">return s.CreateShortURLHandler.CreateShortURL(ctx, req)</span>
+}
+
+func (s *Server) GetOriginalURL(ctx context.Context, req *api.GetRequest) (*api.GetResponse, error) <span class="cov0" title="0">{
+        if s.GetOriginalURLHandler == nil </span><span class="cov0" title="0">{
+                return nil, status.Error(codes.Unimplemented, "GetOriginalURL handler not provided")
+        }</span>
+        <span class="cov0" title="0">return s.GetOriginalURLHandler.GetOriginalURL(ctx, req)</span>
+}
+
+func (s *Server) Ping(ctx context.Context, req *api.PingRequest) (*api.PingResponse, error) <span class="cov0" title="0">{
+        if s.PingHandler == nil </span><span class="cov0" title="0">{
+                return nil, status.Error(codes.Unimplemented, "Ping handler not provided")
+        }</span>
+        <span class="cov0" title="0">return s.PingHandler.Ping(ctx, req)</span>
+}
+
+func (s *Server) GetStats(ctx context.Context, req *api.StatsRequest) (*api.StatsResponse, error) <span class="cov0" title="0">{
+        if s.GetStatsHandler == nil </span><span class="cov0" title="0">{
+                return nil, status.Error(codes.Unimplemented, "GetStats handler not provided")
+        }</span>
+        <span class="cov0" title="0">return s.GetStatsHandler.GetStats(ctx, req)</span>
+}
+
+func (s *Server) GetUserURLs(ctx context.Context, req *api.UserURLsRequest) (*api.UserURLsResponse, error) <span class="cov0" title="0">{
+        if s.GetUserURLsHandler == nil </span><span class="cov0" title="0">{
+                return nil, status.Error(codes.Unimplemented, "GetUserURLs handler not provided")
+        }</span>
+        <span class="cov0" title="0">return s.GetUserURLsHandler.GetUserURLs(ctx, req)</span>
+}
+
+func (s *Server) DeleteUserURLs(ctx context.Context, req *api.DeleteRequest) (*api.DeleteResponse, error) <span class="cov0" title="0">{
+        if s.DeleteUserURLsHandler == nil </span><span class="cov0" title="0">{
+                return nil, status.Error(codes.Unimplemented, "DeleteUserURLs handler not provided")
+        }</span>
+        <span class="cov0" title="0">return s.DeleteUserURLsHandler.DeleteUserURLs(ctx, req)</span>
+}
+
+func (s *Server) BatchCreate(ctx context.Context, req *api.BatchCreateRequest) (*api.BatchCreateResponse, error) <span class="cov0" title="0">{
+        if s.BatchCreateHandler == nil </span><span class="cov0" title="0">{
+                return nil, status.Error(codes.Unimplemented, "BatchCreate handler not provided")
+        }</span>
+        <span class="cov0" title="0">return s.BatchCreateHandler.BatchCreate(ctx, req)</span>
+}
+
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package shorturl
+
+import (
+        "context"
+        "errors"
+        "net/url"
+
+        pb "github.com/ryabkov82/shortener/api"
+        "github.com/ryabkov82/shortener/internal/app/handlers/grpc/base"
+        "github.com/ryabkov82/shortener/internal/app/storage"
+        "go.uber.org/zap"
+        "google.golang.org/grpc/codes"
+        "google.golang.org/grpc/status"
+)
+
+// URLHandler определяет контракт для генерации коротких URL.
+type URLHandler interface {
+        // GetShortKey возвращает короткий ключ для оригинального URL.
+        //
+        // Параметры:
+        //   ctx - контекст выполнения (должен включать таймаут)
+        //   originalURL - валидный URL для сокращения
+        //
+        // Возвращает:
+        //   string - короткий ключ
+        //   error - возможные ошибки:
+        //     - storage.ErrURLExists: URL уже существует
+        //     - другие внутренние ошибки
+        GetShortKey(ctx context.Context, originalURL string) (string, error)
+}
+
+type Handler struct {
+        *base.BaseHandler // Встраиваем базовый обработчик
+        service           URLHandler
+        baseURL           string
+}
+
+func New(
+        baseHandler *base.BaseHandler,
+        service URLHandler,
+        baseURL string,
+) *Handler <span class="cov1" title="1">{
+        return &amp;Handler{
+                BaseHandler: baseHandler, // Инициализация базовых зависимостей
+                service:     service,
+                baseURL:     baseURL,
+        }
+}</span>
+
+// CreateShortURL обработчик gRPC для создания короткой ссылки
+func (h *Handler) CreateShortURL(
+        ctx context.Context,
+        req *pb.CreateRequest,
+) (*pb.CreateResponse, error) <span class="cov10" title="3">{
+        // Валидация URL
+        if req.OriginalUrl == "" </span><span class="cov0" title="0">{
+                h.Logger.Error("Empty URL in request")
+                return nil, status.Error(codes.InvalidArgument, "URL parameter is missing")
+        }</span>
+
+        <span class="cov10" title="3">if _, err := url.ParseRequestURI(req.OriginalUrl); err != nil </span><span class="cov1" title="1">{
+                h.Logger.Error("Invalid URL in request",
+                        zap.String("url", req.OriginalUrl),
+                        zap.Error(err))
+                return nil, status.Error(codes.InvalidArgument, "Invalid URL format")
+        }</span>
+
+        <span class="cov6" title="2">h.Logger.Debug("Processing URL shortening",
+                zap.String("originalURL", req.OriginalUrl))
+
+        // Генерация короткого ключа
+        shortKey, err := h.service.GetShortKey(ctx, req.OriginalUrl)
+        if err != nil &amp;&amp; !errors.Is(err, storage.ErrURLExists) </span><span class="cov0" title="0">{
+                h.Logger.Error("Short URL generation failed",
+                        zap.Error(err),
+                        zap.String("originalURL", req.OriginalUrl))
+                return nil, status.Error(codes.Internal, "Failed to generate short URL")
+        }</span>
+
+        // Формирование ответа
+        <span class="cov6" title="2">response := &amp;pb.CreateResponse{
+                ShortUrl: h.baseURL + "/" + shortKey,
+        }
+
+        if errors.Is(err, storage.ErrURLExists) </span><span class="cov1" title="1">{
+                h.Logger.Debug("URL already exists",
+                        zap.String("shortKey", shortKey),
+                        zap.String("originalURL", req.OriginalUrl))
+                return response, status.Error(codes.AlreadyExists, "URL already exists")
+        }</span>
+
+        <span class="cov1" title="1">h.Logger.Debug("URL successfully shortened",
+                zap.String("shortKey", shortKey),
+                zap.String("originalURL", req.OriginalUrl))
+
+        return response, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">// Package batch предоставляет обработчик для пакетного создания сокращённых URL.
 //
 // Пакет реализует:
 // - Приём массива URL в JSON-формате
@@ -987,7 +2852,7 @@ func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.Han
 }
 </pre>
 		
-		<pre class="file" id="file6" style="display: none">// Package deluserurls предоставляет обработчик для массового удаления URL пользователя.
+		<pre class="file" id="file13" style="display: none">// Package deluserurls предоставляет обработчик для массового удаления URL пользователя.
 //
 // Пакет реализует:
 // - Приём списка URL для удаления в JSON-формате
@@ -1073,7 +2938,7 @@ func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.Han
 }
 </pre>
 		
-		<pre class="file" id="file7" style="display: none">// Package ping предоставляет обработчик для проверки доступности базы данных.
+		<pre class="file" id="file14" style="display: none">// Package ping предоставляет обработчик для проверки доступности базы данных.
 //
 // Пакет реализует:
 // - Проверку соединения с базой данных
@@ -1146,7 +3011,7 @@ func GetHandler(urlHandler URLHandler, log *zap.Logger) http.HandlerFunc <span c
 }
 </pre>
 		
-		<pre class="file" id="file8" style="display: none">// Package redirect предоставляет обработчик для перенаправления по коротким URL.
+		<pre class="file" id="file15" style="display: none">// Package redirect предоставляет обработчик для перенаправления по коротким URL.
 //
 // Пакет реализует:
 // - Поиск оригинального URL по короткому идентификатору
@@ -1259,7 +3124,7 @@ func GetHandler(urlHandler URLHandler, log *zap.Logger) http.HandlerFunc <span c
 }
 </pre>
 		
-		<pre class="file" id="file9" style="display: none">// Package shortenapi предоставляет JSON API для создания сокращённых URL.
+		<pre class="file" id="file16" style="display: none">// Package shortenapi предоставляет JSON API для создания сокращённых URL.
 //
 // Пакет реализует:
 // - Приём оригинального URL в JSON-формате
@@ -1427,7 +3292,7 @@ func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.Han
 }
 </pre>
 		
-		<pre class="file" id="file10" style="display: none">// Package shorturl предоставляет обработчик для создания сокращённых URL через текстовый интерфейс.
+		<pre class="file" id="file17" style="display: none">// Package shorturl предоставляет обработчик для создания сокращённых URL через текстовый интерфейс.
 //
 // Пакет реализует:
 // - Приём оригинального URL в текстовом формате
@@ -1573,7 +3438,8 @@ func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.Han
 }
 </pre>
 		
-		<pre class="file" id="file11" style="display: none">package stats
+		<pre class="file" id="file18" style="display: none">// Package stats предоставляет обработчики HTTP для получения статистики сервиса.
+package stats
 
 import (
         "context"
@@ -1584,10 +3450,43 @@ import (
         "go.uber.org/zap"
 )
 
+// URLHandler определяет интерфейс для получения статистики сервиса.
+// Реализации этого интерфейса должны предоставлять данные о количестве URL и пользователей.
 type URLHandler interface {
+        // GetStats возвращает статистику сервиса.
+        // Возвращает:
+        //   - models.StatsResponse с количеством URL и пользователей
+        //   - error в случае ошибки при получении данных
         GetStats(ctx context.Context) (models.StatsResponse, error)
 }
 
+// GetHandler создает HTTP-обработчик для получения статистики сервиса.
+//
+// Параметры:
+//   - urlHandler: реализация интерфейса URLHandler для получения данных статистики
+//   - log: логгер для записи событий и ошибок
+//
+// Возвращает:
+//   - http.HandlerFunc, который обрабатывает GET-запросы по пути /api/internal/stats
+//
+// Поведение обработчика:
+//   - Проверяет доступ по trusted_subnet (должен быть установлен через middleware)
+//   - Возвращает:
+//   - 200 OK и JSON с статистикой при успешном выполнении
+//   - 403 Forbidden если IP не в доверенной подсети
+//   - 500 Internal Server Error при ошибках получения данных
+//   - Логирует все ошибки и успешные выполнения
+//
+// Пример ответа при успехе:
+//
+//        {
+//          "urls": 100,
+//          "users": 50
+//        }
+//
+// Middleware:
+//   - Должен быть установлен trustednet.CheckTrustedSubnet перед этим обработчиком
+//   - Рекомендуется добавить mwlogger.RequestLogging для логирования запросов
 func GetHandler(urlHandler URLHandler, log *zap.Logger) http.HandlerFunc <span class="cov6" title="2">{
         return func(res http.ResponseWriter, req *http.Request) </span><span class="cov10" title="3">{
 
@@ -1621,7 +3520,7 @@ func GetHandler(urlHandler URLHandler, log *zap.Logger) http.HandlerFunc <span c
 }
 </pre>
 		
-		<pre class="file" id="file12" style="display: none">// Package userurls предоставляет обработчик для получения списка URL пользователя.
+		<pre class="file" id="file19" style="display: none">// Package userurls предоставляет обработчик для получения списка URL пользователя.
 //
 // Пакет реализует:
 // - Получение всех сокращённых URL авторизованного пользователя
@@ -1729,7 +3628,7 @@ func GetHandler(urlHandler URLHandler, baseURL string, log *zap.Logger) http.Han
 }
 </pre>
 		
-		<pre class="file" id="file13" style="display: none">// Package httpgzip предоставляет инструменты для сжатия и распаковки HTTP-трафика в формате gzip.
+		<pre class="file" id="file20" style="display: none">// Package httpgzip предоставляет инструменты для сжатия и распаковки HTTP-трафика в формате gzip.
 // Реализует пул объектов gzip.Writer и gzip.Reader для оптимизации производительности.
 package httpgzip
 
@@ -1742,14 +3641,14 @@ import (
 
 // Пул gzip.Writer для повторного использования объектов
 var writerPool = sync.Pool{
-        New: func() interface{} <span class="cov10" title="104">{
+        New: func() interface{} <span class="cov10" title="103">{
                 return gzip.NewWriter(io.Discard)
         }</span>,
 }
 
 // Пул gzip.Reader для повторного использования объектов
 var readerPool = sync.Pool{
-        New: func() interface{} <span class="cov9" title="103">{
+        New: func() interface{} <span class="cov9" title="100">{
                 return new(gzip.Reader)
         }</span>,
 }
@@ -1866,7 +3765,7 @@ func (c *compressReader) Close() error <span class="cov6" title="20">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file14" style="display: none">// Package jwtauth предоставляет функционал для работы с JWT токенами аутентификации.
+		<pre class="file" id="file21" style="display: none">// Package jwtauth предоставляет функционал для работы с JWT токенами аутентификации.
 package jwtauth
 
 import (
@@ -1901,7 +3800,7 @@ const UserIDContextKey ContextKey = "userID"
 // Пример использования:
 //
 //        token, userID, err := GenerateNewToken([]byte("secret"))
-func GenerateNewToken(jwtKey []byte) (string, string, error) <span class="cov10" title="25">{
+func GenerateNewToken(jwtKey []byte) (string, string, error) <span class="cov10" title="26">{
         userID := uuid.New().String() // Генерация уникального ID пользователя
 
         claims := &amp;Claims{
@@ -1918,7 +3817,7 @@ func GenerateNewToken(jwtKey []byte) (string, string, error) <span class="cov10"
 }</span>
 </pre>
 		
-		<pre class="file" id="file15" style="display: none">// Package logger предоставляет централизованную систему логирования для приложения
+		<pre class="file" id="file22" style="display: none">// Package logger предоставляет централизованную систему логирования для приложения
 // на основе zap.Logger. Реализует паттерн синглтона для глобального доступа к логеру.
 package logger
 
@@ -1970,7 +3869,7 @@ func Initialize(level string) error <span class="cov10" title="11">{
 }
 </pre>
 		
-		<pre class="file" id="file16" style="display: none">// Package pprof предоставляет HTTP-интерфейс для профилирования приложения
+		<pre class="file" id="file23" style="display: none">// Package pprof предоставляет HTTP-интерфейс для профилирования приложения
 // с использованием стандартного пакета net/http/pprof.
 package pprof
 
@@ -2078,7 +3977,544 @@ func registerPProfRoutes(r *chi.Mux, config config.PProfConfig) <span class="cov
 }
 </pre>
 		
-		<pre class="file" id="file17" style="display: none">// Package auth предоставляет middleware для аутентификации через JWT.
+		<pre class="file" id="file24" style="display: none">package interceptors
+
+import (
+        "context"
+        "fmt"
+
+        "github.com/ryabkov82/shortener/internal/app/jwtauth"
+
+        "github.com/golang-jwt/jwt/v5"
+        "google.golang.org/grpc"
+        "google.golang.org/grpc/codes"
+        "google.golang.org/grpc/metadata"
+        "google.golang.org/grpc/status"
+)
+
+// JWTAutoIssueGRPC возвращает gRPC-интерцептор для JWT-аутентификации с автоматической выдачей токенов.
+//
+// Интерцептор выполняет:
+//   - Проверку JWT-токена из метаданных gRPC-запроса (ключ "token")
+//   - Автоматическую генерацию и выдачу нового токена, если:
+//   - Токен отсутствует
+//   - Токен невалиден
+//   - Токен не содержит UserID
+//   - Добавление UserID в контекст вызова при успешной аутентификации
+//   - Пропуск проверки для публичных методов (см. isPublicMethod)
+//
+// Параметры:
+//   - jwtKey: секретный ключ для подписи JWT-токенов
+//
+// Возвращает:
+//   - grpc.UnaryServerInterceptor: настроенный интерцептор аутентификации
+//
+// Особенности работы:
+//   - Для извлечения токена используются метаданные gRPC (metadata)
+//   - Новый токен устанавливается в заголовки ответа (grpc.SetHeader)
+//   - Публичные методы определяются функцией isPublicMethod
+//   - Контекст обогащается UserID (ключ jwtauth.UserIDContextKey)
+//
+// Пример использования:
+//
+//        server := grpc.NewServer(
+//            grpc.ChainUnaryInterceptor(
+//                interceptor.JWTAutoIssueGRPC([]byte("secret")),
+//            ),
+//        )
+//
+// Схема работы:
+//  1. Проверка метода в isPublicMethod
+//  2. Извлечение токена из metadata["token"]
+//  3. Валидация токена и проверка claims
+//  4. Выдача нового токена при необходимости
+//  5. Добавление UserID в контекст
+//  6. Вызов основного обработчика
+func JWTAutoIssueGRPC(jwtKey []byte) grpc.UnaryServerInterceptor <span class="cov1" title="1">{
+        return func(
+                ctx context.Context,
+                req interface{},
+                info *grpc.UnaryServerInfo,
+                handler grpc.UnaryHandler,
+        ) (interface{}, error) </span><span class="cov10" title="3">{
+                // Пропускаем аутентификацию для публичных методов
+                if isPublicMethod(info.FullMethod) </span><span class="cov0" title="0">{
+                        return handler(ctx, req)
+                }</span>
+
+                // Аналог r.Cookie() в HTTP - получаем токен из метаданных
+                <span class="cov10" title="3">md, ok := metadata.FromIncomingContext(ctx)
+                if !ok </span><span class="cov0" title="0">{
+                        return issueNewTokenAndHandle(ctx, req, handler, jwtKey)
+                }</span>
+
+                <span class="cov10" title="3">tokens := md.Get("token")
+                if len(tokens) == 0 </span><span class="cov0" title="0">{
+                        return issueNewTokenAndHandle(ctx, req, handler, jwtKey)
+                }</span>
+
+                // Парсинг и валидация токена (аналогично HTTP)
+                <span class="cov10" title="3">claims := &amp;jwtauth.Claims{}
+
+                token, err := jwt.ParseWithClaims(tokens[0], claims, func(t *jwt.Token) (interface{}, error) </span><span class="cov10" title="3">{
+                        if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok </span><span class="cov0" title="0">{
+                                return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+                        }</span>
+                        <span class="cov10" title="3">return jwtKey, nil</span>
+                })
+
+                <span class="cov10" title="3">if err != nil || !token.Valid </span><span class="cov0" title="0">{
+                        return issueNewTokenAndHandle(ctx, req, handler, jwtKey)
+                }</span>
+
+                // Если токен валиден, добавляем userID в контекст
+                <span class="cov10" title="3">userID := claims.UserID
+                if userID == "" </span><span class="cov0" title="0">{
+                        return issueNewTokenAndHandle(ctx, req, handler, jwtKey)
+                }</span>
+
+                <span class="cov10" title="3">newCtx := context.WithValue(ctx, jwtauth.UserIDContextKey, claims.UserID)
+                return handler(newCtx, req)</span>
+        }
+}
+
+func StrictJWTAutoIssueGRPC(jwtKey []byte) grpc.UnaryServerInterceptor <span class="cov0" title="0">{
+        return func(
+                ctx context.Context,
+                req interface{},
+                info *grpc.UnaryServerInfo,
+                handler grpc.UnaryHandler,
+        ) (interface{}, error) </span><span class="cov0" title="0">{
+                // Пропускаем аутентификацию для публичных методов
+                if isPublicMethod(info.FullMethod) </span><span class="cov0" title="0">{
+                        return handler(ctx, req)
+                }</span>
+
+                <span class="cov0" title="0">md, ok := metadata.FromIncomingContext(ctx)
+                if !ok </span><span class="cov0" title="0">{
+
+                        err := issueNewToken(ctx, jwtKey)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return nil, status.Error(codes.Internal, "failed to generate token")
+                        }</span>
+                        <span class="cov0" title="0">return nil, status.Error(codes.Unauthenticated, "status unauthenticated")</span>
+                }
+
+                <span class="cov0" title="0">tokens := md.Get("token")
+                if len(tokens) == 0 </span><span class="cov0" title="0">{
+                        err := issueNewToken(ctx, jwtKey)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return nil, status.Error(codes.Internal, "failed to generate token")
+                        }</span>
+                        <span class="cov0" title="0">return nil, status.Error(codes.Unauthenticated, "status unauthenticated")</span>
+                }
+
+                // Парсинг и валидация токена (аналогично HTTP)
+                <span class="cov0" title="0">claims := &amp;jwtauth.Claims{}
+
+                token, err := jwt.ParseWithClaims(tokens[0], claims, func(t *jwt.Token) (interface{}, error) </span><span class="cov0" title="0">{
+                        if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok </span><span class="cov0" title="0">{
+                                return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+                        }</span>
+                        <span class="cov0" title="0">return jwtKey, nil</span>
+                })
+
+                <span class="cov0" title="0">if err != nil || !token.Valid </span><span class="cov0" title="0">{
+                        err := issueNewToken(ctx, jwtKey)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return nil, status.Error(codes.Internal, "failed to generate token")
+                        }</span>
+                        <span class="cov0" title="0">return nil, status.Error(codes.Unauthenticated, "status unauthenticated")</span>
+                }
+
+                // Если токен валиден, добавляем userID в контекст
+                <span class="cov0" title="0">userID := claims.UserID
+                if userID == "" </span><span class="cov0" title="0">{
+                        err := issueNewToken(ctx, jwtKey)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return nil, status.Error(codes.Internal, "failed to generate token")
+                        }</span>
+                        <span class="cov0" title="0">return nil, status.Error(codes.Unauthenticated, "status unauthenticated")</span>
+                }
+
+                <span class="cov0" title="0">newCtx := context.WithValue(ctx, jwtauth.UserIDContextKey, claims.UserID)
+                return handler(newCtx, req)</span>
+        }
+}
+
+func issueNewToken(
+        ctx context.Context,
+        jwtKey []byte,
+) error <span class="cov0" title="0">{
+        // Генерация нового токена
+        token, _, err := jwtauth.GenerateNewToken(jwtKey)
+        if err != nil </span><span class="cov0" title="0">{
+                return status.Errorf(codes.Internal, "failed to create token")
+        }</span>
+
+        // Установка токена в заголовки ответа (аналог Set-Cookie)
+        <span class="cov0" title="0">header := metadata.Pairs("token", token)
+        grpc.SetHeader(ctx, header)
+
+        return nil</span>
+}
+
+// Аналог issueNewToken в HTTP-версии
+func issueNewTokenAndHandle(
+        ctx context.Context,
+        req interface{},
+        handler grpc.UnaryHandler,
+        jwtKey []byte,
+) (interface{}, error) <span class="cov0" title="0">{
+        // Генерация нового токена
+        token, userID, err := jwtauth.GenerateNewToken(jwtKey)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, status.Errorf(codes.Internal, "failed to create token")
+        }</span>
+
+        // Установка токена в заголовки ответа (аналог Set-Cookie)
+        <span class="cov0" title="0">header := metadata.Pairs("token", token)
+        grpc.SetHeader(ctx, header)
+
+        // Добавление userID в контекст
+        newCtx := context.WithValue(ctx, jwtauth.UserIDContextKey, userID)
+        return handler(newCtx, req)</span>
+}
+
+func isPublicMethod(method string) bool <span class="cov10" title="3">{
+        publicMethods := map[string]bool{
+                "/grpc.health.v1.Health/Check": true,
+                // Другие публичные методы
+        }
+        return publicMethods[method]
+}</span>
+</pre>
+		
+		<pre class="file" id="file25" style="display: none">package interceptors
+
+import (
+        "context"
+        "time"
+
+        "go.uber.org/zap"
+        "google.golang.org/grpc"
+        "google.golang.org/grpc/status"
+)
+
+// LoggingInterceptor возвращает gRPC-интерцептор для логирования вызовов методов.
+//
+// Интерцептор фиксирует:
+//   - Полное имя вызываемого метода (info.FullMethod)
+//   - Параметры запроса (req)
+//   - Статус обработки (код и текстовое описание)
+//   - Время выполнения вызова
+//
+// Параметры:
+//   - log: логгер zap для записи сообщений (должен быть предварительно настроен)
+//
+// Возвращает:
+//   - grpc.UnaryServerInterceptor: настроенный интерцептор логирования
+//
+// Особенности работы:
+//   - Логирование происходит после выполнения основного обработчика
+//   - Время выполнения измеряется с наносекундной точностью
+//   - Ошибки преобразуются в gRPC-статусы для единообразного логирования
+//   - Запросы логируются на уровне INFO
+//
+// Пример использования:
+//
+//        logger, _ := zap.NewProduction()
+//        server := grpc.NewServer(
+//            grpc.ChainUnaryInterceptor(
+//                LoggingInterceptor(logger),
+//            ),
+//        )
+//
+// Формат логов:
+//
+//        {
+//          "method": "/service.Name/MethodName",
+//          "request": {...},
+//          "status_code": 2,
+//          "status": "UNKNOWN",
+//          "duration": "12.345ms"
+//        }
+func LoggingInterceptor(log *zap.Logger) grpc.UnaryServerInterceptor <span class="cov1" title="1">{
+        return func(
+                ctx context.Context,
+                req interface{},
+                info *grpc.UnaryServerInfo,
+                handler grpc.UnaryHandler,
+        ) (resp interface{}, err error) </span><span class="cov10" title="3">{
+                // Фиксируем время начала обработки
+                startTime := time.Now()
+
+                // Отложенное логирование после обработки
+                defer func() </span><span class="cov10" title="3">{
+                        duration := time.Since(startTime)
+                        st, _ := status.FromError(err)
+
+                        log.Info("gRPC request completed",
+                                zap.String("method", info.FullMethod),     // Полное имя метода (например /shortener.Shortener/CreateShortURL)
+                                zap.Any("request", req),                   // Входные параметры
+                                zap.Int("status_code", int(st.Code())),    // Код статуса gRPC
+                                zap.String("status", st.Code().String()),  // Текстовый статус
+                                zap.String("duration", duration.String()), // Время обработки
+                        )
+                }</span>()
+
+                // Вызываем следующий обработчик
+                <span class="cov10" title="3">return handler(ctx, req)</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file26" style="display: none">// internal/server/grpc/interceptors/trusted_subnet.go
+package interceptors
+
+import (
+        "context"
+        "net"
+        "strings"
+
+        "google.golang.org/grpc"
+        "google.golang.org/grpc/codes"
+        "google.golang.org/grpc/metadata"
+        "google.golang.org/grpc/peer"
+        "google.golang.org/grpc/status"
+)
+
+// TrustedSubnetConfig содержит конфигурацию для интерцептора проверки доверенных подсетей.
+//
+// Используется для ограничения доступа к gRPC-методам только из определенных IP-подсетей.
+// Применяется в TrustedSubnetInterceptor.
+//
+// Поля:
+//
+//   - TrustedSubnet: строка в CIDR-нотации, определяющая доверенную подсеть.
+//     Формат: "IPv4/маска" или "IPv6/маска" (например "192.168.1.0/24").
+//     Пустая строка означает отсутствие настроенной подсети.
+//
+//   - ProtectedMethods: map[string]bool, где ключи - это имена gRPC-методов,
+//     которые требуют проверки доступа. Поддерживает два формата:
+//
+//   - Полное имя метода (например "/shortener.Shortener/Stats")
+//
+//   - Префикс сервиса (например "/shortener.Admin/" для всех методов сервиса)
+//     Примечание: регистрозависимый поиск.
+//
+//   - DenyIfNotConfigured: флаг, определяющий поведение при отсутствии настроенной подсети.
+//
+//   - true - возвращать ошибку PermissionDenied
+//
+//   - false - пропускать запрос без проверки
+//     Рекомендуемое значение для production: true.
+type TrustedSubnetConfig struct {
+        TrustedSubnet string
+        // Методы, требующие проверки (например: ["/shortener.Shortener/Stats"])
+        ProtectedMethods map[string]bool
+        // Блокировать если подсеть не настроена (true) или пропускать (false)
+        DenyIfNotConfigured bool
+}
+
+// TrustedSubnetInterceptor возвращает gRPC-интерцептор для контроля доступа по доверенным подсетям.
+//
+// Интерцептор выполняет:
+//   - Проверку принадлежности IP-адреса клиента к указанной доверенной подсети
+//   - Выборочное применение проверки только к защищенным методам (см. TrustedSubnetConfig)
+//   - Гибкую настройку поведения при отсутствии конфигурации подсети
+//
+// Параметры:
+//   - cfg: конфигурация интерцептора (TrustedSubnetConfig):
+//   - TrustedSubnet: CIDR-нотация подсети (например "192.168.1.0/24")
+//   - ProtectedMethods: список защищаемых gRPC-методов
+//   - DenyIfNotConfigured: блокировать вызовы если подсеть не настроена
+//
+// Возвращает:
+//   - grpc.UnaryServerInterceptor: настроенный интерцептор контроля доступа
+//
+// Логика работы:
+//  1. Проверка метода на наличие в ProtectedMethods
+//  2. Если подсеть не задана:
+//     - DenyIfNotConfigured=true: возвращает PermissionDenied
+//     - DenyIfNotConfigured=false: пропускает запрос
+//  3. Определение IP-адреса клиента (X-Forwarded-For → X-Real-IP → peer)
+//  4. Проверка принадлежности IP к доверенной подсети
+//  5. При отказе: возвращает PermissionDenied с детальным описанием
+//
+// Пример использования:
+//
+//        interceptor := TrustedSubnetInterceptor(TrustedSubnetConfig{
+//            TrustedSubnet: "10.0.0.0/8",
+//            ProtectedMethods: map[string]bool{
+//                "/shortener.Shortener/Stats": true,
+//            },
+//            DenyIfNotConfigured: true,
+//        })
+//        server := grpc.NewServer(grpc.ChainUnaryInterceptor(interceptor))
+//
+// Особенности:
+//   - Поддерживает CIDR-нотацию для IPv4/IPv6
+//   - Совместим с прокси (X-Forwarded-For/X-Real-IP)
+//   - Гибкая настройка через ProtectedMethods (поддержка wildcards)
+//   - Детализированные сообщения об ошибках
+//
+// Рекомендации:
+//   - Для публичных методов исключайте проверку через ProtectedMethods
+//   - В production всегда устанавливайте DenyIfNotConfigured=true
+//   - Логируйте факты отказа в доступе
+func TrustedSubnetInterceptor(cfg TrustedSubnetConfig) grpc.UnaryServerInterceptor <span class="cov0" title="0">{
+        return func(
+                ctx context.Context,
+                req interface{},
+                info *grpc.UnaryServerInfo,
+                handler grpc.UnaryHandler,
+        ) (interface{}, error) </span><span class="cov0" title="0">{
+                // Проверяем, требуется ли проверка для этого метода
+                if !cfg.isMethodProtected(info.FullMethod) </span><span class="cov0" title="0">{
+                        return handler(ctx, req)
+                }</span>
+
+                // Если подсеть не задана
+                <span class="cov0" title="0">if cfg.TrustedSubnet == "" </span><span class="cov0" title="0">{
+                        if cfg.DenyIfNotConfigured </span><span class="cov0" title="0">{
+                                return nil, status.Error(codes.PermissionDenied, "trusted subnet not configured")
+                        }</span>
+                        <span class="cov0" title="0">return handler(ctx, req)</span>
+                }
+
+                // Получаем IP клиента
+                <span class="cov0" title="0">clientIP, err := getClientIP(ctx)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, status.Error(codes.PermissionDenied, err.Error())
+                }</span>
+
+                // Парсим доверенную подсеть
+                <span class="cov0" title="0">_, subnet, err := net.ParseCIDR(cfg.TrustedSubnet)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, status.Error(codes.Internal, "invalid trusted subnet configuration")
+                }</span>
+
+                // Проверяем принадлежность IP к подсети
+                <span class="cov0" title="0">ip := net.ParseIP(clientIP)
+                if ip == nil || !subnet.Contains(ip) </span><span class="cov0" title="0">{
+                        return nil, status.Error(codes.PermissionDenied, "access denied: IP not in trusted subnet")
+                }</span>
+
+                <span class="cov0" title="0">return handler(ctx, req)</span>
+        }
+}
+
+func (c *TrustedSubnetConfig) isMethodProtected(method string) bool <span class="cov0" title="0">{
+        // Проверяем полное совпадение метода
+        if c.ProtectedMethods[method] </span><span class="cov0" title="0">{
+                return true
+        }</span>
+
+        // Проверяем совпадение по префиксу (для группировки методов)
+        <span class="cov0" title="0">for m := range c.ProtectedMethods </span><span class="cov0" title="0">{
+                if strings.HasPrefix(method, m) </span><span class="cov0" title="0">{
+                        return true
+                }</span>
+        }
+
+        <span class="cov0" title="0">return false</span>
+}
+
+func getClientIP(ctx context.Context) (string, error) <span class="cov0" title="0">{
+        // 1. Пробуем получить из X-Forwarded-For (если есть прокси)
+        if md, ok := metadata.FromIncomingContext(ctx); ok </span><span class="cov0" title="0">{
+                if forwardedIPs := md.Get("x-forwarded-for"); len(forwardedIPs) &gt; 0 </span><span class="cov0" title="0">{
+                        return strings.Split(forwardedIPs[0], ",")[0], nil
+                }</span>
+                <span class="cov0" title="0">if realIPs := md.Get("x-real-ip"); len(realIPs) &gt; 0 </span><span class="cov0" title="0">{
+                        return realIPs[0], nil
+                }</span>
+        }
+
+        // 2. Получаем из peer информации
+        <span class="cov0" title="0">if p, ok := peer.FromContext(ctx); ok </span><span class="cov0" title="0">{
+                switch addr := p.Addr.(type) </span>{
+                case *net.TCPAddr:<span class="cov0" title="0">
+                        return addr.IP.String(), nil</span>
+                case *net.UDPAddr:<span class="cov0" title="0">
+                        return addr.IP.String(), nil</span>
+                default:<span class="cov0" title="0">
+                        return addr.String(), nil</span>
+                }
+        }
+
+        <span class="cov0" title="0">return "", status.Error(codes.PermissionDenied, "could not determine client IP")</span>
+}
+</pre>
+		
+		<pre class="file" id="file27" style="display: none">package grpcserver
+
+import (
+        "net"
+
+        "github.com/ryabkov82/shortener/api"
+        "github.com/ryabkov82/shortener/internal/app/config"
+        grpchandlers "github.com/ryabkov82/shortener/internal/app/handlers/grpc"
+        "github.com/ryabkov82/shortener/internal/app/handlers/grpc/base"
+        "github.com/ryabkov82/shortener/internal/app/handlers/grpc/redirect"
+        "github.com/ryabkov82/shortener/internal/app/handlers/grpc/shorturl"
+        "github.com/ryabkov82/shortener/internal/app/service"
+        "go.uber.org/zap"
+        "google.golang.org/grpc"
+)
+
+// StartGRPCServer создает и запускает gRPC сервер
+func StartGRPCServer(log *zap.Logger, cfg *config.Config, srv *service.Service) *grpc.Server <span class="cov0" title="0">{
+
+        // Создаем базовый обработчик с общими зависимостями
+        baseHandler := base.NewBaseHandler(log)
+
+        // Инициализация конкретных обработчиков
+        shorturlHandler := shorturl.New(
+                baseHandler,
+                srv,
+                cfg.BaseURL,
+        )
+
+        redirectHandler := redirect.New(
+                baseHandler,
+                srv,
+        )
+
+        // Создаем агрегированный сервер
+        aggregateHandler := grpchandlers.NewServer(
+                baseHandler,
+                grpchandlers.WithCreateShortURLEndpoint(shorturlHandler),
+                grpchandlers.WithGetOriginalURLEndpoint(redirectHandler),
+        )
+
+        commonInterceptors := baseHandler.CommonInterceptors(cfg)
+
+        grpcServer := grpc.NewServer(
+                grpc.ChainUnaryInterceptor(commonInterceptors...),
+        )
+
+        // Регистрация gRPC сервиса
+        api.RegisterShortenerServer(grpcServer, aggregateHandler)
+
+        lis, err := net.Listen("tcp", cfg.GRPCServerAddr)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal("Failed to listen gRPC", zap.Error(err))
+        }</span>
+
+        <span class="cov0" title="0">go func() </span><span class="cov0" title="0">{
+                log.Info("Starting gRPC server", zap.String("address", cfg.GRPCServerAddr))
+                if err := grpcServer.Serve(lis); err != nil </span><span class="cov0" title="0">{
+                        log.Error("gRPC server failed", zap.Error(err))
+                }</span>
+        }()
+
+        <span class="cov0" title="0">return grpcServer</span>
+}
+</pre>
+		
+		<pre class="file" id="file28" style="display: none">// Package auth предоставляет middleware для аутентификации через JWT.
 package auth
 
 import (
@@ -2227,7 +4663,7 @@ func setTokenCookie(w http.ResponseWriter, token string) <span class="cov5" titl
 }</span>
 </pre>
 		
-		<pre class="file" id="file18" style="display: none">// Package logger предоставляет middleware для логирования HTTP-запросов.
+		<pre class="file" id="file29" style="display: none">// Package logger предоставляет middleware для логирования HTTP-запросов.
 package logger
 
 import (
@@ -2283,7 +4719,7 @@ func RequestLogging(log *zap.Logger) func(next http.Handler) http.Handler <span 
 }
 </pre>
 		
-		<pre class="file" id="file19" style="display: none">// Package mwgzip предоставляет middleware для сжатия и распаковки HTTP-трафика в формате gzip.
+		<pre class="file" id="file30" style="display: none">// Package mwgzip предоставляет middleware для сжатия и распаковки HTTP-трафика в формате gzip.
 package mwgzip
 
 import (
@@ -2341,13 +4777,61 @@ func Gzip(next http.Handler) http.Handler <span class="cov6" title="9">{
 }
 </pre>
 		
-		<pre class="file" id="file20" style="display: none">package trustednet
+		<pre class="file" id="file31" style="display: none">/*
+Package trustednet предоставляет security-мидлвары для HTTP-сервера.
+
+Обеспечивает контроль доступа по IP-адресу через проверку вхождения
+в доверенную подсеть. Основные сценарии использования:
+
+1. Защита внутренних API эндпоинтов
+2. Ограничение доступа к административным интерфейсам
+
+Пример конфигурации nginx для корректной работы:
+
+        location / {
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_pass http://backend;
+        }
+*/
+package trustednet
 
 import (
         "net"
         "net/http"
 )
 
+// CheckTrustedSubnet создает middleware для проверки доступа по доверенной подсети.
+//
+// Параметры:
+//   - trustedSubnet: строка в формате CIDR (например, "192.168.1.0/24"),
+//     определяющая доверенную подсеть. Если пустая строка - доступ запрещен для всех.
+//
+// Возвращает:
+//   - Middleware функцию для chi.Router или стандартного http.Handler
+//
+// Логика работы:
+//  1. Если trustedSubnet пустой - все запросы отклоняются с 403 Forbidden
+//  2. Проверяет наличие заголовка X-Real-IP
+//  3. Валидирует переданный IP-адрес
+//  4. Проверяет вхождение IP в доверенную подсеть
+//
+// Коды ответа:
+//   - 403 Forbidden:
+//   - trustedSubnet пустой
+//   - Отсутствует X-Real-IP
+//   - IP не входит в доверенную подсеть
+//   - 500 Internal Server Error: невалидный формат trustedSubnet
+//
+// Пример использования:
+//
+//        r := chi.NewRouter()
+//        r.Use(CheckTrustedSubnet("192.168.1.0/24"))
+//        r.Get("/admin", adminHandler)
+//
+// Требования:
+//   - Перед middleware должен быть установлен proxy (например, nginx), который
+//     добавляет заголовок X-Real-IP с реальным IP клиента
+//   - Формат trustedSubnet должен быть валидным CIDR
 func CheckTrustedSubnet(trustedSubnet string) func(http.Handler) http.Handler <span class="cov4" title="2">{
         return func(next http.Handler) http.Handler </span><span class="cov4" title="2">{
                 return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) </span><span class="cov10" title="5">{
@@ -2380,71 +4864,53 @@ func CheckTrustedSubnet(trustedSubnet string) func(http.Handler) http.Handler <s
 }
 </pre>
 		
-		<pre class="file" id="file21" style="display: none">package server
+		<pre class="file" id="file32" style="display: none">package httpserver
 
 import (
-        "context"
         "net/http"
-        _ "net/http/pprof"
-        "os"
-        "os/signal"
-        "syscall"
-        "time"
 
         "go.uber.org/zap"
 
         "github.com/ryabkov82/shortener/internal/app/config"
-        "github.com/ryabkov82/shortener/internal/app/handlers/batch"
-        "github.com/ryabkov82/shortener/internal/app/handlers/deluserurls"
-        "github.com/ryabkov82/shortener/internal/app/handlers/ping"
-        "github.com/ryabkov82/shortener/internal/app/handlers/redirect"
-        "github.com/ryabkov82/shortener/internal/app/handlers/shortenapi"
-        "github.com/ryabkov82/shortener/internal/app/handlers/shorturl"
-        "github.com/ryabkov82/shortener/internal/app/handlers/stats"
-        "github.com/ryabkov82/shortener/internal/app/handlers/userurls"
-        "github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
-        mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
-        "github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
-        "github.com/ryabkov82/shortener/internal/app/server/middleware/trustednet"
+        "github.com/ryabkov82/shortener/internal/app/handlers/http/batch"
+        "github.com/ryabkov82/shortener/internal/app/handlers/http/deluserurls"
+        "github.com/ryabkov82/shortener/internal/app/handlers/http/ping"
+        "github.com/ryabkov82/shortener/internal/app/handlers/http/redirect"
+        "github.com/ryabkov82/shortener/internal/app/handlers/http/shortenapi"
+        "github.com/ryabkov82/shortener/internal/app/handlers/http/shorturl"
+        "github.com/ryabkov82/shortener/internal/app/handlers/http/stats"
+        "github.com/ryabkov82/shortener/internal/app/handlers/http/userurls"
+        "github.com/ryabkov82/shortener/internal/app/server/http/middleware/auth"
+        mwlogger "github.com/ryabkov82/shortener/internal/app/server/http/middleware/logger"
+        "github.com/ryabkov82/shortener/internal/app/server/http/middleware/mwgzip"
+        "github.com/ryabkov82/shortener/internal/app/server/http/middleware/trustednet"
         "github.com/ryabkov82/shortener/internal/app/service"
-        "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
-        "github.com/ryabkov82/shortener/internal/app/storage/postgres"
 
         "github.com/go-chi/chi/v5"
-
-        "github.com/ryabkov82/shortener/internal/app/pprof"
 )
 
-// StartServer запускает HTTP-сервер.
-func StartServer(log *zap.Logger, cfg *config.Config) <span class="cov0" title="0">{
+// StartHTTPServer запускает HTTP-сервер.
+func StartHTTPServer(log *zap.Logger, cfg *config.Config, srv *service.Service) *http.Server <span class="cov0" title="0">{
 
-        pprof.StartPProf(log, cfg.ConfigPProf)
+        log.Info("Starting http server", zap.String("address", cfg.HTTPServerAddr), zap.String("BaseURL", cfg.BaseURL))
 
-        srv := &amp;service.Service{}
+        router := setupRouter(log, cfg, srv)
 
-        if cfg.DBConnect != "" </span><span class="cov0" title="0">{
-                pg, err := postgres.NewPostgresStorage(cfg.DBConnect)
-
-                if err != nil </span><span class="cov0" title="0">{
-                        panic(err)</span>
-                }
-                <span class="cov0" title="0">srv = service.NewService(pg)
-                log.Info("Storage postgres")</span>
-        } else<span class="cov0" title="0"> {
-                st, err := inmemory.NewInMemoryStorage(cfg.FileStorage)
-
-                if err != nil </span><span class="cov0" title="0">{
-                        panic(err)</span>
-                }
-                // загружаем сохраненные данные из файла..
-                <span class="cov0" title="0">if err := st.Load(cfg.FileStorage); err != nil </span><span class="cov0" title="0">{
-                        panic(err)</span>
-                }
-                <span class="cov0" title="0">srv = service.NewService(st)
-                log.Info("Storage inmemory", zap.String("FileStorage", cfg.FileStorage))</span>
+        server := &amp;http.Server{
+                Addr:    cfg.HTTPServerAddr,
+                Handler: router,
         }
 
-        <span class="cov0" title="0">router := chi.NewRouter()
+        go runServer(log, server, cfg)
+        return server
+
+}</span>
+
+// Приватные вспомогательные функции
+func setupRouter(log *zap.Logger, cfg *config.Config, srv *service.Service) http.Handler <span class="cov0" title="0">{
+
+        router := chi.NewRouter()
+        // Настройка middleware и роутов
         router.Use(mwlogger.RequestLogging(log))
         router.Use(mwgzip.Gzip)
 
@@ -2465,14 +4931,10 @@ func StartServer(log *zap.Logger, cfg *config.Config) <span class="cov0" title="
                 router.Get("/api/internal/stats", stats.GetHandler(srv, log))
         }</span>)
 
-        <span class="cov0" title="0">log.Info("Server started", zap.String("address", cfg.HTTPServerAddr))
+        <span class="cov0" title="0">return router</span>
+}
 
-        // Запуск HTTP-сервера в отдельной горутине
-
-        server := &amp;http.Server{
-                Addr:    cfg.HTTPServerAddr,
-                Handler: router, // Ваш роутер
-        }
+func runServer(log *zap.Logger, server *http.Server, cfg *config.Config) <span class="cov0" title="0">{
 
         if cfg.EnableHTTPS </span><span class="cov0" title="0">{
                 // Запуск сервера с HTTPS
@@ -2489,35 +4951,113 @@ func StartServer(log *zap.Logger, cfg *config.Config) <span class="cov0" title="
                 }()
         }
 
-        // Обработка сигналов завершения
-        <span class="cov0" title="0">quit := make(chan os.Signal, 1)
-        signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
-        &lt;-quit
-
-        log.Info("Shutting down server...")
-
-        // Создаем контекст с таймаутом для graceful shutdown
-        ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-        defer cancel()
-
-        // Остановка HTTP-сервера
-        if err := server.Shutdown(ctx); err != nil </span><span class="cov0" title="0">{
-                log.Info("HTTP server shutdown error", zap.Error(err))
-        }</span>
-
-        // корректное завершение работы воркеров сервиса
-        <span class="cov0" title="0">srv.GracefulStop(5 * time.Second)
-
-        if err := srv.Close(); err != nil </span><span class="cov0" title="0">{
-                log.Info("DB close error", zap.Error(err))
-        }</span>
-
-        <span class="cov0" title="0">log.Info("Server shutdown complete")</span>
+        <span class="cov0" title="0">log.Info("Server started", zap.String("address", cfg.HTTPServerAddr))</span>
 
 }
 </pre>
 		
-		<pre class="file" id="file22" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+		<pre class="file" id="file33" style="display: none">// internal/server/run.go
+package server
+
+import (
+        "context"
+        "net/http"
+        _ "net/http/pprof"
+        "os"
+        "os/signal"
+        "syscall"
+        "time"
+
+        "github.com/ryabkov82/shortener/internal/app/config"
+        "github.com/ryabkov82/shortener/internal/app/pprof"
+        grpcserver "github.com/ryabkov82/shortener/internal/app/server/grpc"
+        httpserver "github.com/ryabkov82/shortener/internal/app/server/http"
+        "github.com/ryabkov82/shortener/internal/app/service"
+        "github.com/ryabkov82/shortener/internal/app/storage/inmemory"
+        "github.com/ryabkov82/shortener/internal/app/storage/postgres"
+        "google.golang.org/grpc"
+
+        "go.uber.org/zap"
+)
+
+func StartServers(log *zap.Logger, cfg *config.Config) <span class="cov0" title="0">{
+
+        pprof.StartPProf(log, cfg.ConfigPProf)
+
+        // 1. Инициализация хранилища и сервиса
+        storage, err := initStorage(cfg, log)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal("Failed to initialize storage", zap.Error(err))
+        }</span>
+
+        <span class="cov0" title="0">appService := service.NewService(storage)
+
+        // 2. Запуск серверов
+        httpServer := httpserver.StartHTTPServer(log, cfg, appService)
+        grpcServer := grpcserver.StartGRPCServer(log, cfg, appService)
+
+        // 3. Graceful shutdown
+        waitForShutdown(log, httpServer, grpcServer, appService)</span>
+}
+
+// Вспомогательные функции
+func initStorage(cfg *config.Config, log *zap.Logger) (service.Repository, error) <span class="cov0" title="0">{
+        if cfg.DBConnect != "" </span><span class="cov0" title="0">{
+                pg, err := postgres.NewPostgresStorage(cfg.DBConnect)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                <span class="cov0" title="0">log.Info("Using PostgreSQL storage")
+                return pg, nil</span>
+        }
+
+        <span class="cov0" title="0">mem, err := inmemory.NewInMemoryStorage(cfg.FileStorage)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">if err := mem.Load(cfg.FileStorage); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">log.Info("Using in-memory storage", zap.String("file", cfg.FileStorage))
+        return mem, nil</span>
+}
+
+func waitForShutdown(
+        log *zap.Logger,
+        httpServer *http.Server,
+        grpcServer *grpc.Server,
+        service *service.Service,
+) <span class="cov0" title="0">{
+        quit := make(chan os.Signal, 1)
+        signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+        &lt;-quit
+
+        log.Info("Shutting down servers...")
+
+        ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+        defer cancel()
+
+        // Остановка HTTP сервера
+        if err := httpServer.Shutdown(ctx); err != nil </span><span class="cov0" title="0">{
+                log.Error("HTTP server shutdown error", zap.Error(err))
+        }</span>
+
+        // Остановка gRPC сервера
+        <span class="cov0" title="0">grpcServer.GracefulStop()
+
+        // Завершение работы сервиса
+        service.GracefulStop(5 * time.Second)
+        if err := service.Close(); err != nil </span><span class="cov0" title="0">{
+                log.Error("Storage close error", zap.Error(err))
+        }</span>
+
+        <span class="cov0" title="0">log.Info("Servers stopped gracefully")</span>
+}
+</pre>
+		
+		<pre class="file" id="file34" style="display: none">// Code generated by MockGen. DO NOT EDIT.
 // Source: github.com/ryabkov82/shortener/internal/app/service (interfaces: Repository)
 
 // Package mocks is a generated GoMock package.
@@ -2715,7 +5255,7 @@ func (mr *MockRepositoryMockRecorder) SaveURL(arg0, arg1 interface{}) *gomock.Ca
 }</span>
 </pre>
 		
-		<pre class="file" id="file23" style="display: none">// Package service реализует бизнес-логику сервиса сокращения URL.
+		<pre class="file" id="file35" style="display: none">// Package service реализует бизнес-логику сервиса сокращения URL.
 //
 // Основные функции:
 // - Генерация коротких ключей
@@ -2764,7 +5304,7 @@ type Service struct {
 // Возвращает:
 //
 //        *Service - инициализированный сервис
-func NewService(storage Repository) *Service <span class="cov4" title="11">{
+func NewService(storage Repository) *Service <span class="cov5" title="12">{
         // Инициализация воркера для удаления:
         // - 1 воркер
         // - Буфер на 10 задач
@@ -2790,7 +5330,7 @@ func NewService(storage Repository) *Service <span class="cov4" title="11">{
 //        string - сгенерированный короткий ключ
 //        error - ошибка при сохранении:
 //          - storage.ErrURLExists если URL уже существует
-func (s *Service) GetShortKey(ctx context.Context, originalURL string) (string, error) <span class="cov6" title="24">{
+func (s *Service) GetShortKey(ctx context.Context, originalURL string) (string, error) <span class="cov6" title="26">{
         shortKey := generateShortKey()
         mapping := models.URLMapping{
                 ShortURL:    shortKey,
@@ -2893,6 +5433,42 @@ func (s *Service) GetUserUrls(ctx context.Context, baseURL string) ([]models.URL
         return s.repo.GetUserUrls(ctx, baseURL)
 }</span>
 
+// GetStats возвращает статистику сервиса по количеству URL и пользователей.
+//
+// Параметры:
+//   - ctx: контекст выполнения, может использоваться для передачи таймаутов
+//
+// Возвращает:
+//   - models.StatsResponse: структура с полями:
+//   - URLs: общее количество сокращенных URL в сервисе
+//   - Users: количество уникальных пользователей в сервисе
+//   - error: ошибка, если не удалось получить статистику:
+//   - Ошибка базы данных при запросе CountURLs
+//   - Ошибка базы данных при запросе CountUsers
+//
+// Логика работы:
+//  1. Запрашивает общее количество URL через s.repo.CountURLs
+//  2. При ошибке на этом шаге сразу возвращает ошибку
+//  3. Запрашивает количество пользователей через s.repo.CountUsers
+//  4. При ошибке на этом шаге возвращает ошибку
+//  5. Формирует и возвращает структуру StatsResponse с полученными данными
+//
+// Пример использования:
+//
+//        stats, err := service.GetStats(context.Background())
+//        if err != nil {
+//            // обработка ошибки
+//        }
+//        fmt.Printf("Stats: %d URLs, %d Users\n", stats.URLs, stats.Users)
+//
+// Особенности:
+//   - Метод атомарен - при ошибке любого из запросов статистика не возвращается
+//   - Для работы требует корректной инициализации s.repo
+//   - Контекст передается в нижележащие репозитории
+//
+// Взаимодействие с другими компонентами:
+//   - Используется в stats.GetHandler для обработки HTTP-запросов
+//   - Получает данные через интерфейс Repository
 func (s *Service) GetStats(ctx context.Context) (models.StatsResponse, error) <span class="cov2" title="3">{
 
         urlCount, err := s.repo.CountURLs(ctx)
@@ -2946,20 +5522,20 @@ func (s *Service) Close() error <span class="cov0" title="0">{
 // Возвращает:
 //
 //        string - 8-символьный ключ из [a-zA-Z0-9]
-func generateShortKey() string <span class="cov6" title="30">{
+func generateShortKey() string <span class="cov6" title="32">{
         const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         const keyLength = 8
 
         rand.New(rand.NewSource(time.Now().UnixNano()))
         shortKey := make([]byte, keyLength)
-        for i := range shortKey </span><span class="cov10" title="240">{
+        for i := range shortKey </span><span class="cov10" title="256">{
                 shortKey[i] = charset[rand.Intn(len(charset))]
         }</span>
-        <span class="cov6" title="30">return string(shortKey)</span>
+        <span class="cov6" title="32">return string(shortKey)</span>
 }
 </pre>
 		
-		<pre class="file" id="file24" style="display: none">// Package inmemory реализует in-memory хранилище для сервиса сокращения URL с персистентностью в файл.
+		<pre class="file" id="file36" style="display: none">// Package inmemory реализует in-memory хранилище для сервиса сокращения URL с персистентностью в файл.
 //
 // Основные особенности:
 // - Хранение данных в памяти с синхронизацией через RWMutex
@@ -3012,13 +5588,13 @@ type InMemoryStorage struct {
 // Пример:
 //
 //        storage, err := NewInMemoryStorage("data/storage.json")
-func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span class="cov5" title="6">{
+func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span class="cov7" title="7">{
         file, err := os.OpenFile(fileStoragePath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
 
-        <span class="cov5" title="6">return &amp;InMemoryStorage{
+        <span class="cov7" title="7">return &amp;InMemoryStorage{
                 userURLIndex: make(map[string]map[string]string),
                 shortCodeMap: make(map[string]models.UserURLMapping),
                 countRecords: 0,
@@ -3039,41 +5615,41 @@ func NewInMemoryStorage(fileStoragePath string) (*InMemoryStorage, error) <span 
 // Возвращает:
 //
 //        error - ошибка чтения файла
-func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov5" title="6">{
+func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov7" title="7">{
         file, err := os.OpenFile(fileStoragePath, os.O_RDONLY|os.O_CREATE, 0666)
         if err != nil </span><span class="cov0" title="0">{
                 return err
         }</span>
-        <span class="cov5" title="6">defer file.Close()
+        <span class="cov7" title="7">defer file.Close()
 
         scanner := bufio.NewScanner(file)
         var countRecords uint64
 
-        for scanner.Scan() </span><span class="cov10" title="28">{
+        for scanner.Scan() </span><span class="cov0" title="0">{
                 line := scanner.Bytes()
                 if len(line) == 0 </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="28">var url models.UserURLMapping
+                <span class="cov0" title="0">var url models.UserURLMapping
                 if err := json.Unmarshal(line, &amp;url); err != nil </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="28">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
+                <span class="cov0" title="0">if url.UserID == "" || url.OriginalURL == "" || url.ShortURL == "" </span><span class="cov0" title="0">{
                         continue</span>
                 }
 
-                <span class="cov10" title="28">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov7" title="12">{
+                <span class="cov0" title="0">if _, ok := s.userURLIndex[url.UserID]; !ok </span><span class="cov0" title="0">{
                         s.userURLIndex[url.UserID] = make(map[string]string)
                 }</span>
 
-                <span class="cov10" title="28">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
+                <span class="cov0" title="0">s.userURLIndex[url.UserID][url.OriginalURL] = url.ShortURL
                 s.shortCodeMap[url.ShortURL] = url
                 countRecords++</span>
         }
 
-        <span class="cov5" title="6">s.countRecords = countRecords
+        <span class="cov7" title="7">s.countRecords = countRecords
         return scanner.Err()</span>
 }
 
@@ -3088,7 +5664,7 @@ func (s *InMemoryStorage) Load(fileStoragePath string) error <span class="cov5" 
 //
 //        models.URLMapping - найденное соответствие
 //        error - ошибка поиска (storage.ErrURLNotFound если не найден)
-func (s *InMemoryStorage) GetShortKey(ctx context.Context, originalURL string) (models.URLMapping, error) <span class="cov2" title="2">{
+func (s *InMemoryStorage) GetShortKey(ctx context.Context, originalURL string) (models.URLMapping, error) <span class="cov3" title="2">{
         s.mu.RLock()
         defer s.mu.RUnlock()
 
@@ -3097,8 +5673,8 @@ func (s *InMemoryStorage) GetShortKey(ctx context.Context, originalURL string) (
                 return models.URLMapping{}, errors.New("userID is not set")
         }</span>
 
-        <span class="cov2" title="2">shortKey, found := s.userURLIndex[userID.(string)][originalURL]
-        if !found </span><span class="cov2" title="2">{
+        <span class="cov3" title="2">shortKey, found := s.userURLIndex[userID.(string)][originalURL]
+        if !found </span><span class="cov3" title="2">{
                 return models.URLMapping{}, storage.ErrURLNotFound
         }</span>
 
@@ -3121,20 +5697,20 @@ func (s *InMemoryStorage) GetShortKey(ctx context.Context, originalURL string) (
 //        error:
 //          - storage.ErrURLNotFound если URL не существует
 //          - storage.ErrURLDeleted если URL помечен как удаленный
-func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (models.URLMapping, error) <span class="cov6" title="7">{
+func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (models.URLMapping, error) <span class="cov7" title="7">{
         s.mu.RLock()
         defer s.mu.RUnlock()
 
         url, found := s.shortCodeMap[shortKey]
-        if !found </span><span class="cov2" title="2">{
+        if !found </span><span class="cov3" title="2">{
                 return models.URLMapping{}, storage.ErrURLNotFound
         }</span>
 
-        <span class="cov5" title="5">if url.DeletedFlag </span><span class="cov3" title="3">{
+        <span class="cov6" title="5">if url.DeletedFlag </span><span class="cov4" title="3">{
                 return models.URLMapping{}, storage.ErrURLDeleted
         }</span>
 
-        <span class="cov2" title="2">return models.URLMapping{
+        <span class="cov3" title="2">return models.URLMapping{
                 ShortURL:    url.ShortURL,
                 OriginalURL: url.OriginalURL,
         }, nil</span>
@@ -3152,7 +5728,7 @@ func (s *InMemoryStorage) GetRedirectURL(ctx context.Context, shortKey string) (
 //        error:
 //          - storage.ErrShortURLExists если shortURL уже существует
 //          - storage.ErrURLExists если originalURL уже существует
-func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping *models.URLMapping) error <span class="cov8" title="15">{
+func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping *models.URLMapping) error <span class="cov10" title="17">{
         s.mu.Lock()
         defer s.mu.Unlock()
 
@@ -3160,21 +5736,21 @@ func (s *InMemoryStorage) SaveURL(ctx context.Context, mapping *models.URLMappin
                 return storage.ErrShortURLExists
         }</span>
 
-        <span class="cov8" title="15">userID := ctx.Value(jwtauth.UserIDContextKey)
+        <span class="cov10" title="17">userID := ctx.Value(jwtauth.UserIDContextKey)
         if userID == nil </span><span class="cov0" title="0">{
                 return errors.New("userID is not set")
         }</span>
 
-        <span class="cov8" title="15">if _, ok := s.userURLIndex[userID.(string)]; !ok </span><span class="cov6" title="8">{
+        <span class="cov10" title="17">if _, ok := s.userURLIndex[userID.(string)]; !ok </span><span class="cov7" title="9">{
                 s.userURLIndex[userID.(string)] = make(map[string]string)
         }</span>
 
-        <span class="cov8" title="15">if shortURL, exists := s.userURLIndex[userID.(string)][mapping.OriginalURL]; exists </span><span class="cov2" title="2">{
+        <span class="cov10" title="17">if shortURL, exists := s.userURLIndex[userID.(string)][mapping.OriginalURL]; exists </span><span class="cov4" title="3">{
                 mapping.ShortURL = shortURL
                 return storage.ErrURLExists
         }</span>
 
-        <span class="cov7" title="13">s.userURLIndex[userID.(string)][mapping.OriginalURL] = mapping.ShortURL
+        <span class="cov9" title="14">s.userURLIndex[userID.(string)][mapping.OriginalURL] = mapping.ShortURL
         s.countRecords++
 
         userURLMapping := models.UserURLMapping{
@@ -3212,12 +5788,12 @@ func (s *InMemoryStorage) GetExistingURLs(ctx context.Context, originalURLs []st
                 return existing, nil
         }</span>
 
-        <span class="cov1" title="1">for _, originalURL := range originalURLs </span><span class="cov2" title="2">{
+        <span class="cov1" title="1">for _, originalURL := range originalURLs </span><span class="cov3" title="2">{
                 mapping, err := s.GetShortKey(ctx, originalURL)
                 if err != nil &amp;&amp; !errors.Is(err, storage.ErrURLNotFound) </span><span class="cov0" title="0">{
                         return nil, err
                 }</span>
-                <span class="cov2" title="2">if err == nil </span><span class="cov0" title="0">{
+                <span class="cov3" title="2">if err == nil </span><span class="cov0" title="0">{
                         existing[mapping.OriginalURL] = mapping.ShortURL
                 }</span>
         }
@@ -3236,7 +5812,7 @@ func (s *InMemoryStorage) GetExistingURLs(ctx context.Context, originalURLs []st
 //
 //        error - первая ошибка при сохранении
 func (s *InMemoryStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapping) error <span class="cov1" title="1">{
-        for _, url := range urls </span><span class="cov2" title="2">{
+        for _, url := range urls </span><span class="cov3" title="2">{
                 if err := s.SaveURL(ctx, &amp;url); err != nil &amp;&amp; !errors.Is(err, storage.ErrURLExists) </span><span class="cov0" title="0">{
                         return err
                 }</span>
@@ -3255,7 +5831,7 @@ func (s *InMemoryStorage) SaveNewURLs(ctx context.Context, urls []models.URLMapp
 //
 //        []models.URLMapping - список URL пользователя
 //        error - ошибка операции
-func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error) <span class="cov2" title="2">{
+func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error) <span class="cov3" title="2">{
         s.mu.RLock()
         defer s.mu.RUnlock()
 
@@ -3264,13 +5840,13 @@ func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]mo
                 return nil, errors.New("userID is not set")
         }</span>
 
-        <span class="cov2" title="2">userURLs, exists := s.userURLIndex[userID.(string)]
+        <span class="cov3" title="2">userURLs, exists := s.userURLIndex[userID.(string)]
         if !exists </span><span class="cov1" title="1">{
                 return nil, nil
         }</span>
 
         <span class="cov1" title="1">var result []models.URLMapping
-        for originalURL, shortCode := range userURLs </span><span class="cov2" title="2">{
+        for originalURL, shortCode := range userURLs </span><span class="cov3" title="2">{
                 result = append(result, models.URLMapping{
                         OriginalURL: originalURL,
                         ShortURL:    baseURL + "/" + shortCode,
@@ -3290,8 +5866,7 @@ func (s *InMemoryStorage) GetUserUrls(ctx context.Context, baseURL string) ([]mo
 //         int - количество сокращённых URL в сервисе
 //                error - ошибка операции
 func (s *InMemoryStorage) CountURLs(ctx context.Context) (int, error) <span class="cov0" title="0">{
-        var count int
-        count = len(s.shortCodeMap)
+        count := len(s.shortCodeMap)
         return count, nil
 }</span>
 
@@ -3306,8 +5881,7 @@ func (s *InMemoryStorage) CountURLs(ctx context.Context) (int, error) <span clas
 //         int - количество пользователей в сервисе
 //                error - ошибка операции
 func (s *InMemoryStorage) CountUsers(ctx context.Context) (int, error) <span class="cov0" title="0">{
-        var count int
-        count = len(s.userURLIndex)
+        count := len(s.userURLIndex)
         return count, nil
 }</span>
 
@@ -3321,12 +5895,12 @@ func (s *InMemoryStorage) CountUsers(ctx context.Context) (int, error) <span cla
 // Возвращает:
 //
 //        error - ошибка операции
-func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error <span class="cov4" title="4">{
+func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error <span class="cov5" title="4">{
         s.mu.Lock()
         defer s.mu.Unlock()
 
-        for _, code := range urls </span><span class="cov5" title="5">{
-                if mapping, exists := s.shortCodeMap[code]; exists &amp;&amp; mapping.UserID == userID </span><span class="cov3" title="3">{
+        for _, code := range urls </span><span class="cov6" title="5">{
+                if mapping, exists := s.shortCodeMap[code]; exists &amp;&amp; mapping.UserID == userID </span><span class="cov4" title="3">{
                         mapping.DeletedFlag = true
                         s.shortCodeMap[code] = mapping
                         if err := s.encoder.Encode(mapping); err != nil </span><span class="cov0" title="0">{
@@ -3334,7 +5908,7 @@ func (s *InMemoryStorage) BatchMarkAsDeleted(userID string, urls []string) error
                         }</span>
                 }
         }
-        <span class="cov4" title="4">return nil</span>
+        <span class="cov5" title="4">return nil</span>
 }
 
 // FilePath возвращает путь к файлу, используемому хранилищем.
@@ -3349,15 +5923,15 @@ func (s *InMemoryStorage) FilePath() string <span class="cov1" title="1">{
 }
 
 // Close освобождает ресурсы
-func (s *InMemoryStorage) Close() error <span class="cov5" title="6">{
-        if s.file != nil </span><span class="cov5" title="6">{
+func (s *InMemoryStorage) Close() error <span class="cov7" title="7">{
+        if s.file != nil </span><span class="cov7" title="7">{
                 return s.file.Close()
         }</span>
         <span class="cov0" title="0">return nil</span>
 }
 </pre>
 		
-		<pre class="file" id="file25" style="display: none">package postgres
+		<pre class="file" id="file37" style="display: none">package postgres
 
 import (
         "database/sql"
@@ -3405,7 +5979,7 @@ func applyMigrations(db *sql.DB) error <span class="cov8" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file26" style="display: none">// Package postgres предоставляет реализацию хранилища URL на PostgreSQL.
+		<pre class="file" id="file38" style="display: none">// Package postgres предоставляет реализацию хранилища URL на PostgreSQL.
 //
 // Пакет включает:
 // - Подключение к PostgreSQL с настройкой пула соединений
@@ -3773,7 +6347,7 @@ func (s *PostgresStorage) Close() error <span class="cov0" title="0">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file27" style="display: none">// Package deleteurls предоставляет асинхронный обработчик для пакетного удаления URL в сервисе сокращения ссылок.
+		<pre class="file" id="file39" style="display: none">// Package deleteurls предоставляет асинхронный обработчик для пакетного удаления URL в сервисе сокращения ссылок.
 //
 // Пакет реализует паттерн "рабочий пул" с:
 // - Группировкой запросов по пользователям
@@ -3822,7 +6396,7 @@ type DeleteWorker struct {
 //   - batchSize: максимальный размер пакета перед обработкой
 //   - batchWindow: максимальное время ожидания формирования пакета
 //   - storage: реализация интерфейса Repository
-func NewDeleteWorker(workerCount, batchSize int, batchWindow time.Duration, storage Repository) *DeleteWorker <span class="cov4" title="11">{
+func NewDeleteWorker(workerCount, batchSize int, batchWindow time.Duration, storage Repository) *DeleteWorker <span class="cov7" title="12">{
         return &amp;DeleteWorker{
                 taskChan:    make(chan DeleteTask, 10000),
                 batchChan:   make(chan map[string][]string, 100),
@@ -3835,21 +6409,21 @@ func NewDeleteWorker(workerCount, batchSize int, batchWindow time.Duration, stor
 }</span>
 
 // Start запускает воркеры и сборщик пакетов.
-func (w *DeleteWorker) Start() <span class="cov4" title="11">{
+func (w *DeleteWorker) Start() <span class="cov7" title="12">{
         w.wg.Add(w.workerCount + 1) // +1 для сборщика пакетов
 
         go w.batchCollector() // Запускаем сборщик пакетов
 
-        for i := 0; i &lt; w.workerCount; i++ </span><span class="cov4" title="11">{
+        for i := 0; i &lt; w.workerCount; i++ </span><span class="cov7" title="12">{
                 go w.batchProcessor() // Запускаем воркеры
         }</span>
 }
 
 // Submit добавляет новую задачу на удаление в очередь обработки.
 // Возвращает ошибку если очередь переполнена.
-func (w *DeleteWorker) Submit(task DeleteTask) error <span class="cov4" title="8">{
+func (w *DeleteWorker) Submit(task DeleteTask) error <span class="cov6" title="8">{
         select </span>{
-        case w.taskChan &lt;- task:<span class="cov4" title="8">
+        case w.taskChan &lt;- task:<span class="cov6" title="8">
                 return nil</span>
         default:<span class="cov0" title="0">
                 return errors.New("очередь переполнена")</span>
@@ -3858,14 +6432,14 @@ func (w *DeleteWorker) Submit(task DeleteTask) error <span class="cov4" title="8
 
 // batchCollector собирает задачи в пакеты по пользователям.
 // Отправляет пакеты на обработку при достижении batchSize или по истечении batchWindow.
-func (w *DeleteWorker) batchCollector() <span class="cov4" title="11">{
+func (w *DeleteWorker) batchCollector() <span class="cov7" title="12">{
         defer w.wg.Done()
 
         batch := make(map[string][]string)
         ticker := time.NewTicker(w.batchWindow)
         defer ticker.Stop()
 
-        for </span><span class="cov10" title="249">{
+        for </span><span class="cov10" title="30">{
                 select </span>{
                 case &lt;-w.stopChan:<span class="cov0" title="0">
                         if len(batch) &gt; 0 </span><span class="cov0" title="0">{
@@ -3874,7 +6448,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov4" title="11">{
                         <span class="cov0" title="0">close(w.batchChan)
                         return</span>
 
-                case task, ok := &lt;-w.taskChan:<span class="cov4" title="8">
+                case task, ok := &lt;-w.taskChan:<span class="cov6" title="8">
                         if !ok </span><span class="cov0" title="0">{
                                 if len(batch) &gt; 0 </span><span class="cov0" title="0">{
                                         w.batchChan &lt;- batch
@@ -3883,20 +6457,20 @@ func (w *DeleteWorker) batchCollector() <span class="cov4" title="11">{
                                 return</span>
                         }
 
-                        <span class="cov4" title="8">if urls, exists := batch[task.UserID]; exists </span><span class="cov0" title="0">{
+                        <span class="cov6" title="8">if urls, exists := batch[task.UserID]; exists </span><span class="cov0" title="0">{
                                 batch[task.UserID] = append(urls, task.ShortURLs...)
-                        }</span> else<span class="cov4" title="8"> {
+                        }</span> else<span class="cov6" title="8"> {
                                 batch[task.UserID] = task.ShortURLs
                         }</span>
 
-                        <span class="cov4" title="8">if len(batch) &gt;= w.batchSize </span><span class="cov0" title="0">{
+                        <span class="cov6" title="8">if len(batch) &gt;= w.batchSize </span><span class="cov0" title="0">{
                                 w.batchChan &lt;- batch
                                 batch = make(map[string][]string)
                                 ticker.Reset(w.batchWindow)
                         }</span>
 
-                case &lt;-ticker.C:<span class="cov9" title="230">
-                        if len(batch) &gt; 0 </span><span class="cov4" title="8">{
+                case &lt;-ticker.C:<span class="cov7" title="10">
+                        if len(batch) &gt; 0 </span><span class="cov6" title="8">{
                                 w.batchChan &lt;- batch
                                 batch = make(map[string][]string)
                         }</span>
@@ -3905,29 +6479,29 @@ func (w *DeleteWorker) batchCollector() <span class="cov4" title="11">{
 }
 
 // batchProcessor обрабатывает пакеты задач, используя пул воркеров.
-func (w *DeleteWorker) batchProcessor() <span class="cov4" title="11">{
+func (w *DeleteWorker) batchProcessor() <span class="cov7" title="12">{
         defer w.wg.Done()
 
-        for batch := range w.batchChan </span><span class="cov4" title="8">{
+        for batch := range w.batchChan </span><span class="cov6" title="8">{
                 var batchWg sync.WaitGroup
                 batchWg.Add(len(batch))
 
                 concurrencyLimit := make(chan struct{}, w.workerCount*2)
 
-                for userID, urls := range batch </span><span class="cov4" title="8">{
+                for userID, urls := range batch </span><span class="cov6" title="8">{
                         concurrencyLimit &lt;- struct{}{}
 
-                        go func(userID string, urls []string) </span><span class="cov4" title="8">{
+                        go func(userID string, urls []string) </span><span class="cov6" title="8">{
                                 defer batchWg.Done()
-                                defer func() </span><span class="cov4" title="8">{ &lt;-concurrencyLimit }</span>()
+                                defer func() </span><span class="cov6" title="8">{ &lt;-concurrencyLimit }</span>()
 
-                                <span class="cov4" title="8">const subBatchSize = 50
-                                for i := 0; i &lt; len(urls); i += subBatchSize </span><span class="cov4" title="8">{
+                                <span class="cov6" title="8">const subBatchSize = 50
+                                for i := 0; i &lt; len(urls); i += subBatchSize </span><span class="cov6" title="8">{
                                         end := i + subBatchSize
-                                        if end &gt; len(urls) </span><span class="cov4" title="8">{
+                                        if end &gt; len(urls) </span><span class="cov6" title="8">{
                                                 end = len(urls)
                                         }</span>
-                                        <span class="cov4" title="8">subBatch := urls[i:end]
+                                        <span class="cov6" title="8">subBatch := urls[i:end]
 
                                         if err := w.processUserBatch(userID, subBatch); err != nil </span><span class="cov0" title="0">{
                                                 log.Printf("Ошибка при пометке URL как удалённых для пользователя %s: %v", userID, err)
@@ -3936,16 +6510,16 @@ func (w *DeleteWorker) batchProcessor() <span class="cov4" title="11">{
                         }(userID, urls)
                 }
 
-                <span class="cov4" title="8">batchWg.Wait()</span>
+                <span class="cov6" title="8">batchWg.Wait()</span>
         }
 }
 
 // processUserBatch выполняет пометку URL как удаленных в хранилище.
-func (w *DeleteWorker) processUserBatch(userID string, urls []string) error <span class="cov4" title="8">{
+func (w *DeleteWorker) processUserBatch(userID string, urls []string) error <span class="cov6" title="8">{
         if err := w.repo.BatchMarkAsDeleted(userID, urls); err != nil </span><span class="cov0" title="0">{
                 return err
         }</span>
-        <span class="cov4" title="8">return nil</span>
+        <span class="cov6" title="8">return nil</span>
 }
 
 // GracefulStop выполняет плавное завершение работы с заданным таймаутом.
@@ -3970,7 +6544,7 @@ func (w *DeleteWorker) GracefulStop(timeout time.Duration) <span class="cov0" ti
 }
 </pre>
 		
-		<pre class="file" id="file28" style="display: none">// Package testconfig предоставляет утилиты для настройки тестового окружения с использованием testcontainers.
+		<pre class="file" id="file40" style="display: none">// Package testconfig предоставляет утилиты для настройки тестового окружения с использованием testcontainers.
 //
 // Основные возможности:
 //   - Запуск контейнера PostgreSQL для интеграционных тестов
@@ -4140,7 +6714,7 @@ func GetTestPGDSN() string <span class="cov0" title="0">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file29" style="display: none">package testhandlers
+		<pre class="file" id="file41" style="display: none">package testhandlers
 
 import (
         "bytes"
@@ -4246,7 +6820,143 @@ func TestBatch(t *testing.T, client *resty.Client) <span class="cov6" title="3">
 }
 </pre>
 		
-		<pre class="file" id="file30" style="display: none">package testhandlers
+		<pre class="file" id="file42" style="display: none">package testhandlers
+
+import (
+        "context"
+        "net/http"
+
+        "github.com/ryabkov82/shortener/test/testutils"
+
+        "github.com/go-resty/resty/v2"
+        pb "github.com/ryabkov82/shortener/api"
+        "google.golang.org/grpc/status"
+)
+
+// ShortenResult — общий результат для обоих клиентов
+type ShortenResult struct {
+        ShortURL string
+        Status   testutils.StatusCode
+}
+
+// TestClient — общий интерфейс для тестовых клиентов
+type TestClient interface {
+        ShortenURL(ctx context.Context, originalURL string) (ShortenResult, error)
+}
+
+// GRPCClientAdapter — адаптер gRPC клиента под общий интерфейс
+type GRPCClientAdapter struct {
+        Client pb.ShortenerClient
+        Setup  func() (context.Context, error)
+}
+
+func (g *GRPCClientAdapter) ShortenURL(ctx context.Context, originalURL string) (ShortenResult, error) <span class="cov6" title="3">{
+        if g.Setup != nil </span><span class="cov6" title="3">{
+                var err error
+                ctx, err = g.Setup()
+                if err != nil </span><span class="cov0" title="0">{
+                        return ShortenResult{Status: testutils.StatusInternalError}, err
+                }</span>
+        }
+
+        <span class="cov6" title="3">resp, err := g.Client.CreateShortURL(ctx, &amp;pb.CreateRequest{OriginalUrl: originalURL})
+        if err != nil </span><span class="cov4" title="2">{
+                if s, ok := status.FromError(err); ok </span><span class="cov4" title="2">{
+                        return ShortenResult{Status: testutils.GRPCCodeToStatusCode(s.Code())}, err
+                }</span>
+                <span class="cov0" title="0">return ShortenResult{Status: testutils.StatusInternalError}, err</span>
+        }
+        <span class="cov1" title="1">return ShortenResult{ShortURL: resp.ShortUrl, Status: testutils.StatusCreated}, nil</span>
+}
+
+type HTTPClientAdapter struct {
+        Client *resty.Client
+        Cookie *http.Cookie
+}
+
+func (h *HTTPClientAdapter) ShortenURL(ctx context.Context, originalURL string) (ShortenResult, error) <span class="cov10" title="6">{
+        resp, err := h.Client.R().
+                SetContext(ctx).
+                SetCookie(h.Cookie).
+                SetBody(originalURL).
+                Post("/")
+        if err != nil </span><span class="cov0" title="0">{
+                return ShortenResult{Status: testutils.StatusInternalError}, err
+        }</span>
+        <span class="cov10" title="6">return ShortenResult{
+                ShortURL: string(resp.Body()),
+                Status:   testutils.HTTPStatusToStatusCode(resp.StatusCode()),
+        }, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file43" style="display: none">package testhandlers
+
+import (
+        "context"
+        "net/http"
+
+        "github.com/ryabkov82/shortener/test/testutils"
+)
+
+type ShortenURLTestCase struct {
+        Name        string
+        OriginalURL string
+        Setup       func() (context.Context, error)
+        Want        testutils.StatusCode
+        Cookie      *http.Cookie
+}
+
+func CommonShortenURLTestCases() []ShortenURLTestCase <span class="cov10" title="3">{
+
+        cookie, _ := testutils.CreateSignedCookie()
+
+        token := cookie.Value
+
+        return []ShortenURLTestCase{
+                {
+                        Name:        "valid URL",
+                        OriginalURL: "https://example.com",
+                        Want:        testutils.StatusCreated,
+                        Setup: func() (context.Context, error) </span><span class="cov1" title="1">{
+                                return testutils.ContextWithJWT(context.Background(), token), nil
+                        }</span>,
+                        Cookie: cookie,
+                },
+                {
+                        Name:        "valid URL",
+                        OriginalURL: "https://example.com",
+                        Want:        testutils.StatusConflict,
+                        Setup: func() (context.Context, error) <span class="cov1" title="1">{
+                                return testutils.ContextWithJWT(context.Background(), token), nil
+                        }</span>,
+                        Cookie: cookie,
+                },
+                /*
+                        {
+                                Name:        "invalid JWT",
+                                OriginalURL: "https://example.com",
+                                Want:        testutils.StatusUnauthorized,
+                                Setup: func() (context.Context, error) {
+                                        return testutils.ContextWithJWT(context.Background(), "bad.token"), nil
+                                },
+                                Cookie: &amp;http.Cookie{},
+                        },
+                */
+                {
+                        Name:        "bad URL",
+                        OriginalURL: "not-a-url",
+                        Want:        testutils.StatusBadRequest,
+                        Setup: func() (context.Context, error) <span class="cov1" title="1">{
+                                return testutils.ContextWithJWT(context.Background(), token), nil
+                        }</span>,
+                        Cookie: cookie,
+                },
+        }
+}
+</pre>
+		
+		<pre class="file" id="file44" style="display: none">package testhandlers
 
 import (
         "bytes"
@@ -4408,7 +7118,7 @@ func TestDelUserUrls(t *testing.T, serv *service.Service, client *resty.Client) 
 }
 </pre>
 		
-		<pre class="file" id="file31" style="display: none">package testhandlers
+		<pre class="file" id="file45" style="display: none">package testhandlers
 
 import (
         "context"
@@ -4517,7 +7227,7 @@ func TestRedirect(t *testing.T, repo service.Repository, client *resty.Client) <
 }
 </pre>
 		
-		<pre class="file" id="file32" style="display: none">package testhandlers
+		<pre class="file" id="file46" style="display: none">package testhandlers
 
 import (
         "bytes"
@@ -4527,7 +7237,7 @@ import (
         "net/url"
         "testing"
 
-        "github.com/ryabkov82/shortener/internal/app/handlers/shortenapi"
+        "github.com/ryabkov82/shortener/internal/app/handlers/http/shortenapi"
         "github.com/ryabkov82/shortener/test/testutils"
 
         "github.com/go-resty/resty/v2"
@@ -4628,10 +7338,54 @@ func TestShortenAPI(t *testing.T, client *resty.Client) <span class="cov1" title
 }
 </pre>
 		
-		<pre class="file" id="file33" style="display: none">package testhandlers
+		<pre class="file" id="file47" style="display: none">package testhandlers
 
 import (
-        "net/http"
+        "context"
+        "net/url"
+        "testing"
+
+        pb "github.com/ryabkov82/shortener/api"
+        "github.com/ryabkov82/shortener/test/testutils"
+
+        "github.com/stretchr/testify/assert"
+        "google.golang.org/grpc/status"
+)
+
+func TestShortenURLGRPC(t *testing.T, grpcClient pb.ShortenerClient) <span class="cov1" title="1">{
+        client := &amp;GRPCClientAdapter{
+                Client: grpcClient, // инициализируй заранее
+        }
+        for _, tt := range CommonShortenURLTestCases() </span><span class="cov10" title="3">{
+                t.Run("gRPC_"+tt.Name, func(t *testing.T) </span><span class="cov10" title="3">{
+                        if tt.Setup != nil </span><span class="cov10" title="3">{
+                                client.Setup = tt.Setup
+                        }</span>
+                        <span class="cov10" title="3">ctx := context.Background()
+                        resp, err := client.ShortenURL(ctx, tt.OriginalURL)
+
+                        if tt.Want != testutils.StatusCreated </span><span class="cov6" title="2">{
+                                assert.Error(t, err)
+                                if st, ok := status.FromError(err); ok </span><span class="cov6" title="2">{
+                                        assert.Equal(t, tt.Want, testutils.GRPCCodeToStatusCode(st.Code()))
+                                }</span>
+                                <span class="cov6" title="2">return</span>
+                        }
+
+                        <span class="cov1" title="1">assert.NoError(t, err)
+                        assert.NotNil(t, resp)
+                        _, err = url.Parse(resp.ShortURL)
+                        assert.NoError(t, err)</span>
+
+                })
+        }
+}
+</pre>
+		
+		<pre class="file" id="file48" style="display: none">package testhandlers
+
+import (
+        "context"
         "net/url"
         "testing"
 
@@ -4672,61 +7426,35 @@ import (
 //   - Проверяет валидность возвращаемого короткого URL
 //   - Работает с текстовым форматом запроса/ответа (в отличие от JSON API)
 //   - Поддерживает авторизацию через JWT cookie
-func TestShortenURL(t *testing.T, client *resty.Client) <span class="cov4" title="2">{
 
-        cookie, _ := testutils.CreateSignedCookie()
+func TestShortenURL(t *testing.T, httpClient *resty.Client) <span class="cov4" title="2">{
 
-        tests := []struct {
-                cookie         *http.Cookie
-                name           string
-                originalURL    string
-                wantStatusCode int
-        }{
-                {
-                        name:           "positive test #1",
-                        originalURL:    "https://practicum.yandex.ru/",
-                        cookie:         cookie,
-                        wantStatusCode: 201,
-                },
-                {
-                        name:           "positive test #1",
-                        originalURL:    "https://practicum.yandex.ru/",
-                        cookie:         cookie,
-                        wantStatusCode: 409,
-                },
-                {
-                        name:           "negative test #2",
-                        originalURL:    "not url",
-                        cookie:         cookie,
-                        wantStatusCode: 400,
-                },
+        client := &amp;HTTPClientAdapter{
+                Client: httpClient, // инициализируй заранее
         }
+        for _, tt := range CommonShortenURLTestCases() </span><span class="cov10" title="6">{
+                t.Run("HTTP_"+tt.Name, func(t *testing.T) </span><span class="cov10" title="6">{
 
-        for _, tt := range tests </span><span class="cov10" title="6">{
-                t.Run(tt.name, func(t *testing.T) </span><span class="cov10" title="6">{
-
-                        resp, err := client.R().
-                                SetCookie(tt.cookie).
-                                SetBody(tt.originalURL).
-                                Post("/")
+                        client.Cookie = tt.Cookie
+                        resp, err := client.ShortenURL(context.Background(), tt.OriginalURL)
 
                         assert.NoError(t, err)
 
                         // Проверяем статус ответа
-                        assert.Equal(t, tt.wantStatusCode, resp.StatusCode())
-                        if tt.wantStatusCode == 201 </span><span class="cov4" title="2">{
-                                shortURL := resp.Body()
+                        assert.Equal(t, tt.Want, resp.Status)
+                        if tt.Want == testutils.StatusCreated </span><span class="cov4" title="2">{
+                                shortURL := resp.ShortURL
                                 // Проверяем, что получен URL
                                 _, err = url.Parse(string(shortURL))
                                 assert.NoError(t, err)
                         }</span>
+
                 })
         }
-
 }
 </pre>
 		
-		<pre class="file" id="file34" style="display: none">package testhandlers
+		<pre class="file" id="file49" style="display: none">package testhandlers
 
 import (
         "context"
@@ -4835,12 +7563,19 @@ func TestUserUrls(t *testing.T, serv *service.Service, client *resty.Client) <sp
 }
 </pre>
 		
-		<pre class="file" id="file35" style="display: none">package testutils
+		<pre class="file" id="file50" style="display: none">package testutils
 
 import (
+        "context"
+        "fmt"
         "net/http"
 
+        "github.com/golang-jwt/jwt/v5"
+
         "github.com/ryabkov82/shortener/internal/app/jwtauth"
+        "google.golang.org/grpc/codes"
+        "google.golang.org/grpc/metadata"
+        "google.golang.org/grpc/status"
 )
 
 // TestSecretKey содержит тестовый ключ для подписи JWT.
@@ -4849,13 +7584,13 @@ var TestSecretKey = []byte("test-secret-key")
 
 // CreateSignedCookie создает тестовую HTTP-куку с подписанным JWT-токеном.
 // Используется для симуляции аутентифицированных запросов в тестах.
-func CreateSignedCookie() (*http.Cookie, string) <span class="cov10" title="19">{
+func CreateSignedCookie() (*http.Cookie, string) <span class="cov10" title="20">{
         tokenString, userID, err := jwtauth.GenerateNewToken(TestSecretKey)
         if err != nil </span><span class="cov0" title="0">{
                 panic(err)</span> // В тестах допустим panic
         }
 
-        <span class="cov10" title="19">return &amp;http.Cookie{
+        <span class="cov10" title="20">return &amp;http.Cookie{
                 Name:     "token",
                 Value:    tokenString,
                 HttpOnly: true,
@@ -4863,9 +7598,60 @@ func CreateSignedCookie() (*http.Cookie, string) <span class="cov10" title="19">
                 SameSite: http.SameSiteStrictMode,
         }, userID</span>
 }
+
+// CreateJWTToken создает тестовый JWT токен
+func CreateJWTToken(userID string) (string, error) <span class="cov0" title="0">{
+        tokenString, _, err := jwtauth.GenerateNewToken(TestSecretKey)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+        <span class="cov0" title="0">return tokenString, nil</span>
+}
+
+// ContextWithJWT добавляет JWT токен в контекст gRPC
+func ContextWithJWT(ctx context.Context, token string) context.Context <span class="cov4" title="3">{
+        md := metadata.New(map[string]string{
+                "token": token,
+        })
+        return metadata.NewOutgoingContext(ctx, md)
+}</span>
+
+// ParseUserIDFromContext извлекает userID из контекста
+func ParseUserIDFromContext(ctx context.Context) (string, error) <span class="cov0" title="0">{
+        md, ok := metadata.FromIncomingContext(ctx)
+        if !ok </span><span class="cov0" title="0">{
+                return "", status.Error(codes.Unauthenticated, "metadata not provided")
+        }</span>
+
+        <span class="cov0" title="0">tokens := md.Get("token")
+        if len(tokens) == 0 </span><span class="cov0" title="0">{
+                return "", status.Error(codes.Unauthenticated, "authorization token not provided")
+        }</span>
+
+        <span class="cov0" title="0">claims := &amp;jwtauth.Claims{}
+
+        token, err := jwt.ParseWithClaims(tokens[0], claims, func(t *jwt.Token) (interface{}, error) </span><span class="cov0" title="0">{
+                if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+                }</span>
+                <span class="cov0" title="0">return TestSecretKey, nil</span>
+        })
+
+        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                return "", status.Error(codes.Unauthenticated, "invalid token")
+        }</span>
+
+        <span class="cov0" title="0">userID := claims.UserID
+
+        if userID != "" &amp;&amp; token.Valid </span><span class="cov0" title="0">{
+                return userID, nil
+        }</span>
+
+        <span class="cov0" title="0">return "", status.Error(codes.Unauthenticated, "invalid token claims")</span>
+}
 </pre>
 		
-		<pre class="file" id="file36" style="display: none">package testutils
+		<pre class="file" id="file51" style="display: none">package testutils
 
 import (
         "net/http/httptest"
@@ -4940,7 +7726,130 @@ func (tc *TestClient) Close() <span class="cov9" title="7">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file37" style="display: none">package testutils
+		<pre class="file" id="file52" style="display: none">package testutils
+
+import (
+        "context"
+        "fmt"
+        "net"
+        "time"
+
+        pb "github.com/ryabkov82/shortener/api"
+
+        "google.golang.org/grpc"
+        "google.golang.org/grpc/connectivity"
+        "google.golang.org/grpc/credentials/insecure"
+        "google.golang.org/grpc/test/bufconn"
+)
+
+// TestGRPCClient представляет тестовый gRPC клиент с ассоциированным сервером.
+type TestGRPCClient struct {
+        Conn   *grpc.ClientConn
+        Server *grpc.Server
+        Lis    *bufconn.Listener
+}
+
+// NewTestGRPCClient создает новое тестовое окружение для gRPC тестов.
+//
+// Параметры:
+//   - interceptors: список gRPC интерцепторов
+//   - service: реализация gRPC сервера
+//
+// Возвращает:
+//   - *TestGRPCClient - готовый к использованию тестовый клиент с сервером
+func NewTestGRPCClient(
+        interceptors []grpc.UnaryServerInterceptor,
+        service pb.ShortenerServer,
+) *TestGRPCClient <span class="cov1" title="1">{
+
+        // Создаем виртуальное соединение
+        lis := bufconn.Listen(1024 * 1024)
+
+        srv := grpc.NewServer(
+                grpc.ChainUnaryInterceptor(interceptors...),
+        )
+
+        // Регистрируем сервисы
+        pb.RegisterShortenerServer(srv, service)
+
+        // Канал для ожидания запуска сервера
+        serverErr := make(chan error, 1) // Буферизированный канал
+        ready := make(chan struct{})
+
+        go func() </span><span class="cov1" title="1">{
+                close(ready) // Сообщаем, что вот-вот будет вызван Serve
+                if err := srv.Serve(lis); err != nil </span><span class="cov0" title="0">{
+                        serverErr &lt;- err
+                }</span>
+                <span class="cov1" title="1">close(serverErr)</span>
+        }()
+
+        <span class="cov1" title="1">&lt;-ready // Дождались запуска горутины
+
+        // Создаем dial функцию для bufconn
+        dialer := func(ctx context.Context, addr string) (net.Conn, error) </span><span class="cov1" title="1">{
+                return lis.DialContext(ctx)
+        }</span>
+
+        <span class="cov1" title="1">conn, err := grpc.NewClient(
+                "passthrough:///inmem",
+                grpc.WithTransportCredentials(insecure.NewCredentials()),
+                grpc.WithContextDialer(dialer),
+        )
+
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+
+        // 1. Явно инициируем соединение
+        <span class="cov1" title="1">conn.Connect()
+
+        // 2. Проверяем соединение с таймаутом
+        ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+        defer cancel()
+
+        // 3. Механизм проверки готовности соединения
+        connectionReady := make(chan struct{})
+        go func() </span><span class="cov1" title="1">{
+                for </span><span class="cov10" title="2">{
+                        state := conn.GetState()
+                        if state == connectivity.Ready </span><span class="cov1" title="1">{
+                                close(connectionReady)
+                                return
+                        }</span>
+
+                        // Ждем изменения состояния
+                        <span class="cov1" title="1">if !conn.WaitForStateChange(ctx, state) </span><span class="cov0" title="0">{
+                                return // Таймаут или отмена контекста
+                        }</span>
+                }
+        }()
+
+        // Ждем либо готовности, либо таймаута
+        <span class="cov1" title="1">select </span>{
+        case &lt;-connectionReady:<span class="cov1" title="1">
+                // Соединение готово к работе
+                fmt.Println("Connection established successfully")</span>
+        case &lt;-ctx.Done():<span class="cov0" title="0">
+                panic("connection timeout exceeded: server not responding")</span>
+        }
+
+        <span class="cov1" title="1">return &amp;TestGRPCClient{
+                Conn:   conn,
+                Lis:    lis,
+                Server: srv,
+        }</span>
+}
+
+// Close освобождает ресурсы тестового клиента.
+func (tc *TestGRPCClient) Close() <span class="cov1" title="1">{
+        tc.Conn.Close()
+        tc.Server.Stop()
+        tc.Lis.Close()
+}</span>
+</pre>
+		
+		<pre class="file" id="file53" style="display: none">package testutils
 
 import (
         "os"
@@ -4973,7 +7882,7 @@ import (
 //            log.Fatalf("Failed to initialize storage: %v", err)
 //        }
 //        defer st.Close()
-func InitializeInMemoryStorage() (*storage.InMemoryStorage, error) <span class="cov10" title="6">{
+func InitializeInMemoryStorage() (*storage.InMemoryStorage, error) <span class="cov10" title="7">{
 
         // Для общих testdata проекта
         globalData, err := GetGlobalTestDataPath()
@@ -4981,7 +7890,7 @@ func InitializeInMemoryStorage() (*storage.InMemoryStorage, error) <span class="
                 return nil, err
         }</span>
 
-        <span class="cov10" title="6">fileStorage := filepath.Join(globalData, "test.dat")
+        <span class="cov10" title="7">fileStorage := filepath.Join(globalData, "test.dat")
 
         _ = os.Remove(fileStorage)
 
@@ -4989,14 +7898,14 @@ func InitializeInMemoryStorage() (*storage.InMemoryStorage, error) <span class="
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
-        <span class="cov10" title="6">st.Load(fileStorage)
+        <span class="cov10" title="7">st.Load(fileStorage)
 
         return st, nil</span>
 
 }
 </pre>
 		
-		<pre class="file" id="file38" style="display: none">package testutils
+		<pre class="file" id="file54" style="display: none">package testutils
 
 import (
         "os/exec"
@@ -5007,21 +7916,101 @@ import (
 // GetModuleRoot возвращает абсолютный путь к корневой директории Go-модуля.
 // Использует команду 'go list -m'. Может возвращать ошибку, если команда
 // не выполнена или модуль не инициализирован.
-func GetModuleRoot() (string, error) <span class="cov10" title="6">{
+func GetModuleRoot() (string, error) <span class="cov10" title="7">{
         out, err := exec.Command("go", "list", "-m", "-f", "{{.Dir}}").Output()
         if err != nil </span><span class="cov0" title="0">{
                 return "", err
         }</span>
-        <span class="cov10" title="6">return strings.TrimSpace(string(out)), nil</span>
+        <span class="cov10" title="7">return strings.TrimSpace(string(out)), nil</span>
 }
 
 // GetGlobalTestDataPath возвращает путь к общей папке testdata проекта
-func GetGlobalTestDataPath() (string, error) <span class="cov10" title="6">{
+func GetGlobalTestDataPath() (string, error) <span class="cov10" title="7">{
         root, err := GetModuleRoot()
         if err != nil </span><span class="cov0" title="0">{
                 return "", err
         }</span>
-        <span class="cov10" title="6">return filepath.Join(root, "test", "testdata"), nil</span>
+        <span class="cov10" title="7">return filepath.Join(root, "test", "testdata"), nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file55" style="display: none">package testutils
+
+import (
+        "net/http"
+
+        "google.golang.org/grpc/codes"
+)
+
+// StatusCode — универсальный enum статусов для тестов.
+type StatusCode int
+
+const (
+        StatusOK StatusCode = iota
+        StatusCreated
+        StatusBadRequest
+        StatusUnauthorized
+        StatusForbidden
+        StatusNotFound
+        StatusConflict
+        StatusServiceUnavailable
+        StatusGatewayTimeout
+        StatusInternalError
+        StatusUnknown
+)
+
+// grpcCodeToStatusCode преобразует grpc коды в StatusCode
+func GRPCCodeToStatusCode(code codes.Code) StatusCode <span class="cov7" title="4">{
+        switch code </span>{
+        case codes.OK:<span class="cov0" title="0">
+                return StatusCreated</span>
+        case codes.InvalidArgument:<span class="cov4" title="2">
+                return StatusBadRequest</span>
+        case codes.NotFound:<span class="cov0" title="0">
+                return StatusNotFound</span>
+        case codes.AlreadyExists:<span class="cov4" title="2">
+                return StatusConflict</span>
+        case codes.PermissionDenied:<span class="cov0" title="0">
+                return StatusForbidden</span>
+        case codes.Unauthenticated:<span class="cov0" title="0">
+                return StatusUnauthorized</span>
+        case codes.Unavailable:<span class="cov0" title="0">
+                return StatusServiceUnavailable</span>
+        case codes.DeadlineExceeded:<span class="cov0" title="0">
+                return StatusGatewayTimeout</span>
+        case codes.Internal:<span class="cov0" title="0">
+                return StatusInternalError</span>
+        default:<span class="cov0" title="0">
+                return StatusUnknown</span>
+        }
+}
+
+// httpStatusToStatusCode преобразует HTTP статус в StatusCode
+func HTTPStatusToStatusCode(code int) StatusCode <span class="cov10" title="6">{
+        switch code </span>{
+        case http.StatusOK:<span class="cov0" title="0">
+                return StatusOK</span>
+        case http.StatusCreated:<span class="cov4" title="2">
+                return StatusCreated</span>
+        case http.StatusBadRequest:<span class="cov4" title="2">
+                return StatusBadRequest</span>
+        case http.StatusUnauthorized:<span class="cov0" title="0">
+                return StatusUnauthorized</span>
+        case http.StatusForbidden:<span class="cov0" title="0">
+                return StatusForbidden</span>
+        case http.StatusNotFound:<span class="cov0" title="0">
+                return StatusNotFound</span>
+        case http.StatusConflict:<span class="cov4" title="2">
+                return StatusConflict</span>
+        case http.StatusServiceUnavailable:<span class="cov0" title="0">
+                return StatusServiceUnavailable</span>
+        case http.StatusGatewayTimeout:<span class="cov0" title="0">
+                return StatusGatewayTimeout</span>
+        case http.StatusInternalServerError:<span class="cov0" title="0">
+                return StatusInternalError</span>
+        default:<span class="cov0" title="0">
+                return StatusUnknown</span>
+        }
 }
 </pre>
 		

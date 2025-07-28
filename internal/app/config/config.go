@@ -39,7 +39,9 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
+	"fmt"
 	"log"
+	"net"
 	"net/url"
 	"os"
 	"strconv"
@@ -48,17 +50,18 @@ import (
 
 // Config содержит все параметры конфигурации приложения.
 type Config struct {
-	HTTPServerAddr string      `json:"server_address"`    // Адрес HTTP-сервера в формате host:port
-	BaseURL        string      `json:"base_url"`          // Базовый URL для сокращённых ссылок
-	LogLevel       string      `json:"log_level"`         // Уровень логирования (debug, info, warn, error)
-	FileStorage    string      `json:"file_storage_path"` // Путь к файлу хранилища
-	DBConnect      string      `json:"database_dsn"`      // Строка подключения к БД
-	JwtKey         string      `json:"jwt_secret"`        // Секретный ключ для JWT
-	ConfigPProf    PProfConfig `json:"pprof"`             // Настройки pprof
-	EnableHTTPS    bool        `json:"enable_https"`      // Включение HTTPS
-	SSLCertFile    string      `json:"ssl_cert_file"`     // Путь к SSL сертификату
-	SSLKeyFile     string      `json:"ssl_key_file"`      // Путь к SSL ключу
-	TrustedSubnet  string      `json:"trusted_subnet"`    // Доверенная подсеть
+	HTTPServerAddr string      `json:"server_address"`      // Адрес HTTP-сервера в формате host:port
+	GRPCServerAddr string      `json:"grpc_server_address"` // Адрес gRPC-сервера
+	BaseURL        string      `json:"base_url"`            // Базовый URL для сокращённых ссылок
+	LogLevel       string      `json:"log_level"`           // Уровень логирования (debug, info, warn, error)
+	FileStorage    string      `json:"file_storage_path"`   // Путь к файлу хранилища
+	DBConnect      string      `json:"database_dsn"`        // Строка подключения к БД
+	JwtKey         string      `json:"jwt_secret"`          // Секретный ключ для JWT
+	ConfigPProf    PProfConfig `json:"pprof"`               // Настройки pprof
+	EnableHTTPS    bool        `json:"enable_https"`        // Включение HTTPS
+	SSLCertFile    string      `json:"ssl_cert_file"`       // Путь к SSL сертификату
+	SSLKeyFile     string      `json:"ssl_key_file"`        // Путь к SSL ключу
+	TrustedSubnet  string      `json:"trusted_subnet"`      // Доверенная подсеть
 }
 
 // PProfConfig содержит настройки профилирования pprof.
@@ -128,6 +131,25 @@ func validateCertFiles(certFile, keyFile string) error {
 	return nil
 }
 
+func validateGRPCServerAddr(addr string) error {
+	if addr == "" {
+		return errors.New("gRPC server address cannot be empty")
+	}
+
+	_, port, err := net.SplitHostPort(addr)
+	if err != nil {
+		return fmt.Errorf("invalid address format: %w", err)
+	}
+
+	// Проверка порта
+	portNum, err := strconv.Atoi(port)
+	if err != nil || portNum < 1 || portNum > 65535 {
+		return errors.New("port must be between 1 and 65535")
+	}
+
+	return nil
+}
+
 // Load загружает конфигурацию из разных источников.
 //
 // Порядок загрузки:
@@ -141,6 +163,7 @@ func validateCertFiles(certFile, keyFile string) error {
 func Load() *Config {
 	cfg := &Config{
 		HTTPServerAddr: "localhost:8080",
+		GRPCServerAddr: "localhost:50051",
 		BaseURL:        "http://localhost:8080",
 		LogLevel:       "info",
 		FileStorage:    "storage.dat",
@@ -258,6 +281,9 @@ func mergeConfigs(original, new *Config) {
 	if new.TrustedSubnet != "" {
 		original.TrustedSubnet = new.TrustedSubnet
 	}
+	if new.GRPCServerAddr != "" {
+		original.GRPCServerAddr = new.GRPCServerAddr
+	}
 
 	// Объединение PProfConfig
 	if new.ConfigPProf.AuthUser != "" {
@@ -300,6 +326,15 @@ func loadFromFlags(cfg *Config) {
 	flag.StringVar(&cfg.DBConnect, "d", cfg.DBConnect, "Database connection string")
 	flag.BoolVar(&cfg.EnableHTTPS, "s", cfg.EnableHTTPS, "Enable HTTPS server")
 	flag.StringVar(&cfg.TrustedSubnet, "t", "", "trusted subnet in CIDR notation")
+
+	flag.Func("ga", "gRPC server address in host:port format", func(flagValue string) error {
+		if err := validateGRPCServerAddr(flagValue); err != nil {
+			return err
+		}
+		cfg.GRPCServerAddr = flagValue
+		return nil
+	})
+
 	flag.Parse()
 }
 
@@ -355,6 +390,13 @@ func loadFromEnv(cfg *Config) {
 
 	if envSubnet := os.Getenv("TRUSTED_SUBNET"); envSubnet != "" {
 		cfg.TrustedSubnet = envSubnet
+	}
+
+	if envGRPCAddr := os.Getenv("GRPC_SERVER_ADDRESS"); envGRPCAddr != "" {
+		if err := validateGRPCServerAddr(envGRPCAddr); err != nil {
+			log.Fatalf("invalid GRPC_SERVER_ADDRESS: %v", err)
+		}
+		cfg.GRPCServerAddr = envGRPCAddr
 	}
 
 	// Обработка pprof настроек
