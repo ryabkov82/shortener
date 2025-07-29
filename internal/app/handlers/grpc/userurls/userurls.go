@@ -16,12 +16,18 @@ type URLHandler interface {
 	GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error)
 }
 
+// Handler обрабатывает gRPC-запросы для работы с URL пользователя.
+// Встраивает базовый обработчик (логирование, утилиты) и использует сервис для работы с URL.
 type Handler struct {
 	*base.BaseHandler // Встраиваем базовый обработчик
 	service           URLHandler
 	baseURL           string
 }
 
+// New создает новый экземпляр Handler с указанными зависимостями.
+// baseHandler - базовый обработчик с общими зависимостями,
+// service - реализация бизнес-логики работы с URL,
+// baseURL - корневой URL для генерации коротких ссылок.
 func New(
 	baseHandler *base.BaseHandler,
 	service URLHandler,
@@ -34,6 +40,9 @@ func New(
 	}
 }
 
+// GetUserURLs возвращает все URL пользователя в формате OriginalURL -> ShortURL.
+// Реализует gRPC-метод, обрабатывая запрос и возвращая ответ в protobuf-формате.
+// При ошибках возвращает status.Error с соответствующим кодом.
 func (h *Handler) GetUserURLs(
 	ctx context.Context,
 	_ *pb.UserURLsRequest,
