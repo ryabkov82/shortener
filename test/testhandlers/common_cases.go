@@ -123,8 +123,9 @@ type DelUserURLsTestCase struct {
 
 func CommonDelUserURLsCases(user1URLs map[string]string) []DelUserURLsTestCase {
 
-	user1 := "user1"
-	user2 := "user2"
+	user1 := "bf38c714-b8df-4f75-8578-ea6b5df32758"
+	user2 := "93f3b6be-3f1c-452a-9cf9-475e160a3cb1"
+
 	cookie1, err := testutils.CreateCookieByUserID(user1)
 
 	if err != nil {

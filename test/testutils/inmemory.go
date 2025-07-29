@@ -47,7 +47,7 @@ func InitializeInMemoryStorage() (*storage.InMemoryStorage, error) {
 	if err != nil {
 		return nil, err
 	}
-	st.Load(fileStorage)
+	//st.Load(fileStorage)
 
 	return st, nil
 
