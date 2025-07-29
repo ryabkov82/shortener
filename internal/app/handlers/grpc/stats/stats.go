@@ -22,11 +22,16 @@ type URLHandler interface {
 	GetStats(ctx context.Context) (models.StatsResponse, error)
 }
 
+// Handler обрабатывает gRPC-запросы для работы с URL пользователя.
+// Встраивает базовый обработчик (логирование, утилиты) и использует сервис для работы с URL.
 type Handler struct {
 	*base.BaseHandler // Встраиваем базовый обработчик
 	service           URLHandler
 }
 
+// New создает новый экземпляр Handler с указанными зависимостями.
+// baseHandler - базовый обработчик с общими зависимостями,
+// service - реализация бизнес-логики.
 func New(
 	baseHandler *base.BaseHandler,
 	service URLHandler,
