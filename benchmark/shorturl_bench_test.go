@@ -14,11 +14,11 @@ import (
 	"github.com/ryabkov82/shortener/internal/app/jwtauth"
 	"github.com/ryabkov82/shortener/internal/app/logger"
 
-	"github.com/ryabkov82/shortener/internal/app/handlers/shorturl"
+	"github.com/ryabkov82/shortener/internal/app/handlers/http/shorturl"
 
-	"github.com/ryabkov82/shortener/internal/app/server/middleware/auth"
-	mwlogger "github.com/ryabkov82/shortener/internal/app/server/middleware/logger"
-	"github.com/ryabkov82/shortener/internal/app/server/middleware/mwgzip"
+	"github.com/ryabkov82/shortener/internal/app/server/http/middleware/auth"
+	mwlogger "github.com/ryabkov82/shortener/internal/app/server/http/middleware/logger"
+	"github.com/ryabkov82/shortener/internal/app/server/http/middleware/mwgzip"
 	"github.com/ryabkov82/shortener/internal/app/service"
 	"github.com/ryabkov82/shortener/internal/app/storage/inmemory"
 	"github.com/ryabkov82/shortener/internal/app/storage/postgres"

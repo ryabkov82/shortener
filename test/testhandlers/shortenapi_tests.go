@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/ryabkov82/shortener/internal/app/handlers/shortenapi"
+	"github.com/ryabkov82/shortener/internal/app/handlers/http/shortenapi"
 	"github.com/ryabkov82/shortener/test/testutils"
 
 	"github.com/go-resty/resty/v2"

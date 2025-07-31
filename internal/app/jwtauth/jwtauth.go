@@ -48,3 +48,14 @@ func GenerateNewToken(jwtKey []byte) (string, string, error) {
 	tokenString, err := token.SignedString(jwtKey)
 	return tokenString, userID, err
 }
+
+// CreateToken генерирует JWT по userID
+func CreateToken(jwtKey []byte, userID string) (string, error) {
+
+	claims := &Claims{
+		UserID: userID,
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(jwtKey)
+
+}
