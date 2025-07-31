@@ -13,7 +13,10 @@ func TestConfig(t *testing.T) {
 		// Создаем новый FlagSet для изоляции теста
 		flag.CommandLine = flag.NewFlagSet("test1", flag.PanicOnError)
 		os.Args = []string{"cmd"}
-		cfg := Load()
+		cfg, err := Load()
+		if err != nil {
+			t.Fatalf("Unexpected error: %v", err)
+		}
 		if cfg.HTTPServerAddr != "localhost:8080" {
 			t.Errorf("Expected default server address 'localhost:8080', got '%s'", cfg.HTTPServerAddr)
 		}
@@ -26,7 +29,11 @@ func TestConfig(t *testing.T) {
 		configPath := filepath.Join("testdata", "valid_config.json")
 		t.Setenv("CONFIG", configPath)
 
-		cfg := Load()
+		cfg, err := Load()
+		if err != nil {
+			t.Fatalf("Unexpected error: %v", err)
+		}
+
 		if cfg.HTTPServerAddr != "testhost:9090" {
 			t.Errorf("Expected JSON server address 'testhost:9090', got '%s'", cfg.HTTPServerAddr)
 		}
@@ -40,7 +47,11 @@ func TestConfig(t *testing.T) {
 		t.Setenv("LOG_LEVEL", "debug")
 		t.Setenv("JWT_SECRET", "env_jwt_secret_12345678901234567890")
 
-		cfg := Load()
+		cfg, err := Load()
+		if err != nil {
+			t.Fatalf("Unexpected error: %v", err)
+		}
+
 		if cfg.HTTPServerAddr != "envhost:8080" {
 			t.Errorf("Expected env server address 'envhost:8080', got '%s'", cfg.HTTPServerAddr)
 		}
@@ -54,7 +65,10 @@ func TestConfig(t *testing.T) {
 		flag.CommandLine = flag.NewFlagSet("test4", flag.PanicOnError)
 		os.Args = []string{"cmd", "-a", "flaghost:7070", "-l", "error"}
 
-		cfg := Load()
+		cfg, err := Load()
+		if err != nil {
+			t.Fatalf("Unexpected error: %v", err)
+		}
 		if cfg.HTTPServerAddr != "flaghost:7070" {
 			t.Errorf("Expected flag server address 'flaghost:7070', got '%s'", cfg.HTTPServerAddr)
 		}
@@ -170,7 +184,10 @@ func TestConfig(t *testing.T) {
 		t.Setenv("CONFIG", configPath)
 
 		// Не должен паниковать
-		cfg := Load()
+		cfg, err := Load()
+		if err != nil {
+			t.Fatalf("Unexpected error: %v", err)
+		}
 		if cfg.HTTPServerAddr != "localhost:8080" {
 			t.Error("Should fall back to default values")
 		}
@@ -184,7 +201,10 @@ func TestConfig(t *testing.T) {
 		t.Setenv("PPROF_USER", "testuser")
 		t.Setenv("PPROF_PASS", "testpass")
 
-		cfg := Load()
+		cfg, err := Load()
+		if err != nil {
+			t.Fatalf("Unexpected error: %v", err)
+		}
 		if cfg.ConfigPProf.Enabled {
 			t.Error("PPROF should be disabled")
 		}
@@ -206,7 +226,10 @@ func TestConfig(t *testing.T) {
 		// 3. Переменные окружения (высший приоритет)
 		t.Setenv("SERVER_ADDRESS", "envhost:8080")
 
-		cfg := Load()
+		cfg, err := Load()
+		if err != nil {
+			t.Fatalf("Unexpected error: %v", err)
+		}
 
 		// Проверяем приоритеты (env > flags > JSON)
 		if cfg.HTTPServerAddr != "envhost:8080" {

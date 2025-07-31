@@ -73,6 +73,11 @@ type PProfConfig struct {
 	Enabled  bool   `json:"enabled"`
 }
 
+const (
+	minDynamicPort = 49152 // Начало диапазона динамических/частных портов (IANA)
+	maxPort        = 65535 // Максимальный допустимый номер порта
+)
+
 // validateHTTPServerAddr проверяет корректность адреса сервера.
 //
 // Формат адреса: host:port
@@ -143,8 +148,9 @@ func validateGRPCServerAddr(addr string) error {
 
 	// Проверка порта
 	portNum, err := strconv.Atoi(port)
-	if err != nil || portNum < 1 || portNum > 65535 {
-		return errors.New("port must be between 1 and 65535")
+
+	if err != nil || portNum < minDynamicPort || portNum > maxPort {
+		return fmt.Errorf("port must be between %d and %d", minDynamicPort, maxPort)
 	}
 
 	return nil
@@ -160,7 +166,8 @@ func validateGRPCServerAddr(addr string) error {
 //
 // Возвращает:
 // *Config - загруженную конфигурацию
-func Load() *Config {
+// error - ошибку загрузки конфигурации
+func Load() (*Config, error) {
 	cfg := &Config{
 		HTTPServerAddr: "localhost:8080",
 		GRPCServerAddr: "localhost:50051",
@@ -187,16 +194,19 @@ func Load() *Config {
 		if err != nil {
 			log.Printf("Ошибка загрузки JSON-конфига: %v", err)
 		} else {
-			// Объединяем конфиги, сохраняя значения по умолчанию для незаполненных полей
 			mergeConfigs(cfg, fileCfg)
 		}
 	}
 
 	// Загрузка из аргументов командной строки
-	loadFromFlags(cfg)
+	if err := loadFromFlags(cfg); err != nil {
+		return nil, fmt.Errorf("flag parsing failed: %w", err)
+	}
 
 	// Переопределение переменными окружения
-	loadFromEnv(cfg)
+	if err := loadFromEnv(cfg); err != nil {
+		return nil, fmt.Errorf("env vars loading failed: %w", err)
+	}
 
 	// Дополнительная обработка
 	cfg.BaseURL = strings.TrimSuffix(cfg.BaseURL, "/")
@@ -204,11 +214,11 @@ func Load() *Config {
 	// Валидация SSL файлов если HTTPS включен
 	if cfg.EnableHTTPS {
 		if err := validateCertFiles(cfg.SSLCertFile, cfg.SSLKeyFile); err != nil {
-			log.Fatalf("HTTPS configuration error: %v", err)
+			return nil, fmt.Errorf("HTTPS configuration invalid: %w", err)
 		}
 	}
 
-	return cfg
+	return cfg, nil
 }
 
 // getConfigFilePath возвращает путь к файлу конфигурации из флагов или переменных окружения
@@ -304,10 +314,13 @@ func mergeConfigs(original, new *Config) {
 }
 
 // loadFromFlags загружает значения из флагов командной строки
-func loadFromFlags(cfg *Config) {
+func loadFromFlags(cfg *Config) error {
+	var validationErr error
+
 	flag.Func("a", "Server address in host:port format", func(flagValue string) error {
 		if err := validateHTTPServerAddr(flagValue); err != nil {
-			return err
+			validationErr = fmt.Errorf("invalid server address: %w", err)
+			return validationErr
 		}
 		cfg.HTTPServerAddr = flagValue
 		return nil
@@ -315,7 +328,8 @@ func loadFromFlags(cfg *Config) {
 
 	flag.Func("b", "Base URL for shortened links (e.g. http://example.com)", func(flagValue string) error {
 		if err := validateBaseURL(flagValue); err != nil {
-			return err
+			validationErr = fmt.Errorf("invalid base URL: %w", err)
+			return validationErr
 		}
 		cfg.BaseURL = strings.TrimSuffix(flagValue, "/")
 		return nil
@@ -329,27 +343,32 @@ func loadFromFlags(cfg *Config) {
 
 	flag.Func("ga", "gRPC server address in host:port format", func(flagValue string) error {
 		if err := validateGRPCServerAddr(flagValue); err != nil {
-			return err
+			validationErr = fmt.Errorf("invalid gRPC server address: %w", err)
+			return validationErr
 		}
 		cfg.GRPCServerAddr = flagValue
 		return nil
 	})
 
 	flag.Parse()
+
+	return validationErr
 }
 
 // loadFromEnv загружает значения из переменных окружения.
-func loadFromEnv(cfg *Config) {
+func loadFromEnv(cfg *Config) error {
+	var err error
+
 	if envAddr := os.Getenv("SERVER_ADDRESS"); envAddr != "" {
-		if err := validateHTTPServerAddr(envAddr); err != nil {
-			log.Fatalf("invalid SERVER_ADDRESS: %v", err)
+		if err = validateHTTPServerAddr(envAddr); err != nil {
+			return fmt.Errorf("invalid SERVER_ADDRESS: %w", err)
 		}
 		cfg.HTTPServerAddr = envAddr
 	}
 
 	if envURL := os.Getenv("BASE_URL"); envURL != "" {
-		if err := validateBaseURL(envURL); err != nil {
-			log.Fatalf("invalid BASE_URL: %v", err)
+		if err = validateBaseURL(envURL); err != nil {
+			return fmt.Errorf("invalid BASE_URL: %w", err)
 		}
 		cfg.BaseURL = envURL
 	}
@@ -364,7 +383,7 @@ func loadFromEnv(cfg *Config) {
 
 	if envJWT := os.Getenv("JWT_SECRET"); envJWT != "" {
 		if len(envJWT) < 32 {
-			log.Fatal("JWT_SECRET must be at least 32 characters long")
+			return fmt.Errorf("JWT_SECRET must be at least 32 characters long")
 		}
 		cfg.JwtKey = envJWT
 	}
@@ -377,6 +396,8 @@ func loadFromEnv(cfg *Config) {
 	if envEnableHTTPS := os.Getenv("SSL_ENABLE"); envEnableHTTPS != "" {
 		if v, err := strconv.ParseBool(envEnableHTTPS); err == nil {
 			cfg.EnableHTTPS = v
+		} else {
+			return fmt.Errorf("invalid SSL_ENABLE value: %w", err)
 		}
 	}
 
@@ -393,8 +414,8 @@ func loadFromEnv(cfg *Config) {
 	}
 
 	if envGRPCAddr := os.Getenv("GRPC_SERVER_ADDRESS"); envGRPCAddr != "" {
-		if err := validateGRPCServerAddr(envGRPCAddr); err != nil {
-			log.Fatalf("invalid GRPC_SERVER_ADDRESS: %v", err)
+		if err = validateGRPCServerAddr(envGRPCAddr); err != nil {
+			return fmt.Errorf("invalid GRPC_SERVER_ADDRESS: %w", err)
 		}
 		cfg.GRPCServerAddr = envGRPCAddr
 	}
@@ -409,6 +430,10 @@ func loadFromEnv(cfg *Config) {
 	if enabled := os.Getenv("PPROF_ENABLED"); enabled != "" {
 		if v, err := strconv.ParseBool(enabled); err == nil {
 			cfg.ConfigPProf.Enabled = v
+		} else {
+			return fmt.Errorf("invalid PPROF_ENABLED value: %w", err)
 		}
 	}
+
+	return nil
 }

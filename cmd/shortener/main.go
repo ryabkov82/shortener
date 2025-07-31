@@ -26,7 +26,10 @@ func main() {
 
 	printBuildInfo()
 
-	cfg := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		panic(err)
+	}
 
 	if err := logger.Initialize(cfg.LogLevel); err != nil {
 		panic(err)

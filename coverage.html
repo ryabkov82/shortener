@@ -69,7 +69,7 @@
 				
 				<option value="file6">github.com/ryabkov82/shortener/cmd/staticlint/noosexit/analyzer.go (83.3%)</option>
 				
-				<option value="file7">github.com/ryabkov82/shortener/internal/app/config/config.go (75.3%)</option>
+				<option value="file7">github.com/ryabkov82/shortener/internal/app/config/config.go (72.7%)</option>
 				
 				<option value="file8">github.com/ryabkov82/shortener/internal/app/handlers/grpc/base/handler.go (50.0%)</option>
 				
@@ -1688,9 +1688,12 @@ func main() <span class="cov0" title="0">{
 
         printBuildInfo()
 
-        cfg := config.Load()
+        cfg, err := config.Load()
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
 
-        if err := logger.Initialize(cfg.LogLevel); err != nil </span><span class="cov0" title="0">{
+        <span class="cov0" title="0">if err := logger.Initialize(cfg.LogLevel); err != nil </span><span class="cov0" title="0">{
                 panic(err)</span>
         }
 
@@ -1826,7 +1829,7 @@ func setupAnalyzers() []*analysis.Analyzer <span class="cov1" title="1">{
         <span class="cov1" title="1">var otherStaticcheckAnalyzers []*analysis.Analyzer
 
         // Добавляем анализаторы из stylecheck
-        for _, a := range stylecheck.Analyzers </span><span class="cov3" title="3">{
+        for _, a := range stylecheck.Analyzers </span><span class="cov5" title="8">{
                 if a.Analyzer.Name == "ST1000" </span><span class="cov1" title="1">{ // проверка документации пакета
                         otherStaticcheckAnalyzers = append(otherStaticcheckAnalyzers, a.Analyzer)
                         break</span>
@@ -1834,7 +1837,7 @@ func setupAnalyzers() []*analysis.Analyzer <span class="cov1" title="1">{
         }
 
         // Добавляем анализаторы из simple
-        <span class="cov1" title="1">for _, a := range simple.Analyzers </span><span class="cov7" title="33">{
+        <span class="cov1" title="1">for _, a := range simple.Analyzers </span><span class="cov3" title="4">{
                 if a.Analyzer.Name == "S1002" </span><span class="cov1" title="1">{ // предлагает упрощение булевых выражений
                         otherStaticcheckAnalyzers = append(otherStaticcheckAnalyzers, a.Analyzer)
                         break</span>
@@ -2023,6 +2026,11 @@ type PProfConfig struct {
         Enabled  bool   `json:"enabled"`
 }
 
+const (
+        minDynamicPort = 49152 // Начало диапазона динамических/частных портов (IANA)
+        maxPort        = 65535 // Максимальный допустимый номер порта
+)
+
 // validateHTTPServerAddr проверяет корректность адреса сервера.
 //
 // Формат адреса: host:port
@@ -2093,8 +2101,9 @@ func validateGRPCServerAddr(addr string) error <span class="cov10" title="7">{
 
         // Проверка порта
         <span class="cov8" title="5">portNum, err := strconv.Atoi(port)
-        if err != nil || portNum &lt; 1 || portNum &gt; 65535 </span><span class="cov1" title="1">{
-                return errors.New("port must be between 1 and 65535")
+
+        if err != nil || portNum &lt; minDynamicPort || portNum &gt; maxPort </span><span class="cov1" title="1">{
+                return fmt.Errorf("port must be between %d and %d", minDynamicPort, maxPort)
         }</span>
 
         <span class="cov7" title="4">return nil</span>
@@ -2110,7 +2119,8 @@ func validateGRPCServerAddr(addr string) error <span class="cov10" title="7">{
 //
 // Возвращает:
 // *Config - загруженную конфигурацию
-func Load() *Config <span class="cov10" title="7">{
+// error - ошибку загрузки конфигурации
+func Load() (*Config, error) <span class="cov10" title="7">{
         cfg := &amp;Config{
                 HTTPServerAddr: "localhost:8080",
                 GRPCServerAddr: "localhost:50051",
@@ -2137,28 +2147,31 @@ func Load() *Config <span class="cov10" title="7">{
                 if err != nil </span><span class="cov1" title="1">{
                         log.Printf("Ошибка загрузки JSON-конфига: %v", err)
                 }</span> else<span class="cov4" title="2"> {
-                        // Объединяем конфиги, сохраняя значения по умолчанию для незаполненных полей
                         mergeConfigs(cfg, fileCfg)
                 }</span>
         }
 
         // Загрузка из аргументов командной строки
-        <span class="cov10" title="7">loadFromFlags(cfg)
+        <span class="cov10" title="7">if err := loadFromFlags(cfg); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("flag parsing failed: %w", err)
+        }</span>
 
         // Переопределение переменными окружения
-        loadFromEnv(cfg)
+        <span class="cov10" title="7">if err := loadFromEnv(cfg); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("env vars loading failed: %w", err)
+        }</span>
 
         // Дополнительная обработка
-        cfg.BaseURL = strings.TrimSuffix(cfg.BaseURL, "/")
+        <span class="cov10" title="7">cfg.BaseURL = strings.TrimSuffix(cfg.BaseURL, "/")
 
         // Валидация SSL файлов если HTTPS включен
         if cfg.EnableHTTPS </span><span class="cov0" title="0">{
                 if err := validateCertFiles(cfg.SSLCertFile, cfg.SSLKeyFile); err != nil </span><span class="cov0" title="0">{
-                        log.Fatalf("HTTPS configuration error: %v", err)
+                        return nil, fmt.Errorf("HTTPS configuration invalid: %w", err)
                 }</span>
         }
 
-        <span class="cov10" title="7">return cfg</span>
+        <span class="cov10" title="7">return cfg, nil</span>
 }
 
 // getConfigFilePath возвращает путь к файлу конфигурации из флагов или переменных окружения
@@ -2254,10 +2267,13 @@ func mergeConfigs(original, new *Config) <span class="cov6" title="3">{
 }
 
 // loadFromFlags загружает значения из флагов командной строки
-func loadFromFlags(cfg *Config) <span class="cov10" title="7">{
+func loadFromFlags(cfg *Config) error <span class="cov10" title="7">{
+        var validationErr error
+
         flag.Func("a", "Server address in host:port format", func(flagValue string) error </span><span class="cov4" title="2">{
                 if err := validateHTTPServerAddr(flagValue); err != nil </span><span class="cov0" title="0">{
-                        return err
+                        validationErr = fmt.Errorf("invalid server address: %w", err)
+                        return validationErr
                 }</span>
                 <span class="cov4" title="2">cfg.HTTPServerAddr = flagValue
                 return nil</span>
@@ -2265,7 +2281,8 @@ func loadFromFlags(cfg *Config) <span class="cov10" title="7">{
 
         <span class="cov10" title="7">flag.Func("b", "Base URL for shortened links (e.g. http://example.com)", func(flagValue string) error </span><span class="cov0" title="0">{
                 if err := validateBaseURL(flagValue); err != nil </span><span class="cov0" title="0">{
-                        return err
+                        validationErr = fmt.Errorf("invalid base URL: %w", err)
+                        return validationErr
                 }</span>
                 <span class="cov0" title="0">cfg.BaseURL = strings.TrimSuffix(flagValue, "/")
                 return nil</span>
@@ -2279,27 +2296,32 @@ func loadFromFlags(cfg *Config) <span class="cov10" title="7">{
 
         flag.Func("ga", "gRPC server address in host:port format", func(flagValue string) error </span><span class="cov0" title="0">{
                 if err := validateGRPCServerAddr(flagValue); err != nil </span><span class="cov0" title="0">{
-                        return err
+                        validationErr = fmt.Errorf("invalid gRPC server address: %w", err)
+                        return validationErr
                 }</span>
                 <span class="cov0" title="0">cfg.GRPCServerAddr = flagValue
                 return nil</span>
         })
 
-        <span class="cov10" title="7">flag.Parse()</span>
+        <span class="cov10" title="7">flag.Parse()
+
+        return validationErr</span>
 }
 
 // loadFromEnv загружает значения из переменных окружения.
-func loadFromEnv(cfg *Config) <span class="cov10" title="7">{
+func loadFromEnv(cfg *Config) error <span class="cov10" title="7">{
+        var err error
+
         if envAddr := os.Getenv("SERVER_ADDRESS"); envAddr != "" </span><span class="cov4" title="2">{
-                if err := validateHTTPServerAddr(envAddr); err != nil </span><span class="cov0" title="0">{
-                        log.Fatalf("invalid SERVER_ADDRESS: %v", err)
+                if err = validateHTTPServerAddr(envAddr); err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("invalid SERVER_ADDRESS: %w", err)
                 }</span>
                 <span class="cov4" title="2">cfg.HTTPServerAddr = envAddr</span>
         }
 
         <span class="cov10" title="7">if envURL := os.Getenv("BASE_URL"); envURL != "" </span><span class="cov0" title="0">{
-                if err := validateBaseURL(envURL); err != nil </span><span class="cov0" title="0">{
-                        log.Fatalf("invalid BASE_URL: %v", err)
+                if err = validateBaseURL(envURL); err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("invalid BASE_URL: %w", err)
                 }</span>
                 <span class="cov0" title="0">cfg.BaseURL = envURL</span>
         }
@@ -2314,7 +2336,7 @@ func loadFromEnv(cfg *Config) <span class="cov10" title="7">{
 
         <span class="cov10" title="7">if envJWT := os.Getenv("JWT_SECRET"); envJWT != "" </span><span class="cov1" title="1">{
                 if len(envJWT) &lt; 32 </span><span class="cov0" title="0">{
-                        log.Fatal("JWT_SECRET must be at least 32 characters long")
+                        return fmt.Errorf("JWT_SECRET must be at least 32 characters long")
                 }</span>
                 <span class="cov1" title="1">cfg.JwtKey = envJWT</span>
         }
@@ -2327,6 +2349,8 @@ func loadFromEnv(cfg *Config) <span class="cov10" title="7">{
         <span class="cov10" title="7">if envEnableHTTPS := os.Getenv("SSL_ENABLE"); envEnableHTTPS != "" </span><span class="cov0" title="0">{
                 if v, err := strconv.ParseBool(envEnableHTTPS); err == nil </span><span class="cov0" title="0">{
                         cfg.EnableHTTPS = v
+                }</span> else<span class="cov0" title="0"> {
+                        return fmt.Errorf("invalid SSL_ENABLE value: %w", err)
                 }</span>
         }
 
@@ -2343,8 +2367,8 @@ func loadFromEnv(cfg *Config) <span class="cov10" title="7">{
         }</span>
 
         <span class="cov10" title="7">if envGRPCAddr := os.Getenv("GRPC_SERVER_ADDRESS"); envGRPCAddr != "" </span><span class="cov0" title="0">{
-                if err := validateGRPCServerAddr(envGRPCAddr); err != nil </span><span class="cov0" title="0">{
-                        log.Fatalf("invalid GRPC_SERVER_ADDRESS: %v", err)
+                if err = validateGRPCServerAddr(envGRPCAddr); err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("invalid GRPC_SERVER_ADDRESS: %w", err)
                 }</span>
                 <span class="cov0" title="0">cfg.GRPCServerAddr = envGRPCAddr</span>
         }
@@ -2359,8 +2383,12 @@ func loadFromEnv(cfg *Config) <span class="cov10" title="7">{
         <span class="cov10" title="7">if enabled := os.Getenv("PPROF_ENABLED"); enabled != "" </span><span class="cov1" title="1">{
                 if v, err := strconv.ParseBool(enabled); err == nil </span><span class="cov1" title="1">{
                         cfg.ConfigPProf.Enabled = v
+                }</span> else<span class="cov0" title="0"> {
+                        return fmt.Errorf("invalid PPROF_ENABLED value: %w", err)
                 }</span>
         }
+
+        <span class="cov10" title="7">return nil</span>
 }
 </pre>
 		
@@ -2967,11 +2995,16 @@ type URLHandler interface {
         GetStats(ctx context.Context) (models.StatsResponse, error)
 }
 
+// Handler обрабатывает gRPC-запросы для работы с URL пользователя.
+// Встраивает базовый обработчик (логирование, утилиты) и использует сервис для работы с URL.
 type Handler struct {
         *base.BaseHandler // Встраиваем базовый обработчик
         service           URLHandler
 }
 
+// New создает новый экземпляр Handler с указанными зависимостями.
+// baseHandler - базовый обработчик с общими зависимостями,
+// service - реализация бизнес-логики.
 func New(
         baseHandler *base.BaseHandler,
         service URLHandler,
@@ -3023,12 +3056,18 @@ type URLHandler interface {
         GetUserUrls(ctx context.Context, baseURL string) ([]models.URLMapping, error)
 }
 
+// Handler обрабатывает gRPC-запросы для работы с URL пользователя.
+// Встраивает базовый обработчик (логирование, утилиты) и использует сервис для работы с URL.
 type Handler struct {
         *base.BaseHandler // Встраиваем базовый обработчик
         service           URLHandler
         baseURL           string
 }
 
+// New создает новый экземпляр Handler с указанными зависимостями.
+// baseHandler - базовый обработчик с общими зависимостями,
+// service - реализация бизнес-логики работы с URL,
+// baseURL - корневой URL для генерации коротких ссылок.
 func New(
         baseHandler *base.BaseHandler,
         service URLHandler,
@@ -3041,6 +3080,9 @@ func New(
         }
 }</span>
 
+// GetUserURLs возвращает все URL пользователя в формате OriginalURL -&gt; ShortURL.
+// Реализует gRPC-метод, обрабатывая запрос и возвращая ответ в protobuf-формате.
+// При ошибках возвращает status.Error с соответствующим кодом.
 func (h *Handler) GetUserURLs(
         ctx context.Context,
         _ *pb.UserURLsRequest,
@@ -3978,14 +4020,14 @@ import (
 
 // Пул gzip.Writer для повторного использования объектов
 var writerPool = sync.Pool{
-        New: func() interface{} <span class="cov10" title="105">{
+        New: func() interface{} <span class="cov10" title="107">{
                 return gzip.NewWriter(io.Discard)
         }</span>,
 }
 
 // Пул gzip.Reader для повторного использования объектов
 var readerPool = sync.Pool{
-        New: func() interface{} <span class="cov9" title="101">{
+        New: func() interface{} <span class="cov9" title="103">{
                 return new(gzip.Reader)
         }</span>,
 }
@@ -6824,7 +6866,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="18">{
         ticker := time.NewTicker(w.batchWindow)
         defer ticker.Stop()
 
-        for </span><span class="cov10" title="44">{
+        for </span><span class="cov10" title="43">{
                 select </span>{
                 case &lt;-w.stopChan:<span class="cov0" title="0">
                         if len(batch) &gt; 0 </span><span class="cov0" title="0">{
@@ -6854,7 +6896,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="18">{
                                 ticker.Reset(w.batchWindow)
                         }</span>
 
-                case &lt;-ticker.C:<span class="cov7" title="14">
+                case &lt;-ticker.C:<span class="cov7" title="13">
                         if len(batch) &gt; 0 </span><span class="cov6" title="12">{
                                 w.batchChan &lt;- batch
                                 batch = make(map[string][]string)
