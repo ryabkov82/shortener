@@ -24,7 +24,7 @@ func NewBaseHandler(logger *zap.Logger) *BaseHandler {
 func (h *BaseHandler) CommonInterceptors(cfg *config.Config) []grpc.UnaryServerInterceptor {
 	return []grpc.UnaryServerInterceptor{
 		interceptors.LoggingInterceptor(h.Logger),
-		interceptors.JWTAutoIssueGRPC([]byte(cfg.JwtKey)),
+		interceptors.JWTAutoIssueGRPC([]byte(cfg.JwtKey), h.Logger),
 		interceptors.TrustedSubnetInterceptor(interceptors.TrustedSubnetConfig{
 			TrustedSubnet: cfg.TrustedSubnet,
 			ProtectedMethods: map[string]bool{

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	pb "github.com/ryabkov82/shortener/api"
+	"go.uber.org/zap"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
@@ -26,13 +27,16 @@ type TestGRPCClient struct {
 // Параметры:
 //   - interceptors: список gRPC интерцепторов
 //   - service: реализация gRPC сервера
+//   - logger: логгер для записи событий
 //
 // Возвращает:
 //   - *TestGRPCClient - готовый к использованию тестовый клиент с сервером
+//   - error - ошибка инициализации
 func NewTestGRPCClient(
 	interceptors []grpc.UnaryServerInterceptor,
 	service pb.ShortenerServer,
-) *TestGRPCClient {
+	logger *zap.Logger,
+) (*TestGRPCClient, error) {
 
 	// Создаем виртуальное соединение
 	lis := bufconn.Listen(1024 * 1024)
@@ -70,47 +74,52 @@ func NewTestGRPCClient(
 	)
 
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("failed to create client: %w", err)
 	}
 
 	// 1. Явно инициируем соединение
 	conn.Connect()
 
-	// 2. Проверяем соединение с таймаутом
+	// 3. Проверяем готовность с таймаутом
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	// 3. Механизм проверки готовности соединения
-	connectionReady := make(chan struct{})
-	go func() {
-		for {
-			state := conn.GetState()
-			if state == connectivity.Ready {
-				close(connectionReady)
-				return
-			}
+	if err := waitForConnectionReady(ctx, conn, logger); err != nil {
+		// Создаем контекст с таймаутом 2 секунды для всего shutdown
+		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 2*time.Second)
+		defer shutdownCancel() // Важно вызывать cancel для освобождения ресурсов
 
-			// Ждем изменения состояния
-			if !conn.WaitForStateChange(ctx, state) {
-				return // Таймаут или отмена контекста
-			}
+		// Канал для отслеживания завершения GracefulStop
+		gracefulDone := make(chan struct{})
+
+		// Запускаем graceful shutdown в отдельной горутине
+		go func() {
+			defer close(gracefulDone)
+			srv.GracefulStop() // Пытаемся остановиться корректно
+		}()
+
+		// Ожидаем либо успешного завершения, либо таймаута
+		select {
+		case <-gracefulDone:
+			logger.Info("Server stopped gracefully")
+		case <-shutdownCtx.Done():
+			logger.Warn("Forcing shutdown after timeout")
 		}
-	}()
 
-	// Ждем либо готовности, либо таймаута
-	select {
-	case <-connectionReady:
-		// Соединение готово к работе
-		fmt.Println("Connection established successfully")
-	case <-ctx.Done():
-		panic("connection timeout exceeded: server not responding")
+		// Всегда закрываем ресурсы
+		lis.Close()
+		conn.Close()
+
+		return nil, fmt.Errorf("connection failed: %w", err)
 	}
+
+	logger.Debug("gRPC test environment initialized successfully")
 
 	return &TestGRPCClient{
 		Conn:   conn,
 		Lis:    lis,
 		Server: srv,
-	}
+	}, nil
 }
 
 // Close освобождает ресурсы тестового клиента.
@@ -118,4 +127,38 @@ func (tc *TestGRPCClient) Close() {
 	tc.Conn.Close()
 	tc.Server.Stop()
 	tc.Lis.Close()
+}
+
+// waitForConnectionReady ожидает готовности соединения с таймаутом
+func waitForConnectionReady(ctx context.Context, conn *grpc.ClientConn, logger *zap.Logger) error {
+	connectionReady := make(chan struct{})
+	done := make(chan struct{})
+	defer close(done)
+
+	go func() {
+		for {
+			select {
+			case <-done:
+				return
+			default:
+				state := conn.GetState()
+				if state == connectivity.Ready {
+					close(connectionReady)
+					return
+				}
+				if !conn.WaitForStateChange(ctx, state) {
+					return
+				}
+			}
+		}
+	}()
+
+	select {
+	case <-connectionReady:
+		logger.Debug("gRPC connection established",
+			zap.String("state", conn.GetState().String()))
+		return nil
+	case <-ctx.Done():
+		return fmt.Errorf("connection timeout: last state %s", conn.GetState())
+	}
 }

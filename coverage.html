@@ -113,7 +113,7 @@
 				
 				<option value="file28">github.com/ryabkov82/shortener/internal/app/pprof/routes.go (77.4%)</option>
 				
-				<option value="file29">github.com/ryabkov82/shortener/internal/app/server/grpc/interceptors/jwt_auth.go (34.8%)</option>
+				<option value="file29">github.com/ryabkov82/shortener/internal/app/server/grpc/interceptors/jwt_auth.go (38.9%)</option>
 				
 				<option value="file30">github.com/ryabkov82/shortener/internal/app/server/grpc/interceptors/logger.go (100.0%)</option>
 				
@@ -171,7 +171,7 @@
 				
 				<option value="file57">github.com/ryabkov82/shortener/test/testutils/client.go (100.0%)</option>
 				
-				<option value="file58">github.com/ryabkov82/shortener/test/testutils/grpc_client.go (88.6%)</option>
+				<option value="file58">github.com/ryabkov82/shortener/test/testutils/grpc_client.go (68.5%)</option>
 				
 				<option value="file59">github.com/ryabkov82/shortener/test/testutils/inmemory.go (77.8%)</option>
 				
@@ -1829,7 +1829,7 @@ func setupAnalyzers() []*analysis.Analyzer <span class="cov1" title="1">{
         <span class="cov1" title="1">var otherStaticcheckAnalyzers []*analysis.Analyzer
 
         // Добавляем анализаторы из stylecheck
-        for _, a := range stylecheck.Analyzers </span><span class="cov5" title="8">{
+        for _, a := range stylecheck.Analyzers </span><span class="cov5" title="11">{
                 if a.Analyzer.Name == "ST1000" </span><span class="cov1" title="1">{ // проверка документации пакета
                         otherStaticcheckAnalyzers = append(otherStaticcheckAnalyzers, a.Analyzer)
                         break</span>
@@ -1837,7 +1837,7 @@ func setupAnalyzers() []*analysis.Analyzer <span class="cov1" title="1">{
         }
 
         // Добавляем анализаторы из simple
-        <span class="cov1" title="1">for _, a := range simple.Analyzers </span><span class="cov3" title="4">{
+        <span class="cov1" title="1">for _, a := range simple.Analyzers </span><span class="cov6" title="13">{
                 if a.Analyzer.Name == "S1002" </span><span class="cov1" title="1">{ // предлагает упрощение булевых выражений
                         otherStaticcheckAnalyzers = append(otherStaticcheckAnalyzers, a.Analyzer)
                         break</span>
@@ -1845,7 +1845,7 @@ func setupAnalyzers() []*analysis.Analyzer <span class="cov1" title="1">{
         }
 
         // Добавляем анализаторы из quickfix
-        <span class="cov1" title="1">for _, a := range quickfix.Analyzers </span><span class="cov4" title="7">{
+        <span class="cov1" title="1">for _, a := range quickfix.Analyzers </span><span class="cov5" title="9">{
                 if a.Analyzer.Name == "QF1001" </span><span class="cov1" title="1">{ // применяет законы Де Моргана
                         otherStaticcheckAnalyzers = append(otherStaticcheckAnalyzers, a.Analyzer)
                         break</span>
@@ -2418,7 +2418,7 @@ func NewBaseHandler(logger *zap.Logger) *BaseHandler <span class="cov0" title="0
 func (h *BaseHandler) CommonInterceptors(cfg *config.Config) []grpc.UnaryServerInterceptor <span class="cov10" title="5">{
         return []grpc.UnaryServerInterceptor{
                 interceptors.LoggingInterceptor(h.Logger),
-                interceptors.JWTAutoIssueGRPC([]byte(cfg.JwtKey)),
+                interceptors.JWTAutoIssueGRPC([]byte(cfg.JwtKey), h.Logger),
                 interceptors.TrustedSubnetInterceptor(interceptors.TrustedSubnetConfig{
                         TrustedSubnet: cfg.TrustedSubnet,
                         ProtectedMethods: map[string]bool{
@@ -4020,14 +4020,14 @@ import (
 
 // Пул gzip.Writer для повторного использования объектов
 var writerPool = sync.Pool{
-        New: func() interface{} <span class="cov10" title="107">{
+        New: func() interface{} <span class="cov10" title="101">{
                 return gzip.NewWriter(io.Discard)
         }</span>,
 }
 
 // Пул gzip.Reader для повторного использования объектов
 var readerPool = sync.Pool{
-        New: func() interface{} <span class="cov9" title="103">{
+        New: func() interface{} <span class="cov9" title="98">{
                 return new(gzip.Reader)
         }</span>,
 }
@@ -4374,6 +4374,7 @@ import (
         "fmt"
 
         "github.com/ryabkov82/shortener/internal/app/jwtauth"
+        "go.uber.org/zap"
 
         "github.com/golang-jwt/jwt/v5"
         "google.golang.org/grpc"
@@ -4420,7 +4421,7 @@ import (
 //  4. Выдача нового токена при необходимости
 //  5. Добавление UserID в контекст
 //  6. Вызов основного обработчика
-func JWTAutoIssueGRPC(jwtKey []byte) grpc.UnaryServerInterceptor <span class="cov7" title="10">{
+func JWTAutoIssueGRPC(jwtKey []byte, log *zap.Logger) grpc.UnaryServerInterceptor <span class="cov7" title="10">{
         return func(
                 ctx context.Context,
                 req interface{},
@@ -4435,32 +4436,32 @@ func JWTAutoIssueGRPC(jwtKey []byte) grpc.UnaryServerInterceptor <span class="co
                 // Аналог r.Cookie() в HTTP - получаем токен из метаданных
                 <span class="cov10" title="23">md, ok := metadata.FromIncomingContext(ctx)
                 if !ok </span><span class="cov0" title="0">{
-                        return issueNewTokenAndHandle(ctx, req, handler, jwtKey)
+                        log.Debug("no metadata in context",
+                                zap.String("method", info.FullMethod))
+                        return issueNewTokenAndHandle(ctx, req, handler, jwtKey, log, info.FullMethod)
                 }</span>
 
                 <span class="cov10" title="23">tokens := md.Get("token")
                 if len(tokens) == 0 </span><span class="cov6" title="7">{
-                        return issueNewTokenAndHandle(ctx, req, handler, jwtKey)
+                        log.Debug("no token provided",
+                                zap.String("method", info.FullMethod))
+                        return issueNewTokenAndHandle(ctx, req, handler, jwtKey, log, info.FullMethod)
                 }</span>
 
-                // Парсинг и валидация токена (аналогично HTTP)
-                <span class="cov8" title="16">claims := &amp;jwtauth.Claims{}
-
-                token, err := jwt.ParseWithClaims(tokens[0], claims, func(t *jwt.Token) (interface{}, error) </span><span class="cov8" title="16">{
-                        if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok </span><span class="cov0" title="0">{
-                                return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
-                        }</span>
-                        <span class="cov8" title="16">return jwtKey, nil</span>
-                })
-
-                <span class="cov8" title="16">if err != nil || !token.Valid </span><span class="cov0" title="0">{
-                        return issueNewTokenAndHandle(ctx, req, handler, jwtKey)
+                // Валидация токена
+                <span class="cov8" title="16">claims, err := validateToken(tokens[0], jwtKey)
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Warn("invalid token",
+                                zap.String("method", info.FullMethod),
+                                zap.Error(err))
+                        return issueNewTokenAndHandle(ctx, req, handler, jwtKey, log, info.FullMethod)
                 }</span>
 
-                // Если токен валиден, добавляем userID в контекст
-                <span class="cov8" title="16">userID := claims.UserID
-                if userID == "" </span><span class="cov0" title="0">{
-                        return issueNewTokenAndHandle(ctx, req, handler, jwtKey)
+                // Проверка наличия userID в claims
+                <span class="cov8" title="16">if claims.UserID == "" </span><span class="cov0" title="0">{
+                        log.Warn("empty userID in token",
+                                zap.String("method", info.FullMethod))
+                        return issueNewTokenAndHandle(ctx, req, handler, jwtKey, log, info.FullMethod)
                 }</span>
 
                 <span class="cov8" title="16">newCtx := context.WithValue(ctx, jwtauth.UserIDContextKey, claims.UserID)
@@ -4468,7 +4469,7 @@ func JWTAutoIssueGRPC(jwtKey []byte) grpc.UnaryServerInterceptor <span class="co
         }
 }
 
-func StrictJWTAutoIssueGRPC(jwtKey []byte) grpc.UnaryServerInterceptor <span class="cov0" title="0">{
+func StrictJWTAutoIssueGRPC(jwtKey []byte, log *zap.Logger) grpc.UnaryServerInterceptor <span class="cov0" title="0">{
         return func(
                 ctx context.Context,
                 req interface{},
@@ -4482,54 +4483,80 @@ func StrictJWTAutoIssueGRPC(jwtKey []byte) grpc.UnaryServerInterceptor <span cla
 
                 <span class="cov0" title="0">md, ok := metadata.FromIncomingContext(ctx)
                 if !ok </span><span class="cov0" title="0">{
+                        log.Warn("no metadata in context",
+                                zap.String("method", info.FullMethod))
 
-                        err := issueNewToken(ctx, jwtKey)
-                        if err != nil </span><span class="cov0" title="0">{
-                                return nil, status.Error(codes.Internal, "failed to generate token")
-                        }</span>
-                        <span class="cov0" title="0">return nil, status.Error(codes.Unauthenticated, "status unauthenticated")</span>
-                }
+                        return handleMissingToken(ctx, jwtKey, log, info.FullMethod)
+                }</span>
 
                 <span class="cov0" title="0">tokens := md.Get("token")
                 if len(tokens) == 0 </span><span class="cov0" title="0">{
-                        err := issueNewToken(ctx, jwtKey)
-                        if err != nil </span><span class="cov0" title="0">{
-                                return nil, status.Error(codes.Internal, "failed to generate token")
-                        }</span>
-                        <span class="cov0" title="0">return nil, status.Error(codes.Unauthenticated, "status unauthenticated")</span>
-                }
+                        log.Warn("no token provided",
+                                zap.String("method", info.FullMethod))
 
-                // Парсинг и валидация токена (аналогично HTTP)
-                <span class="cov0" title="0">claims := &amp;jwtauth.Claims{}
+                        return handleMissingToken(ctx, jwtKey, log, info.FullMethod)
+                }</span>
 
-                token, err := jwt.ParseWithClaims(tokens[0], claims, func(t *jwt.Token) (interface{}, error) </span><span class="cov0" title="0">{
-                        if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok </span><span class="cov0" title="0">{
-                                return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
-                        }</span>
-                        <span class="cov0" title="0">return jwtKey, nil</span>
-                })
+                // Валидация токена
+                <span class="cov0" title="0">claims, err := validateToken(tokens[0], jwtKey)
 
-                <span class="cov0" title="0">if err != nil || !token.Valid </span><span class="cov0" title="0">{
-                        err := issueNewToken(ctx, jwtKey)
-                        if err != nil </span><span class="cov0" title="0">{
-                                return nil, status.Error(codes.Internal, "failed to generate token")
-                        }</span>
-                        <span class="cov0" title="0">return nil, status.Error(codes.Unauthenticated, "status unauthenticated")</span>
-                }
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Warn("invalid token",
+                                zap.String("method", info.FullMethod),
+                                zap.Error(err))
+                        return handleInvalidToken(ctx, jwtKey, log, info.FullMethod)
+                }</span>
 
-                // Если токен валиден, добавляем userID в контекст
-                <span class="cov0" title="0">userID := claims.UserID
-                if userID == "" </span><span class="cov0" title="0">{
-                        err := issueNewToken(ctx, jwtKey)
-                        if err != nil </span><span class="cov0" title="0">{
-                                return nil, status.Error(codes.Internal, "failed to generate token")
-                        }</span>
-                        <span class="cov0" title="0">return nil, status.Error(codes.Unauthenticated, "status unauthenticated")</span>
-                }
+                // Проверка наличия userID в claims
+                <span class="cov0" title="0">if claims.UserID == "" </span><span class="cov0" title="0">{
+                        log.Warn("empty userID in token",
+                                zap.String("method", info.FullMethod))
+                        return handleInvalidToken(ctx, jwtKey, log, info.FullMethod)
+                }</span>
 
+                // Добавляем userID в контекст
                 <span class="cov0" title="0">newCtx := context.WithValue(ctx, jwtauth.UserIDContextKey, claims.UserID)
                 return handler(newCtx, req)</span>
         }
+}
+
+// Вспомогательные функции
+func validateToken(tokenString string, jwtKey []byte) (*jwtauth.Claims, error) <span class="cov8" title="16">{
+        claims := &amp;jwtauth.Claims{}
+        token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) </span><span class="cov8" title="16">{
+                if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("unexpected signing method")
+                }</span>
+                <span class="cov8" title="16">return jwtKey, nil</span>
+        })
+
+        <span class="cov8" title="16">if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="16">if !token.Valid </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("invalid token")
+        }</span>
+
+        <span class="cov8" title="16">return claims, nil</span>
+}
+
+func handleMissingToken(ctx context.Context, jwtKey []byte, logger *zap.Logger, method string) (interface{}, error) <span class="cov0" title="0">{
+        if err := issueNewToken(ctx, jwtKey); err != nil </span><span class="cov0" title="0">{
+                logger.Error("failed to issue token",
+                        zap.String("method", method),
+                        zap.Error(err))
+        }</span>
+        <span class="cov0" title="0">return nil, status.Error(codes.Unauthenticated, "authentication required")</span>
+}
+
+func handleInvalidToken(ctx context.Context, jwtKey []byte, logger *zap.Logger, method string) (interface{}, error) <span class="cov0" title="0">{
+        if err := issueNewToken(ctx, jwtKey); err != nil </span><span class="cov0" title="0">{
+                logger.Error("failed to issue token",
+                        zap.String("method", method),
+                        zap.Error(err))
+        }</span>
+        <span class="cov0" title="0">return nil, status.Error(codes.Unauthenticated, "invalid token")</span>
 }
 
 func issueNewToken(
@@ -4555,11 +4582,16 @@ func issueNewTokenAndHandle(
         req interface{},
         handler grpc.UnaryHandler,
         jwtKey []byte,
+        logger *zap.Logger,
+        method string,
 ) (interface{}, error) <span class="cov6" title="7">{
         // Генерация нового токена
         token, userID, err := jwtauth.GenerateNewToken(jwtKey)
         if err != nil </span><span class="cov0" title="0">{
-                return nil, status.Errorf(codes.Internal, "failed to create token")
+                logger.Error("failed to issue new token",
+                        zap.String("method", method),
+                        zap.Error(err))
+                return nil, status.Errorf(codes.Internal, "authentication error")
         }</span>
 
         // Установка токена в заголовки ответа (аналог Set-Cookie)
@@ -6866,7 +6898,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="18">{
         ticker := time.NewTicker(w.batchWindow)
         defer ticker.Stop()
 
-        for </span><span class="cov10" title="43">{
+        for </span><span class="cov10" title="44">{
                 select </span>{
                 case &lt;-w.stopChan:<span class="cov0" title="0">
                         if len(batch) &gt; 0 </span><span class="cov0" title="0">{
@@ -6896,7 +6928,7 @@ func (w *DeleteWorker) batchCollector() <span class="cov7" title="18">{
                                 ticker.Reset(w.batchWindow)
                         }</span>
 
-                case &lt;-ticker.C:<span class="cov7" title="13">
+                case &lt;-ticker.C:<span class="cov7" title="14">
                         if len(batch) &gt; 0 </span><span class="cov6" title="12">{
                                 w.batchChan &lt;- batch
                                 batch = make(map[string][]string)
@@ -8391,6 +8423,7 @@ import (
         "time"
 
         pb "github.com/ryabkov82/shortener/api"
+        "go.uber.org/zap"
 
         "google.golang.org/grpc"
         "google.golang.org/grpc/connectivity"
@@ -8410,13 +8443,16 @@ type TestGRPCClient struct {
 // Параметры:
 //   - interceptors: список gRPC интерцепторов
 //   - service: реализация gRPC сервера
+//   - logger: логгер для записи событий
 //
 // Возвращает:
 //   - *TestGRPCClient - готовый к использованию тестовый клиент с сервером
+//   - error - ошибка инициализации
 func NewTestGRPCClient(
         interceptors []grpc.UnaryServerInterceptor,
         service pb.ShortenerServer,
-) *TestGRPCClient <span class="cov7" title="10">{
+        logger *zap.Logger,
+) (*TestGRPCClient, error) <span class="cov7" title="10">{
 
         // Создаем виртуальное соединение
         lis := bufconn.Listen(1024 * 1024)
@@ -8454,47 +8490,52 @@ func NewTestGRPCClient(
         )
 
         if err != nil </span><span class="cov0" title="0">{
-                panic(err)</span>
-        }
+                return nil, fmt.Errorf("failed to create client: %w", err)
+        }</span>
 
         // 1. Явно инициируем соединение
         <span class="cov7" title="10">conn.Connect()
 
-        // 2. Проверяем соединение с таймаутом
+        // 3. Проверяем готовность с таймаутом
         ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
         defer cancel()
 
-        // 3. Механизм проверки готовности соединения
-        connectionReady := make(chan struct{})
-        go func() </span><span class="cov7" title="10">{
-                for </span><span class="cov10" title="20">{
-                        state := conn.GetState()
-                        if state == connectivity.Ready </span><span class="cov7" title="10">{
-                                close(connectionReady)
-                                return
-                        }</span>
+        if err := waitForConnectionReady(ctx, conn, logger); err != nil </span><span class="cov0" title="0">{
+                // Создаем контекст с таймаутом 2 секунды для всего shutdown
+                shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 2*time.Second)
+                defer shutdownCancel() // Важно вызывать cancel для освобождения ресурсов
 
-                        // Ждем изменения состояния
-                        <span class="cov7" title="10">if !conn.WaitForStateChange(ctx, state) </span><span class="cov0" title="0">{
-                                return // Таймаут или отмена контекста
-                        }</span>
+                // Канал для отслеживания завершения GracefulStop
+                gracefulDone := make(chan struct{})
+
+                // Запускаем graceful shutdown в отдельной горутине
+                go func() </span><span class="cov0" title="0">{
+                        defer close(gracefulDone)
+                        srv.GracefulStop() // Пытаемся остановиться корректно
+                }</span>()
+
+                // Ожидаем либо успешного завершения, либо таймаута
+                <span class="cov0" title="0">select </span>{
+                case &lt;-gracefulDone:<span class="cov0" title="0">
+                        logger.Info("Server stopped gracefully")</span>
+                case &lt;-shutdownCtx.Done():<span class="cov0" title="0">
+                        logger.Warn("Forcing shutdown after timeout")</span>
                 }
-        }()
 
-        // Ждем либо готовности, либо таймаута
-        <span class="cov7" title="10">select </span>{
-        case &lt;-connectionReady:<span class="cov7" title="10">
-                // Соединение готово к работе
-                fmt.Println("Connection established successfully")</span>
-        case &lt;-ctx.Done():<span class="cov0" title="0">
-                panic("connection timeout exceeded: server not responding")</span>
+                // Всегда закрываем ресурсы
+                <span class="cov0" title="0">lis.Close()
+                conn.Close()
+
+                return nil, fmt.Errorf("connection failed: %w", err)</span>
         }
 
-        <span class="cov7" title="10">return &amp;TestGRPCClient{
+        <span class="cov7" title="10">logger.Debug("gRPC test environment initialized successfully")
+
+        return &amp;TestGRPCClient{
                 Conn:   conn,
                 Lis:    lis,
                 Server: srv,
-        }</span>
+        }, nil</span>
 }
 
 // Close освобождает ресурсы тестового клиента.
@@ -8503,6 +8544,40 @@ func (tc *TestGRPCClient) Close() <span class="cov7" title="10">{
         tc.Server.Stop()
         tc.Lis.Close()
 }</span>
+
+// waitForConnectionReady ожидает готовности соединения с таймаутом
+func waitForConnectionReady(ctx context.Context, conn *grpc.ClientConn, logger *zap.Logger) error <span class="cov7" title="10">{
+        connectionReady := make(chan struct{})
+        done := make(chan struct{})
+        defer close(done)
+
+        go func() </span><span class="cov7" title="10">{
+                for </span><span class="cov10" title="20">{
+                        select </span>{
+                        case &lt;-done:<span class="cov0" title="0">
+                                return</span>
+                        default:<span class="cov10" title="20">
+                                state := conn.GetState()
+                                if state == connectivity.Ready </span><span class="cov7" title="10">{
+                                        close(connectionReady)
+                                        return
+                                }</span>
+                                <span class="cov7" title="10">if !conn.WaitForStateChange(ctx, state) </span><span class="cov0" title="0">{
+                                        return
+                                }</span>
+                        }
+                }
+        }()
+
+        <span class="cov7" title="10">select </span>{
+        case &lt;-connectionReady:<span class="cov7" title="10">
+                logger.Debug("gRPC connection established",
+                        zap.String("state", conn.GetState().String()))
+                return nil</span>
+        case &lt;-ctx.Done():<span class="cov0" title="0">
+                return fmt.Errorf("connection timeout: last state %s", conn.GetState())</span>
+        }
+}
 </pre>
 		
 		<pre class="file" id="file59" style="display: none">package testutils

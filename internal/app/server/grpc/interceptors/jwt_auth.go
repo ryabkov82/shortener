@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ryabkov82/shortener/internal/app/jwtauth"
+	"go.uber.org/zap"
 
 	"github.com/golang-jwt/jwt/v5"
 	"google.golang.org/grpc"
@@ -51,7 +52,7 @@ import (
 //  4. Выдача нового токена при необходимости
 //  5. Добавление UserID в контекст
 //  6. Вызов основного обработчика
-func JWTAutoIssueGRPC(jwtKey []byte) grpc.UnaryServerInterceptor {
+func JWTAutoIssueGRPC(jwtKey []byte, log *zap.Logger) grpc.UnaryServerInterceptor {
 	return func(
 		ctx context.Context,
 		req interface{},
@@ -66,32 +67,32 @@ func JWTAutoIssueGRPC(jwtKey []byte) grpc.UnaryServerInterceptor {
 		// Аналог r.Cookie() в HTTP - получаем токен из метаданных
 		md, ok := metadata.FromIncomingContext(ctx)
 		if !ok {
-			return issueNewTokenAndHandle(ctx, req, handler, jwtKey)
+			log.Debug("no metadata in context",
+				zap.String("method", info.FullMethod))
+			return issueNewTokenAndHandle(ctx, req, handler, jwtKey, log, info.FullMethod)
 		}
 
 		tokens := md.Get("token")
 		if len(tokens) == 0 {
-			return issueNewTokenAndHandle(ctx, req, handler, jwtKey)
+			log.Debug("no token provided",
+				zap.String("method", info.FullMethod))
+			return issueNewTokenAndHandle(ctx, req, handler, jwtKey, log, info.FullMethod)
 		}
 
-		// Парсинг и валидация токена (аналогично HTTP)
-		claims := &jwtauth.Claims{}
-
-		token, err := jwt.ParseWithClaims(tokens[0], claims, func(t *jwt.Token) (interface{}, error) {
-			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
-			}
-			return jwtKey, nil
-		})
-
-		if err != nil || !token.Valid {
-			return issueNewTokenAndHandle(ctx, req, handler, jwtKey)
+		// Валидация токена
+		claims, err := validateToken(tokens[0], jwtKey)
+		if err != nil {
+			log.Warn("invalid token",
+				zap.String("method", info.FullMethod),
+				zap.Error(err))
+			return issueNewTokenAndHandle(ctx, req, handler, jwtKey, log, info.FullMethod)
 		}
 
-		// Если токен валиден, добавляем userID в контекст
-		userID := claims.UserID
-		if userID == "" {
-			return issueNewTokenAndHandle(ctx, req, handler, jwtKey)
+		// Проверка наличия userID в claims
+		if claims.UserID == "" {
+			log.Warn("empty userID in token",
+				zap.String("method", info.FullMethod))
+			return issueNewTokenAndHandle(ctx, req, handler, jwtKey, log, info.FullMethod)
 		}
 
 		newCtx := context.WithValue(ctx, jwtauth.UserIDContextKey, claims.UserID)
@@ -99,7 +100,7 @@ func JWTAutoIssueGRPC(jwtKey []byte) grpc.UnaryServerInterceptor {
 	}
 }
 
-func StrictJWTAutoIssueGRPC(jwtKey []byte) grpc.UnaryServerInterceptor {
+func StrictJWTAutoIssueGRPC(jwtKey []byte, log *zap.Logger) grpc.UnaryServerInterceptor {
 	return func(
 		ctx context.Context,
 		req interface{},
@@ -113,54 +114,80 @@ func StrictJWTAutoIssueGRPC(jwtKey []byte) grpc.UnaryServerInterceptor {
 
 		md, ok := metadata.FromIncomingContext(ctx)
 		if !ok {
+			log.Warn("no metadata in context",
+				zap.String("method", info.FullMethod))
 
-			err := issueNewToken(ctx, jwtKey)
-			if err != nil {
-				return nil, status.Error(codes.Internal, "failed to generate token")
-			}
-			return nil, status.Error(codes.Unauthenticated, "status unauthenticated")
+			return handleMissingToken(ctx, jwtKey, log, info.FullMethod)
 		}
 
 		tokens := md.Get("token")
 		if len(tokens) == 0 {
-			err := issueNewToken(ctx, jwtKey)
-			if err != nil {
-				return nil, status.Error(codes.Internal, "failed to generate token")
-			}
-			return nil, status.Error(codes.Unauthenticated, "status unauthenticated")
+			log.Warn("no token provided",
+				zap.String("method", info.FullMethod))
+
+			return handleMissingToken(ctx, jwtKey, log, info.FullMethod)
 		}
 
-		// Парсинг и валидация токена (аналогично HTTP)
-		claims := &jwtauth.Claims{}
+		// Валидация токена
+		claims, err := validateToken(tokens[0], jwtKey)
 
-		token, err := jwt.ParseWithClaims(tokens[0], claims, func(t *jwt.Token) (interface{}, error) {
-			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
-			}
-			return jwtKey, nil
-		})
-
-		if err != nil || !token.Valid {
-			err := issueNewToken(ctx, jwtKey)
-			if err != nil {
-				return nil, status.Error(codes.Internal, "failed to generate token")
-			}
-			return nil, status.Error(codes.Unauthenticated, "status unauthenticated")
+		if err != nil {
+			log.Warn("invalid token",
+				zap.String("method", info.FullMethod),
+				zap.Error(err))
+			return handleInvalidToken(ctx, jwtKey, log, info.FullMethod)
 		}
 
-		// Если токен валиден, добавляем userID в контекст
-		userID := claims.UserID
-		if userID == "" {
-			err := issueNewToken(ctx, jwtKey)
-			if err != nil {
-				return nil, status.Error(codes.Internal, "failed to generate token")
-			}
-			return nil, status.Error(codes.Unauthenticated, "status unauthenticated")
+		// Проверка наличия userID в claims
+		if claims.UserID == "" {
+			log.Warn("empty userID in token",
+				zap.String("method", info.FullMethod))
+			return handleInvalidToken(ctx, jwtKey, log, info.FullMethod)
 		}
 
+		// Добавляем userID в контекст
 		newCtx := context.WithValue(ctx, jwtauth.UserIDContextKey, claims.UserID)
 		return handler(newCtx, req)
 	}
+}
+
+// Вспомогательные функции
+func validateToken(tokenString string, jwtKey []byte) (*jwtauth.Claims, error) {
+	claims := &jwtauth.Claims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method")
+		}
+		return jwtKey, nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !token.Valid {
+		return nil, fmt.Errorf("invalid token")
+	}
+
+	return claims, nil
+}
+
+func handleMissingToken(ctx context.Context, jwtKey []byte, logger *zap.Logger, method string) (interface{}, error) {
+	if err := issueNewToken(ctx, jwtKey); err != nil {
+		logger.Error("failed to issue token",
+			zap.String("method", method),
+			zap.Error(err))
+	}
+	return nil, status.Error(codes.Unauthenticated, "authentication required")
+}
+
+func handleInvalidToken(ctx context.Context, jwtKey []byte, logger *zap.Logger, method string) (interface{}, error) {
+	if err := issueNewToken(ctx, jwtKey); err != nil {
+		logger.Error("failed to issue token",
+			zap.String("method", method),
+			zap.Error(err))
+	}
+	return nil, status.Error(codes.Unauthenticated, "invalid token")
 }
 
 func issueNewToken(
@@ -186,11 +213,16 @@ func issueNewTokenAndHandle(
 	req interface{},
 	handler grpc.UnaryHandler,
 	jwtKey []byte,
+	logger *zap.Logger,
+	method string,
 ) (interface{}, error) {
 	// Генерация нового токена
 	token, userID, err := jwtauth.GenerateNewToken(jwtKey)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create token")
+		logger.Error("failed to issue new token",
+			zap.String("method", method),
+			zap.Error(err))
+		return nil, status.Errorf(codes.Internal, "authentication error")
 	}
 
 	// Установка токена в заголовки ответа (аналог Set-Cookie)

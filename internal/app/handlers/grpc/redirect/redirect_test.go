@@ -33,17 +33,22 @@ func TestRedirectGRPC(t *testing.T) {
 
 	interceptors := []grpc.UnaryServerInterceptor{
 		interceptors.LoggingInterceptor(logger),
-		interceptors.JWTAutoIssueGRPC(testutils.TestSecretKey),
+		interceptors.JWTAutoIssueGRPC(testutils.TestSecretKey, logger),
 	}
 
 	// Создаем тестовый клиент
-	tc := testutils.NewTestGRPCClient(
+	tc, err := testutils.NewTestGRPCClient(
 		interceptors,
 		grpchandlers.NewServer(
 			baseHandler,
 			grpchandlers.WithGetOriginalURLEndpoint(redirect.New(baseHandler, serv)),
 		),
+		logger,
 	)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	defer tc.Close()
 
 	// Создаем клиент

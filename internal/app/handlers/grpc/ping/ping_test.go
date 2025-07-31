@@ -44,13 +44,17 @@ func TestGRPCPing(t *testing.T) {
 	)
 
 	// Создаем тестовый клиент
-	tc := testutils.NewTestGRPCClient(
+	tc, err := testutils.NewTestGRPCClient(
 		commonInterceptors,
 		grpchandlers.NewServer(
 			baseHandler,
 			grpchandlers.WithPingEndpoint(pingHandler),
 		),
+		logger.Log,
 	)
+	if err != nil {
+		t.Fatal(err)
+	}
 	defer tc.Close()
 
 	// Создаем клиент
