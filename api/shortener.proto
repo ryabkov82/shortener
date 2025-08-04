@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package shortener;
+
+option go_package = "github.com/ryabkov82/shortener/api;api";
+
+service Shortener {
+  rpc CreateShortURL(CreateRequest) returns (CreateResponse);
+  rpc GetOriginalURL(GetRequest) returns (GetResponse);
+  rpc Ping(PingRequest) returns (PingResponse);
+  rpc GetStats(StatsRequest) returns (StatsResponse);
+  rpc GetUserURLs(UserURLsRequest) returns (UserURLsResponse);
+  rpc DeleteUserURLs(DeleteRequest) returns (DeleteResponse);
+  rpc BatchCreate(BatchCreateRequest) returns (BatchCreateResponse);
+}
+
+message CreateRequest {
+  string original_url = 1;
+}
+
+message CreateResponse {
+  string short_url = 1;
+}
+
+message GetRequest {
+  string short_url = 1;
+}
+
+message GetResponse {
+  string original_url = 1;
+  bool deleted = 2;
+}
+
+message PingRequest {}
+
+message PingResponse {
+  bool ok = 1;
+}
+
+message StatsRequest {}
+
+message StatsResponse {
+  int64 urls = 1;
+  int64 users = 2;
+}
+
+message UserURLsRequest {}
+
+message UserURLsResponse {
+  repeated UserURL urls = 1;
+}
+
+message UserURL {
+  string short_url = 1;
+  string original_url = 2;
+}
+
+message DeleteRequest {
+  repeated string short_urls = 1;
+}
+
+message DeleteResponse {}
+
+message BatchCreateRequest {
+  repeated BatchCreateItem items = 1;
+}
+
+message BatchCreateItem {
+  string correlation_id = 1;
+  string original_url = 2;
+}
+
+message BatchCreateResponse {
+  repeated BatchCreateResult items = 1;
+}
+
+message BatchCreateResult {
+  string correlation_id = 1;
+  string short_url = 2;
+}
